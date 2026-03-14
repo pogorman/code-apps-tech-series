@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAccounts, useDeleteAccount } from "@/hooks/use-accounts";
 import {
   Table,
@@ -22,6 +23,7 @@ import { toast } from "sonner";
 type Account = AccountsModel.Accounts;
 
 export function AccountList() {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
   const [editAccount, setEditAccount] = useState<Account | null>(null);
@@ -165,6 +167,10 @@ export function AccountList() {
         onEdit={(account) => {
           setViewAccount(null);
           setEditAccount(account);
+        }}
+        onViewContact={() => {
+          setViewAccount(null);
+          navigate("/contacts");
         }}
       />
 

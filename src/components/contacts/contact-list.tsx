@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useContacts, useDeleteContact } from "@/hooks/use-contacts";
+import { useAccounts } from "@/hooks/use-accounts";
+import { getParentAccountId } from "@/lib/get-parent-account-id";
 import {
   Table,
   TableBody,
@@ -11,7 +13,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
 import { ContactFormDialog } from "./contact-form-dialog";
 import { ContactDetailDialog } from "./contact-detail-dialog";
 import { ContactDeleteDialog } from "./contact-delete-dialog";
@@ -34,7 +35,14 @@ export function ContactList() {
     : undefined;
 
   const { data: contacts, isLoading, error } = useContacts({ filter });
+  const { data: accounts } = useAccounts();
   const deleteMutation = useDeleteContact();
+
+  const accountNameMap = useMemo(() => {
+    const map = new Map<string, string>();
+    accounts?.forEach((a) => map.set(a.accountid, a.name));
+    return map;
+  }, [accounts]);
 
   function handleDelete() {
     if (!deleteContact) return;
@@ -83,11 +91,9 @@ export function ContactList() {
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead>Company</TableHead>
+              <TableHead>Account</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>Phone</TableHead>
               <TableHead>Job Title</TableHead>
-              <TableHead>Status</TableHead>
               <TableHead className="w-[100px]">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -95,7 +101,7 @@ export function ContactList() {
             {isLoading ? (
               Array.from({ length: 5 }).map((_, i) => (
                 <TableRow key={i}>
-                  {Array.from({ length: 7 }).map((_, j) => (
+                  {Array.from({ length: 5 }).map((_, j) => (
                     <TableCell key={j}>
                       <Skeleton className="h-4 w-full" />
                     </TableCell>
@@ -105,7 +111,7 @@ export function ContactList() {
             ) : contacts?.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={7}
+                  colSpan={5}
                   className="text-center text-muted-foreground py-8"
                 >
                   {search
@@ -126,20 +132,10 @@ export function ContactList() {
                   >
                     <TableCell className="font-medium">{displayName}</TableCell>
                     <TableCell>
-                      {contact.parentcustomeridname ?? "\u2014"}
+                      {accountNameMap.get(getParentAccountId(contact) ?? "") ?? "\u2014"}
                     </TableCell>
                     <TableCell>{contact.emailaddress1 ?? "\u2014"}</TableCell>
-                    <TableCell>{contact.telephone1 ?? "\u2014"}</TableCell>
                     <TableCell>{contact.jobtitle ?? "\u2014"}</TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={
-                          contact.statecode === 0 ? "default" : "secondary"
-                        }
-                      >
-                        {contact.statecodename ?? "Active"}
-                      </Badge>
-                    </TableCell>
                     <TableCell>
                       <div
                         className="flex gap-1"

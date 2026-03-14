@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import type { ContactsModel } from "@/generated";
+import { useAccounts } from "@/hooks/use-accounts";
+import { getParentAccountId } from "@/lib/get-parent-account-id";
 import { Pencil } from "lucide-react";
 
 type Contact = ContactsModel.Contacts;
@@ -35,9 +37,15 @@ export function ContactDetailDialog({
   contact,
   onEdit,
 }: ContactDetailDialogProps) {
+  const { data: accounts } = useAccounts();
+
   if (!contact) return null;
 
   const displayName = contact.fullname ?? `${contact.firstname ?? ""} ${contact.lastname}`.trim();
+  const parentAccountId = getParentAccountId(contact);
+  const accountName = parentAccountId
+    ? accounts?.find((a) => a.accountid === parentAccountId)?.name
+    : undefined;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -69,7 +77,7 @@ export function ContactDetailDialog({
           <Separator />
 
           <dl>
-            <DetailRow label="Company" value={contact.parentcustomeridname} />
+            <DetailRow label="Account" value={accountName} />
             <DetailRow label="Job Title" value={contact.jobtitle} />
             <DetailRow label="Email" value={contact.emailaddress1} />
             <DetailRow label="Phone" value={contact.telephone1} />
@@ -103,8 +111,6 @@ export function ContactDetailDialog({
           <Separator />
           <dl>
             <DetailRow label="Owner" value={contact.owneridname} />
-            <DetailRow label="Created" value={contact.createdon} />
-            <DetailRow label="Modified" value={contact.modifiedon} />
           </dl>
         </div>
       </DialogContent>

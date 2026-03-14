@@ -1,6 +1,6 @@
-# Account Management Code App
+# CRM Code App — Accounts & Contacts
 
-A Power Platform Code App built with React + TypeScript for the Code Apps tech series. Full CRUD on Dataverse `account` table, deployed via `pac code push`.
+A Power Platform Code App built with React + TypeScript for the Code Apps tech series. Full CRUD on Dataverse `account` and `contact` tables with account-contact relationships, deployed via `pac code push`.
 
 ## Prerequisites
 
@@ -21,7 +21,7 @@ pac code push
 Two terminals required:
 
 ```bash
-# Terminal 1 — Vite dev server (port 3000)
+# Terminal 1 — Vite dev server (port 5173)
 npm run dev
 
 # Terminal 2 — Power Platform connection proxy
@@ -50,9 +50,10 @@ src/
   components/
     ui/               # shadcn/ui primitives
     accounts/         # Account CRUD components
-    layout/           # App shell
+    contacts/         # Contact CRUD components
+    layout/           # App shell (sidebar nav)
   hooks/              # TanStack Query hooks wrapping Dataverse services
-  lib/                # Utilities (cn helper)
+  lib/                # Utilities (cn helper, Dataverse field helpers)
 docs/                 # Tracked notes and research
 .power/               # Power Platform schemas (auto-generated)
 power.config.json     # Code App configuration
@@ -62,7 +63,7 @@ power.config.json     # Code App configuration
 
 | Command | Purpose |
 |---------|---------|
-| `npm run dev` | Start Vite dev server on port 3000 |
+| `npm run dev` | Start Vite dev server on port 5173 |
 | `npm run build` | TypeScript check + production build to `dist/` |
 | `pac code run` | Start Power Platform connection proxy |
 | `pac code push` | Deploy to Power Platform |

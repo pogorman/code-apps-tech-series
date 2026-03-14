@@ -10,7 +10,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useCreateContact, useUpdateContact } from "@/hooks/use-contacts";
+import { useAccounts } from "@/hooks/use-accounts";
+import { getParentAccountId } from "@/lib/get-parent-account-id";
 import type { ContactsModel } from "@/generated";
 import { toast } from "sonner";
 
@@ -26,6 +35,7 @@ interface ContactFormDialogProps {
 interface FormData {
   firstname: string;
   lastname: string;
+  parentcustomerid: string;
   jobtitle: string;
   emailaddress1: string;
   telephone1: string;
@@ -40,6 +50,7 @@ interface FormData {
 const EMPTY_FORM: FormData = {
   firstname: "",
   lastname: "",
+  parentcustomerid: "",
   jobtitle: "",
   emailaddress1: "",
   telephone1: "",
@@ -55,6 +66,7 @@ function contactToForm(contact: Contact): FormData {
   return {
     firstname: contact.firstname ?? "",
     lastname: contact.lastname ?? "",
+    parentcustomerid: getParentAccountId(contact) ?? "",
     jobtitle: contact.jobtitle ?? "",
     emailaddress1: contact.emailaddress1 ?? "",
     telephone1: contact.telephone1 ?? "",
@@ -67,6 +79,8 @@ function contactToForm(contact: Contact): FormData {
   };
 }
 
+const NONE_VALUE = "__none__";
+
 export function ContactFormDialog({
   open,
   onOpenChange,
@@ -76,6 +90,7 @@ export function ContactFormDialog({
   const [form, setForm] = useState<FormData>(EMPTY_FORM);
   const createMutation = useCreateContact();
   const updateMutation = useUpdateContact();
+  const { data: accounts } = useAccounts();
   const isPending = createMutation.isPending || updateMutation.isPending;
 
   useEffect(() => {
@@ -98,7 +113,15 @@ export function ContactFormDialog({
 
     const record: Record<string, string | undefined> = {};
     for (const [key, value] of Object.entries(form)) {
+      if (key === "parentcustomerid") continue;
       record[key] = value.trim() || undefined;
+    }
+    if (form.parentcustomerid) {
+      record.parentcustomerid = form.parentcustomerid;
+      record.parentcustomeridtype = "account";
+    } else {
+      record.parentcustomerid = undefined;
+      record.parentcustomeridtype = undefined;
     }
 
     if (mode === "create") {
@@ -164,6 +187,28 @@ export function ContactFormDialog({
                   placeholder="Doe"
                 />
               </div>
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="parentcustomerid">Account</Label>
+              <Select
+                value={form.parentcustomerid || NONE_VALUE}
+                onValueChange={(v) =>
+                  updateField("parentcustomerid", v === NONE_VALUE ? "" : v)
+                }
+              >
+                <SelectTrigger id="parentcustomerid">
+                  <SelectValue placeholder="Select an account" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={NONE_VALUE}>None</SelectItem>
+                  {accounts?.map((a) => (
+                    <SelectItem key={a.accountid} value={a.accountid}>
+                      {a.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="grid gap-2">

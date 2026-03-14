@@ -3,6 +3,7 @@ import { ContactsService } from "@/generated";
 import type { ContactsModel } from "@/generated";
 
 const CONTACTS_KEY = ["contacts"] as const;
+const ACCOUNTS_KEY = ["accounts"] as const;
 
 export function useContacts(options?: { filter?: string; orderBy?: string[] }) {
   return useQuery({
@@ -39,6 +40,7 @@ export function useCreateContact() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: CONTACTS_KEY });
+      queryClient.invalidateQueries({ queryKey: ACCOUNTS_KEY });
     },
   });
 }
@@ -60,6 +62,7 @@ export function useUpdateContact() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: CONTACTS_KEY });
+      queryClient.invalidateQueries({ queryKey: ACCOUNTS_KEY });
     },
   });
 }
@@ -72,6 +75,7 @@ export function useDeleteContact() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: CONTACTS_KEY });
+      queryClient.invalidateQueries({ queryKey: ACCOUNTS_KEY });
     },
   });
 }

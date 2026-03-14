@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A Power Platform Code App demo for a tech series. React + TypeScript SPA deployed to Power Platform via `pac code push`. Full CRUD on Dataverse `account` table.
+A Power Platform Code App demo for a tech series. React + TypeScript SPA deployed to Power Platform via `pac code push`. Full CRUD on Dataverse `account` and `contact` tables with account-contact relationships.
 
 ## Key Facts
 
@@ -18,7 +18,7 @@ Vite 7 + React 19 + TypeScript 5.9 + Tailwind v4 + shadcn/ui + TanStack Query + 
 
 ## Local Dev
 
-Two terminals: `npm run dev` (port 3000) + `pac code run`
+Two terminals: `npm run dev` (port 5173) + `pac code run`
 
 ## Deploy
 
@@ -34,6 +34,10 @@ pac code add-data-source -a dataverse -t <logicalname>
 
 Then create hooks in `src/hooks/` and components in `src/components/<table>/`.
 
+## Dataverse Polymorphic Lookups (Gotcha)
+
+The generated types declare `parentcustomerid` (write field) but Dataverse OData returns the GUID as `_parentcustomerid_value` at runtime. The generated type omits this field. Use `getParentAccountId()` from `src/lib/get-parent-account-id.ts` to safely extract the account ID from a contact. Same pattern applies to `parentcustomeridname` — resolve account names via `useAccounts()` lookup instead.
+
 ## Tracked Notes
 
-Research and decision notes live in `docs/tracked/`. Use `/track` to append, `/tracknew` to start a new version. First-cut build notes are in `docs/tracked/first-steps/`.
+Research and decision notes live in `docs/tracked/`. Use `/track` to append, `/tracknew` to start a new version. First-cut build notes are in `docs/tracked/first-steps/`. Phase 3 (relationships) notes are in `docs/tracked/phase-3-relationships/`.

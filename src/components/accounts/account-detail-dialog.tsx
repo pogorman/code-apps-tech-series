@@ -7,8 +7,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { AccountsModel } from "@/generated";
-import { Pencil } from "lucide-react";
+import { useContacts } from "@/hooks/use-contacts";
+import { Pencil, Users } from "lucide-react";
 
 type Account = AccountsModel.Accounts;
 
@@ -17,6 +19,7 @@ interface AccountDetailDialogProps {
   onOpenChange: (open: boolean) => void;
   account?: Account;
   onEdit: (account: Account) => void;
+  onViewContact?: (contactId: string) => void;
 }
 
 function DetailRow({ label, value }: { label: string; value?: string }) {
@@ -34,7 +37,14 @@ export function AccountDetailDialog({
   onOpenChange,
   account,
   onEdit,
+  onViewContact,
 }: AccountDetailDialogProps) {
+  const { data: contacts, isLoading: isLoadingContacts } = useContacts({
+    filter: account
+      ? `_parentcustomerid_value eq '${account.accountid}'`
+      : undefined,
+  });
+
   if (!account) return null;
 
   return (
@@ -94,6 +104,51 @@ export function AccountDetailDialog({
               </div>
             </>
           )}
+
+          <Separator />
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <Users className="h-4 w-4 text-muted-foreground" />
+              <p className="text-sm font-medium">
+                Contacts{" "}
+                {contacts && contacts.length > 0 && (
+                  <span className="text-muted-foreground">
+                    ({contacts.length})
+                  </span>
+                )}
+              </p>
+            </div>
+            {isLoadingContacts ? (
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-3/4" />
+              </div>
+            ) : contacts && contacts.length > 0 ? (
+              <div className="space-y-1">
+                {contacts.map((c) => {
+                  const name =
+                    c.fullname ??
+                    `${c.firstname ?? ""} ${c.lastname}`.trim();
+                  return (
+                    <div
+                      key={c.contactid}
+                      className="flex items-center justify-between rounded-md px-2 py-1.5 text-sm hover:bg-muted cursor-pointer"
+                      onClick={() => onViewContact?.(c.contactid)}
+                    >
+                      <span>{name}</span>
+                      <span className="text-muted-foreground text-xs">
+                        {c.jobtitle ?? c.emailaddress1 ?? ""}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                No contacts linked to this account.
+              </p>
+            )}
+          </div>
 
           <Separator />
           <dl>
