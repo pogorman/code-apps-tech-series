@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAccounts, useDeleteAccount } from "@/hooks/use-accounts";
+import { useContacts } from "@/hooks/use-contacts";
 import {
   Table,
   TableBody,
@@ -12,13 +13,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
 import { AccountFormDialog } from "./account-form-dialog";
 import { AccountDetailDialog } from "./account-detail-dialog";
 import { AccountDeleteDialog } from "./account-delete-dialog";
 import { Plus, Search } from "lucide-react";
 import type { AccountsModel } from "@/generated";
 import { toast } from "sonner";
+import { getParentAccountId } from "@/lib/get-parent-account-id";
 
 type Account = AccountsModel.Accounts;
 
@@ -35,7 +36,21 @@ export function AccountList() {
     : undefined;
 
   const { data: accounts, isLoading, error } = useAccounts({ filter });
+  const { data: allContacts } = useContacts();
   const deleteMutation = useDeleteAccount();
+
+  const contactsByAccount = useMemo(() => {
+    const map = new Map<string, { name: string }[]>();
+    allContacts?.forEach((c) => {
+      const accountId = getParentAccountId(c);
+      if (!accountId) return;
+      const list = map.get(accountId) ?? [];
+      const name = [c.firstname, c.lastname].filter(Boolean).join(" ");
+      list.push({ name: name || "—" });
+      map.set(accountId, list);
+    });
+    return map;
+  }, [allContacts]);
 
   function handleDelete() {
     if (!deleteAccount) return;
@@ -81,10 +96,10 @@ export function AccountList() {
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead>City</TableHead>
-              <TableHead>Phone</TableHead>
-              <TableHead>Industry</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>Contacts</TableHead>
+              <TableHead>CSA</TableHead>
+              <TableHead>CSAM</TableHead>
+              <TableHead>AE</TableHead>
               <TableHead className="w-[100px]">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -113,14 +128,22 @@ export function AccountList() {
                   onClick={() => setViewAccount(account)}
                 >
                   <TableCell className="font-medium">{account.name}</TableCell>
-                  <TableCell>{account.address1_city ?? "—"}</TableCell>
-                  <TableCell>{account.telephone1 ?? "—"}</TableCell>
-                  <TableCell>{account.industrycodename ?? "—"}</TableCell>
                   <TableCell>
-                    <Badge variant={account.statecode === 0 ? "default" : "secondary"}>
-                      {account.statecodename ?? "Active"}
-                    </Badge>
+                    {(() => {
+                      const contacts = contactsByAccount.get(account.accountid);
+                      if (!contacts?.length) return <span className="text-muted-foreground">—</span>;
+                      return (
+                        <div className="flex flex-col gap-0.5">
+                          {contacts.map((c, i) => (
+                            <span key={i} className="text-sm">{c.name}</span>
+                          ))}
+                        </div>
+                      );
+                    })()}
                   </TableCell>
+                  <TableCell className="text-muted-foreground">—</TableCell>
+                  <TableCell className="text-muted-foreground">—</TableCell>
+                  <TableCell className="text-muted-foreground">—</TableCell>
                   <TableCell>
                     <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
                       <Button

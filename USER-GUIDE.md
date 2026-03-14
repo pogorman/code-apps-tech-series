@@ -8,7 +8,7 @@ This Code App provides a CRM-style interface for managing accounts and contacts 
 
 ### Viewing Accounts
 
-The Accounts page shows a searchable table with columns: Name, City, Phone, Industry, Status, and Actions. Click any row to open the account detail card.
+The Accounts page shows a searchable table with columns: Name, Contacts, CSA, CSAM, AE, and Actions. The Contacts column lists all contacts linked to the account, stacked vertically. CSA, CSAM, and AE are placeholder columns for future use. Click any row to open the account detail card.
 
 ### Account Detail Card
 

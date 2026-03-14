@@ -56,3 +56,14 @@ An ELI5-style walkthrough of how this Code App was built, documenting prompts, e
 **What happened:** Renamed headers, removed columns, updated column counts, cleaned up unused imports.
 
 **Tracked notes:** `docs/tracked/phase-3-relationships/step-2-contact-ui-enhance.md`
+
+## Account List Simplification
+
+**Prompt:** Remove City, Phone, Industry, Status from account list. Add a Contacts column stacked vertically. Add stub columns for CSA, CSAM, AE.
+
+**What happened:**
+- Removed four columns (City, Phone, Industry, Status) from the account table
+- Added a Contacts column that fetches all contacts via `useContacts()`, builds a `contactsByAccount` map using `getParentAccountId()`, and renders contact names stacked vertically
+- Added three placeholder columns (CSA, CSAM, AE) with em dash placeholders for future implementation
+
+**Tracked notes:** `docs/tracked/phase-3-relationships/step-3-account-ui.md`
