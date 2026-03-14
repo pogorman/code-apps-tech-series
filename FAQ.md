@@ -44,10 +44,6 @@ Dataverse choice fields use numeric keys (e.g., `468510002` = "Top Priority"). T
 
 Same polymorphic pattern as the contact → account relationship. Writes use `tdvsp_Customer@odata.bind` with OData bind syntax (`/accounts(guid)`). Reads come back as `_tdvsp_customer_value` (GUID) and `tdvsp_customername` (display name). The form populates an account dropdown; the list and detail views resolve via `tdvsp_customername` with a fallback to the accounts lookup map.
 
-## How does the HVA Customer lookup work?
-
-Same pattern as action items. Writes use `tdvsp_Customer@odata.bind` with `/accounts(guid)` format. Reads come back as `_tdvsp_customer_value` (GUID) and `tdvsp_customername` (display name). The form shows an account dropdown; the list and detail views resolve via `tdvsp_customername` with a fallback to the accounts lookup map.
-
 ## How does the Meeting Summary Account lookup work?
 
 Writes use `tdvsp_Account@odata.bind` with `/accounts(guid)` format. Reads return `_tdvsp_account_value` (GUID) and `tdvsp_accountname` (display name). Same OData bind pattern as the other entities.

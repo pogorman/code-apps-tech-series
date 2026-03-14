@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMeetingSummaries, useDeleteMeetingSummary } from "@/hooks/use-meeting-summaries";
 import { useAccounts } from "@/hooks/use-accounts";
 import {
@@ -18,12 +18,23 @@ import { MeetingSummaryDeleteDialog } from "./meeting-summary-delete-dialog";
 import { FileText, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import type { Tdvsp_meetingsummariesModel } from "@/generated";
 import { toast } from "sonner";
+import { useQuickCreateStore } from "@/stores/quick-create-store";
 
 type MeetingSummary = Tdvsp_meetingsummariesModel.Tdvsp_meetingsummaries;
 
 export function MeetingSummaryList() {
+  const quickTarget = useQuickCreateStore((s) => s.target);
+  const clearQuickCreate = useQuickCreateStore((s) => s.clear);
+
   const [search, setSearch] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
+
+  useEffect(() => {
+    if (quickTarget === "meeting-summaries") {
+      setCreateOpen(true);
+      clearQuickCreate();
+    }
+  }, [quickTarget, clearQuickCreate]);
   const [editItem, setEditItem] = useState<MeetingSummary | null>(null);
   const [viewItem, setViewItem] = useState<MeetingSummary | null>(null);
   const [deleteItem, setDeleteItem] = useState<MeetingSummary | null>(null);

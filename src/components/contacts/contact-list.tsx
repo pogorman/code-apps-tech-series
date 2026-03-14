@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useContacts, useDeleteContact } from "@/hooks/use-contacts";
 import { useAccounts } from "@/hooks/use-accounts";
 import { getParentAccountId } from "@/lib/get-parent-account-id";
@@ -19,12 +19,23 @@ import { ContactDeleteDialog } from "./contact-delete-dialog";
 import { Pencil, Plus, Search, Trash2, Users } from "lucide-react";
 import type { ContactsModel } from "@/generated";
 import { toast } from "sonner";
+import { useQuickCreateStore } from "@/stores/quick-create-store";
 
 type Contact = ContactsModel.Contacts;
 
 export function ContactList() {
+  const quickTarget = useQuickCreateStore((s) => s.target);
+  const clearQuickCreate = useQuickCreateStore((s) => s.clear);
+
   const [search, setSearch] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
+
+  useEffect(() => {
+    if (quickTarget === "contacts") {
+      setCreateOpen(true);
+      clearQuickCreate();
+    }
+  }, [quickTarget, clearQuickCreate]);
   const [editContact, setEditContact] = useState<Contact | null>(null);
   const [viewContact, setViewContact] = useState<Contact | null>(null);
   const [deleteContact, setDeleteContact] = useState<Contact | null>(null);

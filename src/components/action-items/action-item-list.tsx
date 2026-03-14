@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useActionItems, useDeleteActionItem } from "@/hooks/use-action-items";
 import { useAccounts } from "@/hooks/use-accounts";
 import {
@@ -19,6 +19,7 @@ import { ActionItemDeleteDialog } from "./action-item-delete-dialog";
 import { ClipboardList, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import type { Tdvsp_actionitemsModel } from "@/generated";
 import { toast } from "sonner";
+import { useQuickCreateStore } from "@/stores/quick-create-store";
 import {
   PRIORITY_LABELS,
   STATUS_LABELS,
@@ -29,8 +30,18 @@ import {
 type ActionItem = Tdvsp_actionitemsModel.Tdvsp_actionitems;
 
 export function ActionItemList() {
+  const quickTarget = useQuickCreateStore((s) => s.target);
+  const clearQuickCreate = useQuickCreateStore((s) => s.clear);
+
   const [search, setSearch] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
+
+  useEffect(() => {
+    if (quickTarget === "action-items") {
+      setCreateOpen(true);
+      clearQuickCreate();
+    }
+  }, [quickTarget, clearQuickCreate]);
   const [editItem, setEditItem] = useState<ActionItem | null>(null);
   const [viewItem, setViewItem] = useState<ActionItem | null>(null);
   const [deleteItem, setDeleteItem] = useState<ActionItem | null>(null);

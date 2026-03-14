@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAccounts, useDeleteAccount } from "@/hooks/use-accounts";
 import { useContacts } from "@/hooks/use-contacts";
@@ -19,14 +19,25 @@ import { AccountDeleteDialog } from "./account-delete-dialog";
 import { Building2, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import type { AccountsModel } from "@/generated";
 import { toast } from "sonner";
+import { useQuickCreateStore } from "@/stores/quick-create-store";
 import { getParentAccountId } from "@/lib/get-parent-account-id";
 
 type Account = AccountsModel.Accounts;
 
 export function AccountList() {
   const navigate = useNavigate();
+  const quickTarget = useQuickCreateStore((s) => s.target);
+  const clearQuickCreate = useQuickCreateStore((s) => s.clear);
+
   const [search, setSearch] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
+
+  useEffect(() => {
+    if (quickTarget === "accounts") {
+      setCreateOpen(true);
+      clearQuickCreate();
+    }
+  }, [quickTarget, clearQuickCreate]);
   const [editAccount, setEditAccount] = useState<Account | null>(null);
   const [viewAccount, setViewAccount] = useState<Account | null>(null);
   const [deleteAccount, setDeleteAccount] = useState<Account | null>(null);

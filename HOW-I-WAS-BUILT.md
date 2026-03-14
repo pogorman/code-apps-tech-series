@@ -162,6 +162,8 @@ An ELI5-style walkthrough of how this Code App was built, documenting prompts, e
 
 **Tracked notes:** `docs/tracked/phase-7-idea-meet-hva-crud/1-idea-meet-hva-crud.md`
 
+> **Note:** HVAs were later removed in Phase 9.
+
 ## Phase 8 — Dashboard CSS Rewrite (Drop Chart.js)
 
 **Prompt:** Drop Chart.js entirely and rebuild the dashboard using pure CSS/SVG, based on the example in `examples/crm_dashboard_v2.html`.
@@ -175,3 +177,16 @@ An ELI5-style walkthrough of how this Code App was built, documenting prompts, e
 6. Removed `chart.js` and `react-chartjs-2` from package.json (3 packages dropped)
 
 **Tracked notes:** `docs/tracked/phase-8-ui-enhance/1-new-dash-all-css.md`
+
+## Phase 9 — Left Sidebar, Quick Create Bar & Drop HVAs
+
+**Prompt:** Move navigation to a vertical left sidebar and add a quick create bar across the top, mimicking a reference screenshot. Then drop HVAs entirely.
+
+**What happened:**
+
+1. Rewrote `app-layout.tsx` — replaced horizontal nav tiles with a left vertical sidebar (208px, white background, grouped nav sections: core, activity, capture) and a top quick create bar (colored pill buttons)
+2. Created `src/stores/quick-create-store.ts` — Zustand store that signals which entity's create dialog to open. Layout sets the target + navigates; list component picks it up via `useEffect` and auto-opens the form
+3. Updated all list components to subscribe to the quick create store
+4. Removed HVAs: deleted `src/components/hvas/` and `src/hooks/use-hvas.ts`, removed route, nav item, and quick create button. Generated code left untouched (read-only)
+
+**Tracked notes:** `docs/tracked/2-quick-create-bar-drop-hvas.md`

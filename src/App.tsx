@@ -5,7 +5,6 @@ import { AppLayout } from "@/components/layout/app-layout";
 import { AccountList } from "@/components/accounts";
 import { ContactList } from "@/components/contacts";
 import { ActionItemList } from "@/components/action-items";
-import { HvaList } from "@/components/hvas";
 import { MeetingSummaryList } from "@/components/meeting-summaries";
 import { IdeaList } from "@/components/ideas";
 import { Dashboard } from "@/components/dashboard";
@@ -29,7 +28,6 @@ export function App() {
             <Route path="/accounts" element={<AccountList />} />
             <Route path="/contacts" element={<ContactList />} />
             <Route path="/action-items" element={<ActionItemList />} />
-            <Route path="/hvas" element={<HvaList />} />
             <Route path="/meeting-summaries" element={<MeetingSummaryList />} />
             <Route path="/ideas" element={<IdeaList />} />
             <Route path="*" element={<Navigate to="/" replace />} />

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useIdeas, useDeleteIdea } from "@/hooks/use-ideas";
 import { useAccounts } from "@/hooks/use-accounts";
 import {
@@ -19,13 +19,24 @@ import { IdeaDeleteDialog } from "./idea-delete-dialog";
 import { Lightbulb, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import type { Tdvsp_ideasModel } from "@/generated";
 import { toast } from "sonner";
+import { useQuickCreateStore } from "@/stores/quick-create-store";
 import { CATEGORY_LABELS, categoryVariant } from "./labels";
 
 type Idea = Tdvsp_ideasModel.Tdvsp_ideas;
 
 export function IdeaList() {
+  const quickTarget = useQuickCreateStore((s) => s.target);
+  const clearQuickCreate = useQuickCreateStore((s) => s.clear);
+
   const [search, setSearch] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
+
+  useEffect(() => {
+    if (quickTarget === "ideas") {
+      setCreateOpen(true);
+      clearQuickCreate();
+    }
+  }, [quickTarget, clearQuickCreate]);
   const [editItem, setEditItem] = useState<Idea | null>(null);
   const [viewItem, setViewItem] = useState<Idea | null>(null);
   const [deleteItem, setDeleteItem] = useState<Idea | null>(null);
