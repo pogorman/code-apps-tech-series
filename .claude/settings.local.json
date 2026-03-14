@@ -35,7 +35,8 @@
       "Bash(tasklist:*)",
       "Bash(wmic process:*)",
       "Bash(powershell -Command \"Get-Process -Id 25488 | Select-Object ProcessName,Id,Path\")",
-      "Bash(powershell -Command \"Get-Process -Id 25536 | Select-Object ProcessName,Id,Path\")"
+      "Bash(powershell -Command \"Get-Process -Id 25536 | Select-Object ProcessName,Id,Path\")",
+      "Bash(cd:*)"
     ]
   }
 }

@@ -8,7 +8,7 @@ An ELI5-style walkthrough of how this Code App was built, documenting prompts, e
 
 **What happened:** Created the project with `pac code init`, added Vite + React + TypeScript + Tailwind v4 + shadcn/ui. Set up routing with HashRouter (required by Power Platform iframe host), app layout with sidebar, and the base configuration.
 
-**Tracked notes:** `docs/tracked/first-steps/`
+**Tracked notes:** `docs/tracked/phase-1-first-steps/`
 
 ## Phase 2 — Account CRUD
 
@@ -16,7 +16,7 @@ An ELI5-style walkthrough of how this Code App was built, documenting prompts, e
 
 **What happened:** Ran `pac code add-data-source -a dataverse -t account` to generate the service and model. Created `use-accounts.ts` hooks wrapping TanStack Query, then built list/detail/form/delete components in `src/components/accounts/`. Deployed with `npm run build && pac code push`.
 
-**Tracked notes:** `docs/tracked/first-steps/`
+**Tracked notes:** `docs/tracked/phase-1-first-steps/`
 
 ## Phase 3 — Contact CRUD
 
@@ -24,7 +24,7 @@ An ELI5-style walkthrough of how this Code App was built, documenting prompts, e
 
 **What happened:** Ran `pac code add-data-source -a dataverse -t contact`. Created `use-contacts.ts` hooks and `src/components/contacts/` components mirroring the account pattern. Added sidebar nav with Accounts/Contacts links.
 
-**Tracked notes:** `docs/tracked/first-steps/`
+**Tracked notes:** `docs/tracked/phase-1-first-steps/`
 
 ## Phase 3.5 — Account-Contact Relationships
 
@@ -161,3 +161,17 @@ An ELI5-style walkthrough of how this Code App was built, documenting prompts, e
 5. Added routes: `/hvas`, `/meeting-summaries`, `/ideas`
 
 **Tracked notes:** `docs/tracked/phase-7-idea-meet-hva-crud/1-idea-meet-hva-crud.md`
+
+## Phase 8 — Dashboard CSS Rewrite (Drop Chart.js)
+
+**Prompt:** Drop Chart.js entirely and rebuild the dashboard using pure CSS/SVG, based on the example in `examples/crm_dashboard_v2.html`.
+
+**What happened:**
+1. Rewrote `src/components/dashboard/dashboard.tsx` from scratch — no chart library dependencies
+2. SVG donut replaces Chart.js Doughnut (uses `stroke-dasharray` arcs)
+3. CSS horizontal bars replace Chart.js Bar charts (priority distribution, items by account)
+4. CSS progress bars replace Chart.js Pie (work vs personal)
+5. KPI cards now have colored accent stripes matching the example design
+6. Removed `chart.js` and `react-chartjs-2` from package.json (3 packages dropped)
+
+**Tracked notes:** `docs/tracked/phase-8-ui-enhance/1-new-dash-all-css.md`

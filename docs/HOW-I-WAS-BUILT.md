@@ -87,5 +87,5 @@ This makes built output use relative paths (`./assets/...`), which resolve corre
 
 ### Also This Session
 
-- Reorganized `docs/tracked/` — moved first-cut docs into `docs/tracked/first-steps/`
+- Reorganized `docs/tracked/` — moved first-cut docs into `docs/tracked/phase-1-first-steps/`
 - Updated `/track` skill to stop prepending `tracked-` to named doc filenames

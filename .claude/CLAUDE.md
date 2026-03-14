@@ -40,7 +40,7 @@ The generated types declare `parentcustomerid` (write field) but Dataverse OData
 
 ## Tracked Notes
 
-Research and decision notes live in `docs/tracked/`. Use `/track` to append, `/tracknew` to start a new version. First-cut build notes are in `docs/tracked/first-steps/`. Phase 3 (relationships) notes are in `docs/tracked/phase-3-relationships/`. Phase 4 (UI theme) notes are in `docs/tracked/phase-4-ui-enhance/`. Phase 5 (action items) notes are in `docs/tracked/phase-5-action-items/`. Phase 6 (navigation rework) notes are in `docs/tracked/phase-6-ui-enhance/`. Phase 7 (HVA, meeting summary, idea CRUD) notes are in `docs/tracked/phase-7-idea-meet-hva-crud/`.
+Research and decision notes live in `docs/tracked/`. Use `/track` to append, `/tracknew` to start a new version. First-cut build notes are in `docs/tracked/phase-1-first-steps/`. Phase 3 (relationships) notes are in `docs/tracked/phase-3-relationships/`. Phase 4 (UI theme) notes are in `docs/tracked/phase-4-ui-enhance/`. Phase 5 (action items) notes are in `docs/tracked/phase-5-action-items/`. Phase 6 (navigation rework) notes are in `docs/tracked/phase-6-ui-enhance/`. Phase 7 (HVA, meeting summary, idea CRUD) notes are in `docs/tracked/phase-7-idea-meet-hva-crud/`. Phase 8 (dashboard CSS rewrite) notes are in `docs/tracked/phase-8-ui-enhance/`.
 
 ## Dataverse Customer Lookup on Action Items (Gotcha)
 
