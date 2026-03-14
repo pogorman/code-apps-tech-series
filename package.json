@@ -1,0 +1,19 @@
+{
+  "name": "code-apps-tech-series",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "docs:pdf": "npx md-to-pdf docs/tracked*.md",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "md-to-pdf": "5.2.5"
+  }
+}

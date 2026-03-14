@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:www.microsoft.com)",
+      "WebFetch(domain:www.npmjs.com)",
+      "Bash(cd \"C:/Users/pogorman/source/repos/code-apps-tech-series\" && npm init -y 2>&1)",
+      "Bash(cd \"C:/Users/pogorman/source/repos/code-apps-tech-series\" && npm install --save-exact md-to-pdf 2>&1)",
+      "Bash(cd \"C:/Users/pogorman/source/repos/code-apps-tech-series\" && npm run docs:pdf 2>&1)",
+      "Bash(cd \"C:/Users/pogorman/source/repos/code-apps-tech-series\" && npx md-to-pdf --help 2>&1)"
+    ]
+  }
+}
