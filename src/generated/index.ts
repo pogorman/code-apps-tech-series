@@ -8,8 +8,14 @@ export * as AccountsModel from './models/AccountsModel';
 export * as CommonModels from './models/CommonModels';
 export * as ContactsModel from './models/ContactsModel';
 export * as Tdvsp_actionitemsModel from './models/Tdvsp_actionitemsModel';
+export * as Tdvsp_hvasModel from './models/Tdvsp_hvasModel';
+export * as Tdvsp_ideasModel from './models/Tdvsp_ideasModel';
+export * as Tdvsp_meetingsummariesModel from './models/Tdvsp_meetingsummariesModel';
 
 // Services
 export * from './services/AccountsService';
 export * from './services/ContactsService';
 export * from './services/Tdvsp_actionitemsService';
+export * from './services/Tdvsp_hvasService';
+export * from './services/Tdvsp_ideasService';
+export * from './services/Tdvsp_meetingsummariesService';

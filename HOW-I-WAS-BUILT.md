@@ -35,7 +35,7 @@ An ELI5-style walkthrough of how this Code App was built, documenting prompts, e
 - Added a Contacts section to the account detail dialog querying by `_parentcustomerid_value`
 - Contact mutations now invalidate both contacts and accounts query caches
 
-**Tracked notes:** `docs/tracked/phase-3-relationships/first-cut-accounts-contacts-relate.md`
+**Tracked notes:** `docs/tracked/phase-3-relationships/1-first-cut-accounts-contacts-relate.md`
 
 ## Fixes — Polymorphic Lookup Fields
 
@@ -47,7 +47,7 @@ An ELI5-style walkthrough of how this Code App was built, documenting prompts, e
 1. Created `src/lib/get-parent-account-id.ts` — shared helper using `_parentcustomerid_value` fallback
 2. Resolved account names by fetching all accounts via `useAccounts()` and building a lookup map instead of relying on `parentcustomeridname`
 
-**Tracked notes:** `docs/tracked/phase-3-relationships/first-cut-fixes.md`, `docs/tracked/phase-3-relationships/step-2-fixes.md`
+**Tracked notes:** `docs/tracked/phase-3-relationships/2-first-cut-fixes.md`, `docs/tracked/phase-3-relationships/4-step-2-fixes.md`
 
 ## UI Polish
 
@@ -55,7 +55,7 @@ An ELI5-style walkthrough of how this Code App was built, documenting prompts, e
 
 **What happened:** Renamed headers, removed columns, updated column counts, cleaned up unused imports.
 
-**Tracked notes:** `docs/tracked/phase-3-relationships/step-2-contact-ui-enhance.md`
+**Tracked notes:** `docs/tracked/phase-3-relationships/3-step-2-contact-ui-enhance.md`
 
 ## Account List Simplification
 
@@ -66,7 +66,7 @@ An ELI5-style walkthrough of how this Code App was built, documenting prompts, e
 - Added a Contacts column that fetches all contacts via `useContacts()`, builds a `contactsByAccount` map using `getParentAccountId()`, and renders contact names stacked vertically
 - Added three placeholder columns (CSA, CSAM, AE) with em dash placeholders for future implementation
 
-**Tracked notes:** `docs/tracked/phase-3-relationships/step-3-account-ui.md`
+**Tracked notes:** `docs/tracked/phase-3-relationships/5-step-3-account-ui.md`
 
 ## Phase 4 — Microsoft Fluent Design Theme
 
@@ -80,7 +80,7 @@ An ELI5-style walkthrough of how this Code App was built, documenting prompts, e
 - Added page headers with icon badges and subtitles to Accounts and Contacts pages
 - Wrapped data tables in card-elevated containers with shadows and clipped corners
 
-**Tracked notes:** `docs/tracked/phase-4-ui-enhance/ui-overhaul.md`
+**Tracked notes:** `docs/tracked/phase-4-ui-enhance/1-ui-overhaul.md`
 
 ## Fix — Contact Form Overflow
 
@@ -90,7 +90,7 @@ An ELI5-style walkthrough of how this Code App was built, documenting prompts, e
 - Added `max-h-[85vh] overflow-y-auto` to `DialogContent` so all dialogs scroll internally instead of clipping
 - Compacted the contact form by combining Account + Job Title and Mobile + Street into side-by-side rows
 
-**Tracked notes:** `docs/tracked/phase-4-ui-enhance/adjust-contact-form-height.md`
+**Tracked notes:** `docs/tracked/phase-4-ui-enhance/2-adjust-contact-form-height.md`
 
 ## Phase 5 — Action Items CRUD
 
@@ -104,7 +104,7 @@ An ELI5-style walkthrough of how this Code App was built, documenting prompts, e
 5. Customer lookup uses OData bind syntax (`tdvsp_Customer@odata.bind` → `/accounts(guid)`) for writes, `_tdvsp_customer_value` for reads — same polymorphic pattern as contacts
 6. Wired up `/action-items` route in `App.tsx` and "Action Items" nav item with ClipboardList icon in the sidebar
 
-**Tracked notes:** `docs/tracked/phase-5-action-items/first-cut-action-items.md`
+**Tracked notes:** `docs/tracked/phase-5-action-items/1-first-cut-action-items.md`
 
 ## Phase 6 — Navigation Rework (Sidebar → Top Tiles)
 
@@ -121,7 +121,7 @@ An ELI5-style walkthrough of how this Code App was built, documenting prompts, e
 - Halved tile height and made them square, left-aligned with `flex` instead of `grid`
 - Added `min-w` + `px-3` + `whitespace-nowrap` to fix centering on longer labels
 
-**Tracked notes:** `docs/tracked/phase-6-ui-enhance/ui-enhance-navigation.md`
+**Tracked notes:** `docs/tracked/phase-6-ui-enhance/1-ui-enhance-navigation.md`
 
 ## Phase 6b — View Polish
 
@@ -135,4 +135,29 @@ An ELI5-style walkthrough of how this Code App was built, documenting prompts, e
 5. Replaced text "Edit"/"Delete" buttons with Pencil and Trash2 Lucide icons across all three list views (accounts, contacts, action items) — black for edit, red for delete
 6. Set Account Name column to `w-[39%]` for more room
 
-**Tracked notes:** `docs/tracked/phase-6-ui-enhance/ui-enhance-navigation.md`, `docs/tracked/phase-6-ui-enhance/ui-enhance-views.md`
+**Tracked notes:** `docs/tracked/phase-6-ui-enhance/1-ui-enhance-navigation.md`, `docs/tracked/phase-6-ui-enhance/2-ui-enhance-views.md`
+
+## Phase 6c — Dashboard
+
+**Prompt:** Build a dashboard view.
+
+**What happened:** Added a Dashboard component with Chart.js (Doughnut, Bar, Pie) showing action item analytics: KPI cards (total, completion rate, in progress, urgent), status breakdown, priority distribution, work vs personal, and items by account. Wired up as the home route (`/`).
+
+**Tracked notes:** `docs/tracked/phase-6-ui-enhance/3-ui-enhance-dashboard-first-cut.md`
+
+## Phase 7 — HVA, Meeting Summary & Idea CRUD
+
+**Prompt:** add full crud for tdvsp_hva, tdvsp_meetingsummary, tdvsp_idea and build the navigation
+
+**What happened:**
+
+1. Generated Dataverse types for all three tables via `pac code add-data-source`
+2. Created TanStack Query hooks: `use-hvas.ts`, `use-meeting-summaries.ts`, `use-ideas.ts`
+3. Built full CRUD component sets for each entity:
+   - **HVAs** (`src/components/hvas/`) — list, form (name, customer, date, description), detail, delete; customer lookup via `tdvsp_Customer@odata.bind`
+   - **Meeting Summaries** (`src/components/meeting-summaries/`) — list, form (title, account, date, summary textarea), detail, delete; account lookup via `tdvsp_Account@odata.bind`
+   - **Ideas** (`src/components/ideas/`) — list, form (name, category choice, account, contact, description), detail, delete; dual lookups (`tdvsp_Account@odata.bind` + `tdvsp_Contact@odata.bind`); `labels.ts` for 9 category choices (Copilot Studio, Canvas Apps, Model-Driven Apps, Power Automate, Power Pages, Azure, AI General, App General, Other)
+4. Updated navigation to 7 tiles: Dashboard, Accounts, Contacts, Action Items, HVAs (Zap), Meetings (FileText), Ideas (Lightbulb)
+5. Added routes: `/hvas`, `/meeting-summaries`, `/ideas`
+
+**Tracked notes:** `docs/tracked/phase-7-idea-meet-hva-crud/1-idea-meet-hva-crud.md`

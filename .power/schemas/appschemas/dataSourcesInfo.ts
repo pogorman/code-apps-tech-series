@@ -25,5 +25,26 @@ export const dataSourcesInfo = {
     "primaryKey": "contactid",
     "dataSourceType": "Dataverse",
     "apis": {}
+  },
+  "tdvsp_hvas": {
+    "tableId": "",
+    "version": "",
+    "primaryKey": "tdvsp_hvaid",
+    "dataSourceType": "Dataverse",
+    "apis": {}
+  },
+  "tdvsp_ideas": {
+    "tableId": "",
+    "version": "",
+    "primaryKey": "tdvsp_ideaid",
+    "dataSourceType": "Dataverse",
+    "apis": {}
+  },
+  "tdvsp_meetingsummaries": {
+    "tableId": "",
+    "version": "",
+    "primaryKey": "tdvsp_meetingsummaryid",
+    "dataSourceType": "Dataverse",
+    "apis": {}
   }
 };

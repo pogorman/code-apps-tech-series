@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { NavLink } from "react-router-dom";
-import { Building2, Users, ClipboardList, LayoutGrid } from "lucide-react";
+import { Building2, Users, ClipboardList, LayoutGrid, LayoutDashboard, Zap, FileText, Lightbulb } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface AppLayoutProps {
@@ -8,9 +8,13 @@ interface AppLayoutProps {
 }
 
 const NAV_ITEMS = [
+  { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/accounts", label: "Accounts", icon: Building2 },
   { to: "/contacts", label: "Contacts", icon: Users },
   { to: "/action-items", label: "Action Items", icon: ClipboardList },
+  { to: "/hvas", label: "HVAs", icon: Zap },
+  { to: "/meeting-summaries", label: "Meetings", icon: FileText },
+  { to: "/ideas", label: "Ideas", icon: Lightbulb },
 ] as const;
 
 export function AppLayout({ children }: AppLayoutProps) {
@@ -36,6 +40,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           <NavLink
             key={item.to}
             to={item.to}
+            end={item.to === "/"}
             className={({ isActive }) =>
               cn(
                 "flex h-[50px] w-[100px] flex-col items-center justify-center gap-1 rounded-lg px-3 text-[10px] font-medium whitespace-nowrap transition-all",

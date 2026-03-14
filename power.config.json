@@ -25,6 +25,18 @@
         "actionitems": {
           "entitySetName": "tdvsp_actionitems",
           "logicalName": "tdvsp_actionitem"
+        },
+        "hvas": {
+          "entitySetName": "tdvsp_hvas",
+          "logicalName": "tdvsp_hva"
+        },
+        "meetingsummaries": {
+          "entitySetName": "tdvsp_meetingsummaries",
+          "logicalName": "tdvsp_meetingsummary"
+        },
+        "ideas": {
+          "entitySetName": "tdvsp_ideas",
+          "logicalName": "tdvsp_idea"
         }
       },
       "actions": null

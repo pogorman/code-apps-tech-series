@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A Power Platform Code App demo for a tech series. React + TypeScript SPA deployed to Power Platform via `pac code push`. Full CRUD on Dataverse `account`, `contact`, and `tdvsp_actionitem` tables with account-contact relationships and customer-linked action items.
+A Power Platform Code App demo for a tech series. React + TypeScript SPA deployed to Power Platform via `pac code push`. Full CRUD on Dataverse `account`, `contact`, `tdvsp_actionitem`, `tdvsp_hva`, `tdvsp_meetingsummary`, and `tdvsp_idea` tables with account-contact relationships, customer-linked action items, and cross-entity lookups.
 
 ## Key Facts
 
@@ -40,8 +40,12 @@ The generated types declare `parentcustomerid` (write field) but Dataverse OData
 
 ## Tracked Notes
 
-Research and decision notes live in `docs/tracked/`. Use `/track` to append, `/tracknew` to start a new version. First-cut build notes are in `docs/tracked/first-steps/`. Phase 3 (relationships) notes are in `docs/tracked/phase-3-relationships/`. Phase 4 (UI theme) notes are in `docs/tracked/phase-4-ui-enhance/`. Phase 5 (action items) notes are in `docs/tracked/phase-5-action-items/`. Phase 6 (navigation rework) notes are in `docs/tracked/phase-6-ui-enhance/`.
+Research and decision notes live in `docs/tracked/`. Use `/track` to append, `/tracknew` to start a new version. First-cut build notes are in `docs/tracked/first-steps/`. Phase 3 (relationships) notes are in `docs/tracked/phase-3-relationships/`. Phase 4 (UI theme) notes are in `docs/tracked/phase-4-ui-enhance/`. Phase 5 (action items) notes are in `docs/tracked/phase-5-action-items/`. Phase 6 (navigation rework) notes are in `docs/tracked/phase-6-ui-enhance/`. Phase 7 (HVA, meeting summary, idea CRUD) notes are in `docs/tracked/phase-7-idea-meet-hva-crud/`.
 
 ## Dataverse Customer Lookup on Action Items (Gotcha)
 
 The `tdvsp_actionitem` table has a customer lookup that uses OData bind syntax. Write via `tdvsp_Customer@odata.bind` with `/accounts(guid)` format. Read the GUID from `_tdvsp_customer_value` and the display name from `tdvsp_customername`. Choice fields (priority, status, type) use numeric keys — human-readable labels are in `src/components/action-items/labels.ts`.
+
+## Dataverse Lookups on HVA, Meeting Summary, Idea (Gotcha)
+
+**HVA** uses `tdvsp_Customer@odata.bind` → `/accounts(guid)` (same pattern as action items). **Meeting Summary** uses `tdvsp_Account@odata.bind` → `/accounts(guid)`. **Idea** uses both `tdvsp_Account@odata.bind` → `/accounts(guid)` and `tdvsp_Contact@odata.bind` → `/contacts(guid)`. Read GUIDs via `_tdvsp_customer_value`, `_tdvsp_account_value`, `_tdvsp_contact_value` respectively. Idea category choice field labels are in `src/components/ideas/labels.ts`.

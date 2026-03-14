@@ -2,7 +2,7 @@
 
 ## Overview
 
-This Code App provides an Account Management interface for managing accounts, contacts, and action items stored in Dataverse. The app uses a Microsoft Fluent Design-inspired theme with Microsoft Blue accents and a gradient accent bar at the top of the page. Navigation is via fixed-width icon tiles under the "Account Management" title bar — click a tile to switch views.
+This Code App provides an Account Management interface for managing accounts, contacts, action items, high value activities (HVAs), meeting summaries, and ideas stored in Dataverse. The app uses a Microsoft Fluent Design-inspired theme with Microsoft Blue accents and a gradient accent bar at the top of the page. Navigation is via seven fixed-width icon tiles under the "Account Management" title bar — click a tile to switch views: Dashboard, Accounts, Contacts, Action Items, HVAs, Meetings, Ideas.
 
 ## Accounts
 
@@ -63,6 +63,73 @@ Click **New Action Item** to open the form. Fields:
 - **Priority** — Eh, Low, High, or Top Priority
 - **Status** — Recognized, In Progress, Pending Comms, On Hold, Wrapping Up, or Complete
 - **Type** — Personal or Work
+- **Description** — free-text notes
+
+### Editing / Deleting
+
+Use the pencil (edit) and trash (delete) icons in the Actions column, or click **Edit** from the detail card.
+
+## High Value Activities (HVAs)
+
+### Viewing HVAs
+
+The HVAs page shows a page header with a Zap icon, a search bar, and a data table. Columns: Name, Customer, Date, and Actions. Click any row to open the detail card.
+
+### HVA Detail Card
+
+Shows HVA info with active/inactive badge, customer name, date, and description. Click **Edit** to modify.
+
+### Creating an HVA
+
+Click **New HVA** to open the form. Fields:
+- **Name** (required) — the activity title
+- **Customer** — select an account from the dropdown
+- **Date** — activity date
+- **Description** — free-text notes
+
+### Editing / Deleting
+
+Use the pencil (edit) and trash (delete) icons in the Actions column, or click **Edit** from the detail card.
+
+## Meeting Summaries
+
+### Viewing Meeting Summaries
+
+The Meetings page shows a page header with a FileText icon, a search bar, and a data table. Columns: Title, Account, Date, and Actions. Click any row to open the detail card.
+
+### Meeting Summary Detail Card
+
+Shows meeting info with active/inactive badge, account name, date, and summary text. Click **Edit** to modify.
+
+### Creating a Meeting Summary
+
+Click **New Summary** to open the form. Fields:
+- **Title** (required) — the meeting title
+- **Account** — select an account from the dropdown
+- **Date** — meeting date
+- **Summary** — detailed meeting notes (large text area)
+
+### Editing / Deleting
+
+Use the pencil (edit) and trash (delete) icons in the Actions column, or click **Edit** from the detail card.
+
+## Ideas
+
+### Viewing Ideas
+
+The Ideas page shows a page header with a Lightbulb icon, a search bar, and a data table. Columns: Name, Account, Category (as a color-coded badge), and Actions. Click any row to open the detail card.
+
+### Idea Detail Card
+
+Shows idea info with active/inactive badge and category badge. Displays account, contact, and description. Click **Edit** to modify.
+
+### Creating an Idea
+
+Click **New Idea** to open the form. Fields:
+- **Name** (required) — the idea title
+- **Category** — Copilot Studio, Canvas Apps, Model-Driven Apps, Power Automate, Power Pages, Azure, AI General, App General, or Other
+- **Account** — select an account from the dropdown
+- **Contact** — select a contact from the dropdown
 - **Description** — free-text notes
 
 ### Editing / Deleting

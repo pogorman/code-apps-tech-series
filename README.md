@@ -1,6 +1,6 @@
-# Account Management — Accounts, Contacts & Action Items
+# Account Management — Accounts, Contacts, Action Items, HVAs, Meeting Summaries & Ideas
 
-A Power Platform Code App built with React + TypeScript for the Code Apps tech series. Full CRUD on Dataverse `account`, `contact`, and `tdvsp_actionitem` tables with account-contact relationships and customer-linked action items, deployed via `pac code push`.
+A Power Platform Code App built with React + TypeScript for the Code Apps tech series. Full CRUD on Dataverse `account`, `contact`, `tdvsp_actionitem`, `tdvsp_hva`, `tdvsp_meetingsummary`, and `tdvsp_idea` tables with account-contact relationships, customer-linked action items, and cross-entity lookups, deployed via `pac code push`.
 
 ## Prerequisites
 
@@ -52,6 +52,10 @@ src/
     accounts/         # Account CRUD components
     contacts/         # Contact CRUD components
     action-items/     # Action Item CRUD components
+    hvas/             # High Value Activity CRUD components
+    meeting-summaries/# Meeting Summary CRUD components
+    ideas/            # Idea CRUD components
+    dashboard/        # Analytics dashboard
     layout/           # App shell (top nav tiles)
   hooks/              # TanStack Query hooks wrapping Dataverse services
   lib/                # Utilities (cn helper, Dataverse field helpers)
