@@ -112,7 +112,7 @@ An ELI5-style walkthrough of how this Code App was built, documenting prompts, e
 
 **What happened:**
 1. Removed the 256px-wide dark sidebar entirely
-2. Split layout into: gradient accent bar → title bar (48px, logo + "CRM Demo") → nav tile row → full-width content
+2. Split layout into: gradient accent bar → title bar (48px, logo + "Account Management") → nav tile row → full-width content
 3. Nav tiles are left-aligned 50px squares with icon + label, active tile highlighted in Microsoft Blue
 4. Tiles use `min-w-[50px]` with padding so longer labels like "Action Items" stretch gracefully
 5. Full viewport width is now available for content
@@ -122,3 +122,17 @@ An ELI5-style walkthrough of how this Code App was built, documenting prompts, e
 - Added `min-w` + `px-3` + `whitespace-nowrap` to fix centering on longer labels
 
 **Tracked notes:** `docs/tracked/phase-6-ui-enhance/ui-enhance-navigation.md`
+
+## Phase 6b — View Polish
+
+**Prompts:** Rename header title, uniform tile sizing, icon action buttons, column width tuning.
+
+**What happened:**
+1. Renamed header from "CRM Demo" to "Account Management"
+2. Set all nav tiles to fixed `w-[100px]` so Accounts, Contacts, and Action Items are the same width
+3. Equalized nav tile vertical spacing (`py-2` instead of `pb-3 pt-1`)
+4. Added `whitespace-nowrap` to Priority column header and cells so "Top Priority" doesn't wrap
+5. Replaced text "Edit"/"Delete" buttons with Pencil and Trash2 Lucide icons across all three list views (accounts, contacts, action items) — black for edit, red for delete
+6. Set Account Name column to `w-[39%]` for more room
+
+**Tracked notes:** `docs/tracked/phase-6-ui-enhance/ui-enhance-navigation.md`, `docs/tracked/phase-6-ui-enhance/ui-enhance-views.md`

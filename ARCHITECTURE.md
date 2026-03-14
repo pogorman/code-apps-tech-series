@@ -22,7 +22,7 @@ The `pac code run` proxy bridges local dev to the Dataverse environment. In prod
 - **`accounts/`** — Account list (table), detail dialog, form dialog, delete confirmation
 - **`contacts/`** — Contact list (table), detail dialog, form dialog, delete confirmation
 - **`action-items/`** — Action item list (table), detail dialog, form dialog, delete confirmation, shared label/variant helpers
-- **`layout/`** — App shell with horizontal top-nav tiles (Accounts, Contacts, Action Items)
+- **`layout/`** — App shell with "Account Management" title bar and fixed-width (100px) horizontal nav tiles (Accounts, Contacts, Action Items)
 - **`ui/`** — shadcn/ui primitives (Button, Dialog, Table, Select, etc.)
 
 ### Data Hooks (`src/hooks/`)
@@ -58,7 +58,7 @@ HashRouter (`/#/accounts`, `/#/contacts`, `/#/action-items`) — required by Pow
 The app uses a Microsoft Fluent Design-inspired theme built on CSS custom properties (HSL) in `src/index.css`:
 
 - **Primary:** Microsoft Blue (`#0078D4`) — buttons, focus rings, table headers, active states
-- **Title bar + Nav:** Dark navy gradient (`#0C2340` → `#1B3A5C`) with square nav tiles — active tile is Microsoft Blue, inactive is translucent white
+- **Title bar + Nav:** Dark navy gradient (`#0C2340` → `#1B3A5C`) with fixed-width (100px) nav tiles — active tile is Microsoft Blue, inactive is translucent white
 - **Background:** Light blue-gray (`hsl(225, 20%, 97%)`) so white cards have visual separation
 - **Accent bar:** 1px gradient stripe across the top of the page (`#0078D4` → `#50E6FF` → `#00BCF2`)
 - **Tables:** Blue header band with white uppercase text, card-elevated wrapper with shadow

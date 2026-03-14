@@ -25,20 +25,20 @@ export function AppLayout({ children }: AppLayoutProps) {
           <LayoutGrid className="h-3.5 w-3.5 text-white" />
         </div>
         <span className="text-lg font-semibold tracking-tight text-white">
-          CRM Demo
+          Account Management
         </span>
         <span className="ml-auto text-xs text-white/40">Power Platform</span>
       </header>
 
       {/* Navigation tiles */}
-      <nav className="flex gap-3 bg-[var(--sidebar-from)] px-6 pb-3 pt-1">
+      <nav className="flex gap-3 bg-[var(--sidebar-from)] px-6 py-2">
         {NAV_ITEMS.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
             className={({ isActive }) =>
               cn(
-                "flex h-[50px] min-w-[50px] flex-col items-center justify-center gap-1 rounded-lg px-3 text-[10px] font-medium whitespace-nowrap transition-all",
+                "flex h-[50px] w-[100px] flex-col items-center justify-center gap-1 rounded-lg px-3 text-[10px] font-medium whitespace-nowrap transition-all",
                 isActive
                   ? "bg-[#0078D4] text-white shadow-lg shadow-[#0078D4]/30"
                   : "bg-white/10 text-white/70 hover:bg-white/15 hover:text-white"

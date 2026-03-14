@@ -44,3 +44,19 @@
 ### File Changed
 
 - `src/components/layout/app-layout.tsx` — full rewrite of layout from sidebar to horizontal top-nav
+
+---
+
+## 2. Navigation Polish — Title, Tile Width & Spacing
+
+**Date:** 2026-03-14
+
+### Changes
+
+- **Header title:** Renamed "CRM Demo" to "Account Management"
+- **Tile width:** Changed from `min-w-[50px]` to a fixed `w-[100px]` so all three nav tiles (Accounts, Contacts, Action Items) are the same width
+- **Tile vertical spacing:** Changed nav padding from `pb-3 pt-1` to `py-2` so spacing above and below the tiles is equal
+
+### File Changed
+
+- `src/components/layout/app-layout.tsx`

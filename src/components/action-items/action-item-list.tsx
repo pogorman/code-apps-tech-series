@@ -16,7 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ActionItemFormDialog } from "./action-item-form-dialog";
 import { ActionItemDetailDialog } from "./action-item-detail-dialog";
 import { ActionItemDeleteDialog } from "./action-item-delete-dialog";
-import { ClipboardList, Plus, Search } from "lucide-react";
+import { ClipboardList, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import type { Tdvsp_actionitemsModel } from "@/generated";
 import { toast } from "sonner";
 import {
@@ -104,7 +104,7 @@ export function ActionItemList() {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Customer</TableHead>
-              <TableHead>Priority</TableHead>
+              <TableHead className="whitespace-nowrap">Priority</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Date</TableHead>
               <TableHead className="w-[100px]">Actions</TableHead>
@@ -139,7 +139,7 @@ export function ActionItemList() {
                   >
                     <TableCell className="font-medium">{item.tdvsp_name}</TableCell>
                     <TableCell>{customerName}</TableCell>
-                    <TableCell>
+                    <TableCell className="whitespace-nowrap">
                       {item.tdvsp_priority != null ? (
                         <Badge variant={priorityVariant(item.tdvsp_priority)}>
                           {PRIORITY_LABELS[item.tdvsp_priority]}
@@ -162,18 +162,18 @@ export function ActionItemList() {
                       <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
                         <Button
                           variant="ghost"
-                          size="sm"
+                          size="icon"
                           onClick={() => setEditItem(item)}
                         >
-                          Edit
+                          <Pencil className="h-4 w-4" />
                         </Button>
                         <Button
                           variant="ghost"
-                          size="sm"
+                          size="icon"
                           className="text-destructive hover:text-destructive"
                           onClick={() => setDeleteItem(item)}
                         >
-                          Delete
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </TableCell>

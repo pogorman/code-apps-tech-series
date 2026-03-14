@@ -1,4 +1,4 @@
-# CRM Code App — Accounts, Contacts & Action Items
+# Account Management — Accounts, Contacts & Action Items
 
 A Power Platform Code App built with React + TypeScript for the Code Apps tech series. Full CRUD on Dataverse `account`, `contact`, and `tdvsp_actionitem` tables with account-contact relationships and customer-linked action items, deployed via `pac code push`.
 

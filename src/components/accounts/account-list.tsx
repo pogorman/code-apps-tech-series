@@ -16,7 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AccountFormDialog } from "./account-form-dialog";
 import { AccountDetailDialog } from "./account-detail-dialog";
 import { AccountDeleteDialog } from "./account-delete-dialog";
-import { Building2, Plus, Search } from "lucide-react";
+import { Building2, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import type { AccountsModel } from "@/generated";
 import { toast } from "sonner";
 import { getParentAccountId } from "@/lib/get-parent-account-id";
@@ -105,7 +105,7 @@ export function AccountList() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
+              <TableHead className="w-[39%]">Name</TableHead>
               <TableHead>Contacts</TableHead>
               <TableHead>CSA</TableHead>
               <TableHead>CSAM</TableHead>
@@ -158,18 +158,18 @@ export function AccountList() {
                     <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
                       <Button
                         variant="ghost"
-                        size="sm"
+                        size="icon"
                         onClick={() => setEditAccount(account)}
                       >
-                        Edit
+                        <Pencil className="h-4 w-4" />
                       </Button>
                       <Button
                         variant="ghost"
-                        size="sm"
+                        size="icon"
                         className="text-destructive hover:text-destructive"
                         onClick={() => setDeleteAccount(account)}
                       >
-                        Delete
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
                   </TableCell>

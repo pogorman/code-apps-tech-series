@@ -2,7 +2,7 @@
 
 ## Overview
 
-This Code App provides a CRM-style interface for managing accounts, contacts, and action items stored in Dataverse. The app uses a Microsoft Fluent Design-inspired theme with Microsoft Blue accents and a gradient accent bar at the top of the page. Navigation is via square icon tiles under the title bar — click a tile to switch views.
+This Code App provides an Account Management interface for managing accounts, contacts, and action items stored in Dataverse. The app uses a Microsoft Fluent Design-inspired theme with Microsoft Blue accents and a gradient accent bar at the top of the page. Navigation is via fixed-width icon tiles under the "Account Management" title bar — click a tile to switch views.
 
 ## Accounts
 
@@ -20,7 +20,7 @@ Click **New Account** to open the form. Fill in the fields and click **Create**.
 
 ### Editing / Deleting
 
-Use the **Edit** and **Delete** buttons in the Actions column, or click **Edit** from the detail card.
+Use the pencil (edit) and trash (delete) icons in the Actions column, or click **Edit** from the detail card.
 
 ## Contacts
 
@@ -42,7 +42,7 @@ The Account dropdown in the contact form shows all accounts. Select one to link,
 
 ### Editing / Deleting
 
-Use the **Edit** and **Delete** buttons in the Actions column, or click **Edit** from the detail card.
+Use the pencil (edit) and trash (delete) icons in the Actions column, or click **Edit** from the detail card.
 
 ## Action Items
 
@@ -67,4 +67,4 @@ Click **New Action Item** to open the form. Fields:
 
 ### Editing / Deleting
 
-Use the **Edit** and **Delete** buttons in the Actions column, or click **Edit** from the detail card.
+Use the pencil (edit) and trash (delete) icons in the Actions column, or click **Edit** from the detail card.

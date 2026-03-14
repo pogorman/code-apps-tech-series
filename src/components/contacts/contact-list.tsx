@@ -16,7 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ContactFormDialog } from "./contact-form-dialog";
 import { ContactDetailDialog } from "./contact-detail-dialog";
 import { ContactDeleteDialog } from "./contact-delete-dialog";
-import { Plus, Search, Users } from "lucide-react";
+import { Pencil, Plus, Search, Trash2, Users } from "lucide-react";
 import type { ContactsModel } from "@/generated";
 import { toast } from "sonner";
 
@@ -153,18 +153,18 @@ export function ContactList() {
                       >
                         <Button
                           variant="ghost"
-                          size="sm"
+                          size="icon"
                           onClick={() => setEditContact(contact)}
                         >
-                          Edit
+                          <Pencil className="h-4 w-4" />
                         </Button>
                         <Button
                           variant="ghost"
-                          size="sm"
+                          size="icon"
                           className="text-destructive hover:text-destructive"
                           onClick={() => setDeleteContact(contact)}
                         >
-                          Delete
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </TableCell>
