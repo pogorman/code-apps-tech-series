@@ -7,7 +7,21 @@
       "Bash(cd \"C:/Users/pogorman/source/repos/code-apps-tech-series\" && npm init -y 2>&1)",
       "Bash(cd \"C:/Users/pogorman/source/repos/code-apps-tech-series\" && npm install --save-exact md-to-pdf 2>&1)",
       "Bash(cd \"C:/Users/pogorman/source/repos/code-apps-tech-series\" && npm run docs:pdf 2>&1)",
-      "Bash(cd \"C:/Users/pogorman/source/repos/code-apps-tech-series\" && npx md-to-pdf --help 2>&1)"
+      "Bash(cd \"C:/Users/pogorman/source/repos/code-apps-tech-series\" && npx md-to-pdf --help 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\pogorman\\\\source\\\\repos\\\\code-apps-tech-series\" && npx md-to-pdf docs/tracked-build-order.md 2>&1)",
+      "Bash(pac auth:*)",
+      "Bash(npx power-apps:*)",
+      "Bash(pac code:*)",
+      "Bash(pac env:*)",
+      "Bash(npm install:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npx shadcn@latest add button input label table dialog card alert-dialog skeleton badge separator textarea select -y -o 2>&1)",
+      "Bash(npx tsc:*)",
+      "Bash(npx vite:*)",
+      "Bash(mkdir -p /c/Users/pogorman/source/repos/code-apps-tech-series/docs/tracked/pdf && mv /c/Users/pogorman/source/repos/code-apps-tech-series/docs/tracked*.md /c/Users/pogorman/source/repos/code-apps-tech-series/docs/tracked/ && mv /c/Users/pogorman/source/repos/code-apps-tech-series/docs/tracked/*.pdf /c/Users/pogorman/source/repos/code-apps-tech-series/docs/tracked/pdf/ 2>/dev/null; mv /c/Users/pogorman/source/repos/code-apps-tech-series/docs/*.pdf /c/Users/pogorman/source/repos/code-apps-tech-series/docs/tracked/pdf/ 2>/dev/null; ls -R /c/Users/pogorman/source/repos/code-apps-tech-series/docs/)",
+      "Bash(ls /c/Users/pogorman/source/repos/code-apps-tech-series/*.md)",
+      "Bash(find /c/Users/pogorman/source/repos/code-apps-tech-series/src -name \"*.tsx\" -o -name \"*.ts\" | grep -v node_modules | xargs grep -l \"useEffect\\\\|useContext\\\\|Provider\\\\|Initialize\" 2>/dev/null)",
+      "Bash(cd \"C:\\\\Users\\\\pogorman\\\\source\\\\repos\\\\code-apps-tech-series\\\\docs\\\\tracked\" && mv first-cut-build.md deploy-locally.md tracked-build-order.md first-steps/)"
     ]
   }
 }
