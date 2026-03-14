@@ -67,3 +67,58 @@ An ELI5-style walkthrough of how this Code App was built, documenting prompts, e
 - Added three placeholder columns (CSA, CSAM, AE) with em dash placeholders for future implementation
 
 **Tracked notes:** `docs/tracked/phase-3-relationships/step-3-account-ui.md`
+
+## Phase 4 — Microsoft Fluent Design Theme
+
+**Prompt:** The UI is kind of drab. Spruce it up with Microsoft colors and an uber awesome theme.
+
+**What happened:**
+- Replaced the default shadcn/slate color palette with Microsoft Fluent Design colors — Microsoft Blue (#0078D4) as primary, light blue-gray background, blue accents and focus rings
+- Redesigned the sidebar: dark navy gradient (#0C2340 → #1B3A5C), branded icon badge, blue left-border active indicator, translucent white text
+- Added a gradient accent bar at the top of the page (#0078D4 → #50E6FF → #00BCF2)
+- Styled table headers with Microsoft Blue background and white uppercase text
+- Added page headers with icon badges and subtitles to Accounts and Contacts pages
+- Wrapped data tables in card-elevated containers with shadows and clipped corners
+
+**Tracked notes:** `docs/tracked/phase-4-ui-enhance/ui-overhaul.md`
+
+## Fix — Contact Form Overflow
+
+**Prompt:** The new and edit forms for contact are too tall and run off the screen.
+
+**What happened:**
+- Added `max-h-[85vh] overflow-y-auto` to `DialogContent` so all dialogs scroll internally instead of clipping
+- Compacted the contact form by combining Account + Job Title and Mobile + Street into side-by-side rows
+
+**Tracked notes:** `docs/tracked/phase-4-ui-enhance/adjust-contact-form-height.md`
+
+## Phase 5 — Action Items CRUD
+
+**Prompt:** contacts and accounts are good for now, let's implement the tdvsp_actionitem table w full crud
+
+**What happened:**
+1. Ran `pac code add-data-source -a dataverse -t tdvsp_actionitem` to generate model + service
+2. Created `src/hooks/use-action-items.ts` — TanStack Query hooks for CRUD with cache invalidation
+3. Created `src/components/action-items/labels.ts` — human-readable labels for Priority, Status, Type choice fields + badge variant helpers (the generated enum names are mangled and not display-friendly)
+4. Created `src/components/action-items/` — list, form dialog, detail dialog, delete dialog following the exact same pattern as accounts/contacts
+5. Customer lookup uses OData bind syntax (`tdvsp_Customer@odata.bind` → `/accounts(guid)`) for writes, `_tdvsp_customer_value` for reads — same polymorphic pattern as contacts
+6. Wired up `/action-items` route in `App.tsx` and "Action Items" nav item with ClipboardList icon in the sidebar
+
+**Tracked notes:** `docs/tracked/phase-5-action-items/first-cut-action-items.md`
+
+## Phase 6 — Navigation Rework (Sidebar → Top Tiles)
+
+**Prompt:** i need more horizontal space, rework the navigation to be evenly spaced tiles across the top under the main title bar no more than maybe 125px tall.
+
+**What happened:**
+1. Removed the 256px-wide dark sidebar entirely
+2. Split layout into: gradient accent bar → title bar (48px, logo + "CRM Demo") → nav tile row → full-width content
+3. Nav tiles are left-aligned 50px squares with icon + label, active tile highlighted in Microsoft Blue
+4. Tiles use `min-w-[50px]` with padding so longer labels like "Action Items" stretch gracefully
+5. Full viewport width is now available for content
+
+**Follow-up fixes:**
+- Halved tile height and made them square, left-aligned with `flex` instead of `grid`
+- Added `min-w` + `px-3` + `whitespace-nowrap` to fix centering on longer labels
+
+**Tracked notes:** `docs/tracked/phase-6-ui-enhance/ui-enhance-navigation.md`

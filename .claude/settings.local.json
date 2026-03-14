@@ -28,7 +28,10 @@
       "Bash(git status:*)",
       "Bash(ls:*)",
       "Bash(find docs:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(netstat:*)"
     ]
   }
 }

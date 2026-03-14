@@ -12,6 +12,13 @@ export const dataSourcesInfo = {
     "dataSourceType": "Dataverse",
     "apis": {}
   },
+  "tdvsp_actionitems": {
+    "tableId": "",
+    "version": "",
+    "primaryKey": "tdvsp_actionitemid",
+    "dataSourceType": "Dataverse",
+    "apis": {}
+  },
   "contacts": {
     "tableId": "",
     "version": "",

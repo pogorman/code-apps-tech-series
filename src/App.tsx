@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import { AppLayout } from "@/components/layout/app-layout";
 import { AccountList } from "@/components/accounts";
 import { ContactList } from "@/components/contacts";
+import { ActionItemList } from "@/components/action-items";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,6 +23,7 @@ export function App() {
           <Routes>
             <Route path="/accounts" element={<AccountList />} />
             <Route path="/contacts" element={<ContactList />} />
+            <Route path="/action-items" element={<ActionItemList />} />
             <Route path="*" element={<Navigate to="/accounts" replace />} />
           </Routes>
         </AppLayout>

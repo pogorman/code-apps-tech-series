@@ -28,6 +28,22 @@ pac code add-data-source -a dataverse -t <logicalname>
 
 Then create hooks in `src/hooks/use-<table>.ts` and components in `src/components/<table>/`.
 
+## How is the Microsoft theme implemented?
+
+All colors are CSS custom properties (HSL) in `src/index.css`, consumed by shadcn/ui components via Tailwind's `@theme inline` block. The title bar and nav tiles use direct Tailwind classes with hex colors for the dark gradient. No separate theme package is needed — just CSS variables.
+
+## Why do dialogs scroll instead of growing?
+
+`DialogContent` has `max-h-[85vh] overflow-y-auto` to prevent tall forms (like the contact form with 12 fields) from running off-screen. The entire dialog scrolls internally.
+
+## How do action item choice fields (Priority, Status, Type) work?
+
+Dataverse choice fields use numeric keys (e.g., `468510002` = "Top Priority"). The generated model has mangled display names that aren't user-friendly. A shared `labels.ts` file in `src/components/action-items/` maps these numeric keys to clean labels and assigns badge color variants (e.g., Top Priority = destructive red).
+
+## How does the action item Customer lookup work?
+
+Same polymorphic pattern as the contact → account relationship. Writes use `tdvsp_Customer@odata.bind` with OData bind syntax (`/accounts(guid)`). Reads come back as `_tdvsp_customer_value` (GUID) and `tdvsp_customername` (display name). The form populates an account dropdown; the list and detail views resolve via `tdvsp_customername` with a fallback to the accounts lookup map.
+
 ## What ports does local dev use?
 
 Vite runs on port 5173 (`npm run dev`). The Power Platform proxy (`pac code run`) runs on its own port — use the URL it prints, not the Vite URL directly.

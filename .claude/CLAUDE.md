@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A Power Platform Code App demo for a tech series. React + TypeScript SPA deployed to Power Platform via `pac code push`. Full CRUD on Dataverse `account` and `contact` tables with account-contact relationships.
+A Power Platform Code App demo for a tech series. React + TypeScript SPA deployed to Power Platform via `pac code push`. Full CRUD on Dataverse `account`, `contact`, and `tdvsp_actionitem` tables with account-contact relationships and customer-linked action items.
 
 ## Key Facts
 
@@ -40,4 +40,8 @@ The generated types declare `parentcustomerid` (write field) but Dataverse OData
 
 ## Tracked Notes
 
-Research and decision notes live in `docs/tracked/`. Use `/track` to append, `/tracknew` to start a new version. First-cut build notes are in `docs/tracked/first-steps/`. Phase 3 (relationships) notes are in `docs/tracked/phase-3-relationships/`.
+Research and decision notes live in `docs/tracked/`. Use `/track` to append, `/tracknew` to start a new version. First-cut build notes are in `docs/tracked/first-steps/`. Phase 3 (relationships) notes are in `docs/tracked/phase-3-relationships/`. Phase 4 (UI theme) notes are in `docs/tracked/phase-4-ui-enhance/`. Phase 5 (action items) notes are in `docs/tracked/phase-5-action-items/`. Phase 6 (navigation rework) notes are in `docs/tracked/phase-6-ui-enhance/`.
+
+## Dataverse Customer Lookup on Action Items (Gotcha)
+
+The `tdvsp_actionitem` table has a customer lookup that uses OData bind syntax. Write via `tdvsp_Customer@odata.bind` with `/accounts(guid)` format. Read the GUID from `_tdvsp_customer_value` and the display name from `tdvsp_customername`. Choice fields (priority, status, type) use numeric keys — human-readable labels are in `src/components/action-items/labels.ts`.

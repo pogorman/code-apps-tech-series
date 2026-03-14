@@ -1,6 +1,6 @@
-# CRM Code App — Accounts & Contacts
+# CRM Code App — Accounts, Contacts & Action Items
 
-A Power Platform Code App built with React + TypeScript for the Code Apps tech series. Full CRUD on Dataverse `account` and `contact` tables with account-contact relationships, deployed via `pac code push`.
+A Power Platform Code App built with React + TypeScript for the Code Apps tech series. Full CRUD on Dataverse `account`, `contact`, and `tdvsp_actionitem` tables with account-contact relationships and customer-linked action items, deployed via `pac code push`.
 
 ## Prerequisites
 
@@ -36,7 +36,7 @@ Open the URL from `pac code run` (not Vite directly) — it wraps the app in the
 |-------|------|
 | Framework | React 19 + TypeScript 5.9 |
 | Build | Vite 7 |
-| Styling | Tailwind CSS v4 + shadcn/ui |
+| Styling | Tailwind CSS v4 + shadcn/ui (Microsoft Fluent Design theme) |
 | Data | TanStack Query + generated Dataverse services |
 | State | Zustand |
 | Icons | Lucide React |
@@ -51,7 +51,8 @@ src/
     ui/               # shadcn/ui primitives
     accounts/         # Account CRUD components
     contacts/         # Contact CRUD components
-    layout/           # App shell (sidebar nav)
+    action-items/     # Action Item CRUD components
+    layout/           # App shell (top nav tiles)
   hooks/              # TanStack Query hooks wrapping Dataverse services
   lib/                # Utilities (cn helper, Dataverse field helpers)
 docs/                 # Tracked notes and research

@@ -189,36 +189,37 @@ export function ContactFormDialog({
               </div>
             </div>
 
-            <div className="grid gap-2">
-              <Label htmlFor="parentcustomerid">Account</Label>
-              <Select
-                value={form.parentcustomerid || NONE_VALUE}
-                onValueChange={(v) =>
-                  updateField("parentcustomerid", v === NONE_VALUE ? "" : v)
-                }
-              >
-                <SelectTrigger id="parentcustomerid">
-                  <SelectValue placeholder="Select an account" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value={NONE_VALUE}>None</SelectItem>
-                  {accounts?.map((a) => (
-                    <SelectItem key={a.accountid} value={a.accountid}>
-                      {a.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="jobtitle">Job Title</Label>
-              <Input
-                id="jobtitle"
-                value={form.jobtitle}
-                onChange={(e) => updateField("jobtitle", e.target.value)}
-                placeholder="VP of Sales"
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="parentcustomerid">Account</Label>
+                <Select
+                  value={form.parentcustomerid || NONE_VALUE}
+                  onValueChange={(v) =>
+                    updateField("parentcustomerid", v === NONE_VALUE ? "" : v)
+                  }
+                >
+                  <SelectTrigger id="parentcustomerid">
+                    <SelectValue placeholder="Select an account" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={NONE_VALUE}>None</SelectItem>
+                    {accounts?.map((a) => (
+                      <SelectItem key={a.accountid} value={a.accountid}>
+                        {a.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="jobtitle">Job Title</Label>
+                <Input
+                  id="jobtitle"
+                  value={form.jobtitle}
+                  onChange={(e) => updateField("jobtitle", e.target.value)}
+                  placeholder="VP of Sales"
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -243,23 +244,24 @@ export function ContactFormDialog({
               </div>
             </div>
 
-            <div className="grid gap-2">
-              <Label htmlFor="mobilephone">Mobile</Label>
-              <Input
-                id="mobilephone"
-                value={form.mobilephone}
-                onChange={(e) => updateField("mobilephone", e.target.value)}
-                placeholder="(555) 987-6543"
-              />
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="address1_line1">Street</Label>
-              <Input
-                id="address1_line1"
-                value={form.address1_line1}
-                onChange={(e) => updateField("address1_line1", e.target.value)}
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="mobilephone">Mobile</Label>
+                <Input
+                  id="mobilephone"
+                  value={form.mobilephone}
+                  onChange={(e) => updateField("mobilephone", e.target.value)}
+                  placeholder="(555) 987-6543"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="address1_line1">Street</Label>
+                <Input
+                  id="address1_line1"
+                  value={form.address1_line1}
+                  onChange={(e) => updateField("address1_line1", e.target.value)}
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-3 gap-4">

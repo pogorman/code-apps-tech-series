@@ -16,7 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ContactFormDialog } from "./contact-form-dialog";
 import { ContactDetailDialog } from "./contact-detail-dialog";
 import { ContactDeleteDialog } from "./contact-delete-dialog";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, Users } from "lucide-react";
 import type { ContactsModel } from "@/generated";
 import { toast } from "sonner";
 
@@ -69,7 +69,17 @@ export function ContactList() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+          <Users className="h-5 w-5 text-primary" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Contacts</h1>
+          <p className="text-sm text-muted-foreground">Manage your customer contacts</p>
+        </div>
+      </div>
+
       <div className="flex items-center justify-between gap-4">
         <div className="relative max-w-sm flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -86,7 +96,7 @@ export function ContactList() {
         </Button>
       </div>
 
-      <div className="rounded-md border">
+      <div className="overflow-hidden rounded-lg border bg-card shadow-sm">
         <Table>
           <TableHeader>
             <TableRow>

@@ -7,7 +7,9 @@
 export * as AccountsModel from './models/AccountsModel';
 export * as CommonModels from './models/CommonModels';
 export * as ContactsModel from './models/ContactsModel';
+export * as Tdvsp_actionitemsModel from './models/Tdvsp_actionitemsModel';
 
 // Services
 export * from './services/AccountsService';
 export * from './services/ContactsService';
+export * from './services/Tdvsp_actionitemsService';

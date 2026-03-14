@@ -21,6 +21,10 @@
         "contacts": {
           "entitySetName": "contacts",
           "logicalName": "contact"
+        },
+        "actionitems": {
+          "entitySetName": "tdvsp_actionitems",
+          "logicalName": "tdvsp_actionitem"
         }
       },
       "actions": null
