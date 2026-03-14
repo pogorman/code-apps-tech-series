@@ -2,11 +2,11 @@
 
 ## Overview
 
-This Code App provides an Account Management interface for managing accounts, contacts, action items, meeting summaries, and ideas stored in Dataverse. The app uses a Microsoft Fluent Design-inspired theme with a left vertical sidebar for navigation and a top quick create bar for fast record creation.
+This Code App provides a "My Work" interface for managing accounts, contacts, action items, meeting summaries, and ideas stored in Dataverse. The app uses a Microsoft Fluent Design-inspired theme with a left vertical sidebar for navigation and a top quick create bar for fast record creation.
 
-**Left Sidebar** — Grouped navigation (core: Accounts/Contacts, activity: Action Items, capture: Meetings/Ideas). Active page is highlighted with a cyan left border. Dashboard is the home view.
+**Left Sidebar** — Briefcase icon + "My Work" brand at the top. Grouped navigation (core: Accounts/Contacts, activity: Action Items, capture: Meetings/Ideas). Active page is highlighted with a cyan left border. Dashboard is the home view.
 
-**Quick Create Bar** — Colored pill buttons across the top of the content area. Click any button to navigate to that entity's list and immediately open a new record form. Buttons: task (action item), idea, account, contact, summary (meeting).
+**Quick Create Bar** — Colored pill buttons across the top of the content area, ordered to match the sidebar nav. Click any button to navigate to that entity's list and immediately open a new record form. Buttons (left to right): account, contact, task (action item), summary (meeting), idea.
 
 ## Accounts
 

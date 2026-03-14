@@ -190,3 +190,20 @@ An ELI5-style walkthrough of how this Code App was built, documenting prompts, e
 4. Removed HVAs: deleted `src/components/hvas/` and `src/hooks/use-hvas.ts`, removed route, nav item, and quick create button. Generated code left untouched (read-only)
 
 **Tracked notes:** `docs/tracked/2-quick-create-bar-drop-hvas.md`
+
+## Phase 10 — Multiple Minor UI Tweaks
+
+**Prompts:**
+1. "rearrange the quick create to match the left nav"
+2. "change acct mgmt to Cx Mgt and use an icon that looks more like cxmgr-logo in your screenshots folder"
+3. "change cx mgt to My Work and come up with a better icon"
+
+**What happened:**
+
+1. Reordered `QUICK_CREATE_BUTTONS` to match the left sidebar nav order: account → contact → task → summary → idea (was task → idea → account → contact → summary)
+2. Replaced the `LayoutGrid` brand icon with `UserCog` (person + gear, matching the cxmgr-logo.jpg style) and renamed "Acct Mgmt" to "Cx Mgt"
+3. Settled on `Briefcase` icon + "My Work" as the final brand — cleaner, universally recognized
+
+All changes in `src/components/layout/app-layout.tsx`.
+
+**Tracked notes:** `docs/tracked/phase-8-ui-enhance/3-multiple-minor-ui-tweaks.md`

@@ -1,4 +1,4 @@
-# Account Management — Accounts, Contacts, Action Items, Meeting Summaries & Ideas
+# My Work — Accounts, Contacts, Action Items, Meeting Summaries & Ideas
 
 A Power Platform Code App built with React + TypeScript for the Code Apps tech series. Full CRUD on Dataverse `account`, `contact`, `tdvsp_actionitem`, `tdvsp_meetingsummary`, and `tdvsp_idea` tables with account-contact relationships, customer-linked action items, and cross-entity lookups, deployed via `pac code push`.
 

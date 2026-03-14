@@ -25,7 +25,7 @@ The `pac code run` proxy bridges local dev to the Dataverse environment. In prod
 - **`meeting-summaries/`** — Meeting Summary list (table), detail dialog, form dialog, delete confirmation; account lookup + summary textarea
 - **`ideas/`** — Idea list (table), detail dialog, form dialog, delete confirmation; category choice field + account and contact lookups, shared label/variant helpers
 - **`dashboard/`** — Action item analytics with KPI cards and pure CSS/SVG visualizations (status donut, priority bars, type breakdown, by-account bars)
-- **`layout/`** — App shell with left vertical sidebar (grouped nav: core, activity, capture) and top horizontal quick create bar with colored pill buttons
+- **`layout/`** — App shell with left vertical sidebar (Briefcase icon + "My Work" brand, grouped nav: core, activity, capture) and top horizontal quick create bar with colored pill buttons ordered to match nav
 - **`ui/`** — shadcn/ui primitives (Button, Dialog, Table, Select, etc.)
 
 ### Data Hooks (`src/hooks/`)
@@ -63,8 +63,8 @@ HashRouter (`/#/accounts`, `/#/contacts`, `/#/action-items`, `/#/meeting-summari
 The app uses a Microsoft Fluent Design-inspired theme built on CSS custom properties (HSL) in `src/index.css`:
 
 - **Primary:** Microsoft Blue (`#0078D4`) — buttons, focus rings, table headers, active states
-- **Sidebar:** White background (208px), grouped nav items with small-caps section headers (core, activity, capture). Active item has a 3px cyan left border (`#00BCF2`) and blue text
-- **Quick Create Bar:** Horizontal bar at top of content area with colored pill buttons (pastel backgrounds) for creating records in any entity
+- **Sidebar:** White background (208px), Briefcase icon + "My Work" brand, grouped nav items with small-caps section headers (core, activity, capture). Active item has a 3px cyan left border (`#00BCF2`) and blue text
+- **Quick Create Bar:** Horizontal bar at top of content area with colored pill buttons (pastel backgrounds) for creating records in any entity, ordered to match sidebar nav: account, contact, task, summary, idea
 - **Background:** Light blue-gray (`hsl(225, 20%, 97%)`) so white cards have visual separation
 - **Tables:** Blue header band with white uppercase text, card-elevated wrapper with shadow
 - **Dialogs:** Capped at `85vh` with internal scroll for long forms

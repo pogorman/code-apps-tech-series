@@ -4,7 +4,7 @@ import {
   Building2,
   Users,
   ClipboardList,
-  LayoutGrid,
+  Briefcase,
   LayoutDashboard,
   FileText,
   Lightbulb,
@@ -64,22 +64,6 @@ interface QuickCreateButton {
 
 const QUICK_CREATE_BUTTONS: QuickCreateButton[] = [
   {
-    target: "action-items",
-    route: "/action-items",
-    label: "task",
-    icon: ClipboardList,
-    color: "text-red-500 border-red-200",
-    bg: "bg-red-50 hover:bg-red-100",
-  },
-  {
-    target: "ideas",
-    route: "/ideas",
-    label: "idea",
-    icon: Lightbulb,
-    color: "text-emerald-600 border-emerald-200",
-    bg: "bg-emerald-50 hover:bg-emerald-100",
-  },
-  {
     target: "accounts",
     route: "/accounts",
     label: "account",
@@ -96,12 +80,28 @@ const QUICK_CREATE_BUTTONS: QuickCreateButton[] = [
     bg: "bg-blue-50 hover:bg-blue-100",
   },
   {
+    target: "action-items",
+    route: "/action-items",
+    label: "task",
+    icon: ClipboardList,
+    color: "text-red-500 border-red-200",
+    bg: "bg-red-50 hover:bg-red-100",
+  },
+  {
     target: "meeting-summaries",
     route: "/meeting-summaries",
     label: "summary",
     icon: FileText,
     color: "text-pink-500 border-pink-200",
     bg: "bg-pink-50 hover:bg-pink-100",
+  },
+  {
+    target: "ideas",
+    route: "/ideas",
+    label: "idea",
+    icon: Lightbulb,
+    color: "text-emerald-600 border-emerald-200",
+    bg: "bg-emerald-50 hover:bg-emerald-100",
   },
 ];
 
@@ -131,10 +131,10 @@ export function AppLayout({ children }: AppLayoutProps) {
         {/* Logo / brand */}
         <div className="flex h-14 items-center gap-2.5 px-5">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#0078D4] to-[#50E6FF] shadow-sm">
-            <LayoutGrid className="h-4 w-4 text-white" />
+            <Briefcase className="h-4 w-4 text-white" />
           </div>
           <span className="text-base font-bold tracking-tight text-[var(--sidebar-from)]">
-            Acct Mgmt
+            My Work
           </span>
         </div>
 
