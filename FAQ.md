@@ -56,6 +56,10 @@ Ideas have both `tdvsp_Account@odata.bind` and `tdvsp_Contact@odata.bind` for wr
 
 Same pattern as action item Priority/Status/Type. The `tdvsp_category` field uses numeric keys (e.g., `468510000` = "Copilot Studio"). A shared `labels.ts` in `src/components/ideas/` maps these to clean labels: Copilot Studio, Canvas Apps, Model-Driven Apps, Power Automate, Power Pages, Azure, AI General, App General, Other.
 
+## How do dashboard tooltips and drilldown cards work?
+
+Hover any dashboard tile (KPI card or chart sub-element) to see a tooltip previewing the underlying data — item count, first 4 item names, and a "Click to view details" hint. Click to open a drilldown dialog showing a full filtered table of the action items behind that visualization. Tooltips use a pure CSS approach (Tailwind `group/tip` + `group-hover/tip`) — no tooltip library. KPI cards at the top use `position="below"` to avoid clipping off the viewport; chart sub-elements use `position="above"` (default). Reverse-lookup maps (`STATUS_KEY_BY_LABEL`, `PRIORITY_KEY_BY_LABEL`, `TYPE_KEY_BY_LABEL`) convert display labels back to Dataverse numeric choice keys for filtering.
+
 ## What ports does local dev use?
 
 Vite runs on port 5173 (`npm run dev`). The Power Platform proxy (`pac code run`) runs on its own port — use the URL it prints, not the Vite URL directly.

@@ -54,12 +54,12 @@ src/
     action-items/     # Action Item CRUD components
     meeting-summaries/# Meeting Summary CRUD components
     ideas/            # Idea CRUD components
-    dashboard/        # Analytics dashboard
+    dashboard/        # Analytics dashboard (tooltips + drilldown dialogs)
     layout/           # App shell (left sidebar + quick create bar)
   stores/             # Zustand stores (quick create)
   hooks/              # TanStack Query hooks wrapping Dataverse services
   lib/                # Utilities (cn helper, Dataverse field helpers)
-docs/                 # Tracked notes and research
+docs/                 # Tracked notes, research, slide outline, demo script
 .power/               # Power Platform schemas (auto-generated)
 power.config.json     # Code App configuration
 ```

@@ -1,6 +1,7 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useActionItems } from "@/hooks/use-action-items";
 import { useAccounts } from "@/hooks/use-accounts";
+import type { Tdvsp_actionitemsModel } from "@/generated";
 import {
   PRIORITY_LABELS,
   STATUS_LABELS,
@@ -15,6 +16,9 @@ import {
   AlertTriangle,
   TrendingUp,
 } from "lucide-react";
+import { DrilldownDialog } from "./drilldown-dialog";
+
+type ActionItem = Tdvsp_actionitemsModel.Tdvsp_actionitems;
 
 /* ── colour tokens ─────────────────────────────────────────────── */
 
@@ -35,6 +39,75 @@ const PRIORITY_COLORS: Record<string, string> = {
 };
 
 const ACCOUNT_PALETTE = ["#378ADD", "#1D9E75", "#EF9F27", "#8b5cf6", "#E24B4A", "#888780"];
+
+/* ── reverse lookups (label → numeric key) ─────────────────────── */
+
+const STATUS_KEY_BY_LABEL = Object.fromEntries(
+  Object.entries(STATUS_LABELS).map(([k, v]) => [v, Number(k)])
+) as Record<string, number>;
+
+const PRIORITY_KEY_BY_LABEL = Object.fromEntries(
+  Object.entries(PRIORITY_LABELS).map(([k, v]) => [v, Number(k)])
+) as Record<string, number>;
+
+const TYPE_KEY_BY_LABEL = Object.fromEntries(
+  Object.entries(TASK_TYPE_LABELS).map(([k, v]) => [v, Number(k)])
+) as Record<string, number>;
+
+/* ── hover tooltip ─────────────────────────────────────────────── */
+
+function Tip({
+  children,
+  items,
+  label,
+  onClick,
+  position = "above",
+}: {
+  children: React.ReactNode;
+  items: ActionItem[];
+  label: string;
+  onClick: () => void;
+  position?: "above" | "below";
+}) {
+  const posClass =
+    position === "below"
+      ? "top-full left-1/2 -translate-x-1/2 mt-2"
+      : "bottom-full left-1/2 -translate-x-1/2 mb-2";
+  return (
+    <div
+      className="relative group/tip cursor-pointer"
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onClick(); }}
+    >
+      {children}
+      <div className={`absolute z-50 opacity-0 scale-95 pointer-events-none group-hover/tip:opacity-100 group-hover/tip:scale-100 transition-all duration-150 ${posClass}`}>
+        <div className="bg-popover border rounded-lg shadow-lg p-3 min-w-[200px] max-w-[260px]">
+          <p className="text-xs font-medium mb-1">
+            {items.length} {label}
+          </p>
+          {items.slice(0, 4).map((item) => (
+            <p
+              key={item.tdvsp_actionitemid}
+              className="text-xs text-muted-foreground truncate leading-relaxed"
+            >
+              {item.tdvsp_name}
+            </p>
+          ))}
+          {items.length > 4 && (
+            <p className="text-[11px] text-muted-foreground/60 mt-0.5">
+              +{items.length - 4} more
+            </p>
+          )}
+          <p className="text-[10px] text-muted-foreground/50 mt-1.5 border-t border-border/50 pt-1.5">
+            Click to view details
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 /* ── SVG donut ─────────────────────────────────────────────────── */
 
@@ -99,16 +172,23 @@ function HBar({
   max,
   color,
   showValue = true,
+  onClick,
 }: {
   label: string;
   value: number;
   max: number;
   color: string;
   showValue?: boolean;
+  onClick?: () => void;
 }) {
   const pct = max > 0 ? Math.round((value / max) * 100) : 0;
   return (
-    <div className="flex items-center gap-2 text-xs mb-2">
+    <div
+      className={`flex items-center gap-2 text-xs mb-2 rounded px-1 -mx-1 ${
+        onClick ? "cursor-pointer hover:bg-muted/60 transition-colors" : ""
+      }`}
+      onClick={onClick}
+    >
       <span className="min-w-[80px] text-muted-foreground truncate">{label}</span>
       <div className="flex-1 h-5 bg-muted rounded overflow-hidden">
         <div
@@ -133,15 +213,22 @@ function StatusRow({
   count,
   total,
   color,
+  onClick,
 }: {
   label: string;
   count: number;
   total: number;
   color: string;
+  onClick?: () => void;
 }) {
   const pct = total > 0 ? Math.round((count / total) * 100) : 0;
   return (
-    <div className="rounded-lg border border-border/50 px-3 py-2">
+    <div
+      className={`rounded-lg border border-border/50 px-3 py-2 ${
+        onClick ? "cursor-pointer hover:bg-muted/60 transition-colors" : ""
+      }`}
+      onClick={onClick}
+    >
       <div className="flex justify-between items-center mb-1">
         <span className="text-xs text-muted-foreground flex items-center gap-1.5">
           <span className="inline-block w-2 h-2 rounded-sm" style={{ background: color }} />
@@ -170,15 +257,22 @@ function AccountRow({
   count,
   max,
   color,
+  onClick,
 }: {
   name: string;
   count: number;
   max: number;
   color: string;
+  onClick?: () => void;
 }) {
   const pct = max > 0 ? Math.round((count / max) * 100) : 0;
   return (
-    <div className="flex items-center gap-2.5 mb-2.5 text-xs">
+    <div
+      className={`flex items-center gap-2.5 mb-2.5 text-xs rounded px-1 -mx-1 py-0.5 ${
+        onClick ? "cursor-pointer hover:bg-muted/60 transition-colors" : ""
+      }`}
+      onClick={onClick}
+    >
       <span className="w-[190px] shrink-0 text-muted-foreground truncate">{name}</span>
       <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden min-w-0">
         <div
@@ -197,9 +291,18 @@ function AccountRow({
 
 /* ── main dashboard ────────────────────────────────────────────── */
 
+interface Drilldown {
+  title: string;
+  items: ActionItem[];
+}
+
 export function Dashboard() {
   const { data: items, isLoading, error } = useActionItems();
   const { data: accounts } = useAccounts();
+  const [drilldown, setDrilldown] = useState<Drilldown | null>(null);
+
+  const openDrilldown = (title: string, filtered: ActionItem[]) =>
+    setDrilldown({ title, items: filtered });
 
   const stats = useMemo(() => {
     if (!items) return null;
@@ -268,6 +371,34 @@ export function Dashboard() {
     };
   }, [items, accounts]);
 
+  /* ── filter helpers (memoised per category) ───────────────────── */
+
+  const filterByStatus = (label: string) =>
+    items?.filter((i) => i.tdvsp_taskstatus === STATUS_KEY_BY_LABEL[label]) ?? [];
+
+  const filterByPriority = (label: string) =>
+    items?.filter((i) => i.tdvsp_priority === PRIORITY_KEY_BY_LABEL[label]) ?? [];
+
+  const filterByType = (label: string) =>
+    items?.filter((i) => i.tdvsp_tasktype === TYPE_KEY_BY_LABEL[label]) ?? [];
+
+  const filterByAccount = (accountName: string) =>
+    items?.filter((i) => {
+      const name = i.tdvsp_customername ?? "Unknown";
+      return name === accountName;
+    }) ?? [];
+
+  const filterComplete = () =>
+    items?.filter((i) => i.tdvsp_taskstatus === 468510005) ?? [];
+
+  const filterInProgress = () =>
+    items?.filter((i) => i.tdvsp_taskstatus === 468510001) ?? [];
+
+  const filterUrgent = () =>
+    items?.filter((i) => i.tdvsp_priority === 468510002 || i.tdvsp_priority === 468510003) ?? [];
+
+  /* ── loading / error states ───────────────────────────────────── */
+
   if (error) {
     return (
       <div className="rounded-md border border-destructive/50 bg-destructive/10 p-4 text-destructive">
@@ -304,6 +435,8 @@ export function Dashboard() {
     );
   }
 
+  const allItems = items ?? [];
+
   const donutSlices: DonutSlice[] = stats.statusCounts.map((s) => ({
     label: s.label,
     value: s.count,
@@ -324,6 +457,8 @@ export function Dashboard() {
       icon: ClipboardCheck,
       color: "text-primary",
       bg: "bg-primary/10",
+      filterItems: () => allItems,
+      drilldownTitle: "All Action Items",
     },
     {
       label: "Completion Rate",
@@ -333,6 +468,8 @@ export function Dashboard() {
       icon: TrendingUp,
       color: "text-green-600",
       bg: "bg-green-50",
+      filterItems: filterComplete,
+      drilldownTitle: "Completed Items",
     },
     {
       label: "In Progress",
@@ -342,6 +479,8 @@ export function Dashboard() {
       icon: Clock,
       color: "text-blue-600",
       bg: "bg-blue-50",
+      filterItems: filterInProgress,
+      drilldownTitle: "In Progress Items",
     },
     {
       label: "High / Top Priority",
@@ -351,6 +490,8 @@ export function Dashboard() {
       icon: AlertTriangle,
       color: "text-amber-600",
       bg: "bg-amber-50",
+      filterItems: filterUrgent,
+      drilldownTitle: "High & Top Priority Items",
     },
   ];
 
@@ -371,19 +512,30 @@ export function Dashboard() {
 
       {/* KPI Cards */}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {kpis.map((kpi) => (
-          <Card key={kpi.label} className="relative overflow-hidden px-5 py-4">
-            <p className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">
-              {kpi.label}
-            </p>
-            <p className="text-[28px] font-medium leading-none">{kpi.value}</p>
-            <p className="text-[11px] text-muted-foreground mt-1">{kpi.sub}</p>
-            <div
-              className="absolute bottom-0 left-0 right-0 h-[3px]"
-              style={{ background: kpi.accent }}
-            />
-          </Card>
-        ))}
+        {kpis.map((kpi) => {
+          const filtered = kpi.filterItems();
+          return (
+            <Tip
+              key={kpi.label}
+              items={filtered}
+              label={kpi.label.toLowerCase()}
+              onClick={() => openDrilldown(kpi.drilldownTitle, filtered)}
+              position="below"
+            >
+              <Card className="relative overflow-hidden px-5 py-4 hover:shadow-md transition-shadow">
+                <p className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">
+                  {kpi.label}
+                </p>
+                <p className="text-[28px] font-medium leading-none">{kpi.value}</p>
+                <p className="text-[11px] text-muted-foreground mt-1">{kpi.sub}</p>
+                <div
+                  className="absolute bottom-0 left-0 right-0 h-[3px]"
+                  style={{ background: kpi.accent }}
+                />
+              </Card>
+            </Tip>
+          );
+        })}
       </div>
 
       {/* Charts row */}
@@ -397,15 +549,24 @@ export function Dashboard() {
             <div className="flex items-center gap-4">
               <SvgDonut slices={donutSlices} />
               <div className="flex-1 min-w-0 space-y-1.5">
-                {stats.statusCounts.map((s) => (
-                  <StatusRow
-                    key={s.label}
-                    label={s.label}
-                    count={s.count}
-                    total={statusTotal}
-                    color={s.color}
-                  />
-                ))}
+                {stats.statusCounts.map((s) => {
+                  const filtered = filterByStatus(s.label);
+                  return (
+                    <Tip
+                      key={s.label}
+                      items={filtered}
+                      label={`${s.label.toLowerCase()} items`}
+                      onClick={() => openDrilldown(`Status: ${s.label}`, filtered)}
+                    >
+                      <StatusRow
+                        label={s.label}
+                        count={s.count}
+                        total={statusTotal}
+                        color={s.color}
+                      />
+                    </Tip>
+                  );
+                })}
               </div>
             </div>
           ) : (
@@ -420,15 +581,24 @@ export function Dashboard() {
           </h2>
           {stats.priorityCounts.length > 0 ? (
             <div>
-              {stats.priorityCounts.map((p) => (
-                <HBar
-                  key={p.label}
-                  label={p.label}
-                  value={p.count}
-                  max={priorityMax}
-                  color={p.color}
-                />
-              ))}
+              {stats.priorityCounts.map((p) => {
+                const filtered = filterByPriority(p.label);
+                return (
+                  <Tip
+                    key={p.label}
+                    items={filtered}
+                    label={`${p.label.toLowerCase()} priority items`}
+                    onClick={() => openDrilldown(`Priority: ${p.label}`, filtered)}
+                  >
+                    <HBar
+                      label={p.label}
+                      value={p.count}
+                      max={priorityMax}
+                      color={p.color}
+                    />
+                  </Tip>
+                );
+              })}
               <div className="mt-3 pt-3 border-t border-border/50 flex justify-between items-center">
                 <span className="text-[11px] text-muted-foreground">High + top priority</span>
                 <span className="text-[15px] font-medium" style={{ color: "#E24B4A" }}>
@@ -454,27 +624,35 @@ export function Dashboard() {
               {stats.typeCounts.map((t) => {
                 const pct = typeTotal > 0 ? Math.round((t.count / typeTotal) * 100) : 0;
                 const color = t.label === "Work" ? "#378ADD" : "#8b5cf6";
+                const filtered = filterByType(t.label);
                 return (
-                  <div key={t.label} className="flex items-center gap-3 text-sm">
-                    <span
-                      className="inline-block w-2.5 h-2.5 rounded-sm shrink-0"
-                      style={{ background: color }}
-                    />
-                    <span className="text-muted-foreground min-w-[70px]">{t.label}</span>
-                    <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
-                      <div
-                        className="h-full rounded-full"
-                        style={{
-                          width: `${pct}%`,
-                          background: color,
-                          transition: "width 0.4s ease",
-                        }}
+                  <Tip
+                    key={t.label}
+                    items={filtered}
+                    label={`${t.label.toLowerCase()} items`}
+                    onClick={() => openDrilldown(`Type: ${t.label}`, filtered)}
+                  >
+                    <div className="flex items-center gap-3 text-sm rounded px-1 -mx-1 py-0.5 cursor-pointer hover:bg-muted/60 transition-colors">
+                      <span
+                        className="inline-block w-2.5 h-2.5 rounded-sm shrink-0"
+                        style={{ background: color }}
                       />
+                      <span className="text-muted-foreground min-w-[70px]">{t.label}</span>
+                      <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                        <div
+                          className="h-full rounded-full"
+                          style={{
+                            width: `${pct}%`,
+                            background: color,
+                            transition: "width 0.4s ease",
+                          }}
+                        />
+                      </div>
+                      <span className="text-xs font-medium min-w-[32px] text-right">
+                        {t.count} ({pct}%)
+                      </span>
                     </div>
-                    <span className="text-xs font-medium min-w-[32px] text-right">
-                      {t.count} ({pct}%)
-                    </span>
-                  </div>
+                  </Tip>
                 );
               })}
             </div>
@@ -490,21 +668,38 @@ export function Dashboard() {
           </h2>
           {stats.accountCounts.length > 0 ? (
             <div>
-              {stats.accountCounts.map((a) => (
-                <AccountRow
-                  key={a.name}
-                  name={a.name}
-                  count={a.count}
-                  max={accountMax}
-                  color={a.color}
-                />
-              ))}
+              {stats.accountCounts.map((a) => {
+                const filtered = filterByAccount(a.name);
+                return (
+                  <Tip
+                    key={a.name}
+                    items={filtered}
+                    label={`items for ${a.name}`}
+                    onClick={() => openDrilldown(`Account: ${a.name}`, filtered)}
+                  >
+                    <AccountRow
+                      name={a.name}
+                      count={a.count}
+                      max={accountMax}
+                      color={a.color}
+                    />
+                  </Tip>
+                );
+              })}
             </div>
           ) : (
             <p className="text-muted-foreground text-sm">No customer-linked items</p>
           )}
         </Card>
       </div>
+
+      {/* Drilldown dialog */}
+      <DrilldownDialog
+        open={drilldown !== null}
+        onOpenChange={(open) => { if (!open) setDrilldown(null); }}
+        title={drilldown?.title ?? ""}
+        items={drilldown?.items ?? []}
+      />
     </div>
   );
 }

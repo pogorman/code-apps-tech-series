@@ -39,6 +39,7 @@ This is a Power Platform Code App — a React SPA that runs inside an iframe hos
 
 ## Key Constraints
 
+- **Dashboard interactivity** — hover tooltips (CSS `group/tip`) + click-to-drill-down (Radix Dialog) on all dashboard tiles and sub-elements; reverse-lookup maps convert display labels to Dataverse numeric keys
 - **No raw `fetch()`** — the iframe sandbox has no auth tokens; all data access goes through generated services
 - **No `$select` with computed fields** — including formatted values in `$select` causes silent zero-row returns; we omit `$select` entirely
 - **Dataverse only via database references** — do NOT use connector references (`shared_commondataserviceforapps`) for Dataverse

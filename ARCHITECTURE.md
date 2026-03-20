@@ -24,7 +24,7 @@ The `pac code run` proxy bridges local dev to the Dataverse environment. In prod
 - **`action-items/`** — Action item list (table), detail dialog, form dialog, delete confirmation, shared label/variant helpers
 - **`meeting-summaries/`** — Meeting Summary list (table), detail dialog, form dialog, delete confirmation; account lookup + summary textarea
 - **`ideas/`** — Idea list (table), detail dialog, form dialog, delete confirmation; category choice field + account and contact lookups, shared label/variant helpers
-- **`dashboard/`** — Action item analytics with KPI cards and pure CSS/SVG visualizations (status donut, priority bars, type breakdown, by-account bars)
+- **`dashboard/`** — Action item analytics with KPI cards and pure CSS/SVG visualizations (status donut, priority bars, type breakdown, by-account bars). Hover tooltips preview underlying data; click any tile or sub-element to open a drilldown dialog (`drilldown-dialog.tsx`) showing a filtered table of action items
 - **`layout/`** — App shell with left vertical sidebar (Briefcase icon + "My Work" brand, grouped nav: core, activity, capture) and top horizontal quick create bar with colored pill buttons ordered to match nav
 - **`ui/`** — shadcn/ui primitives (Button, Dialog, Table, Select, etc.)
 
@@ -80,6 +80,8 @@ All colors flow through CSS variables consumed by shadcn/ui components via the `
 | `getParentAccountId()` helper | Dataverse returns polymorphic lookup GUIDs as `_parentcustomerid_value` at runtime, but the generated type only declares `parentcustomerid` |
 | Account name resolution via `useAccounts()` | `parentcustomeridname` isn't populated by the Power Apps SDK on read — resolve names by joining with accounts data |
 | Choice field labels in `labels.ts` | Dataverse choice enums use numeric keys with mangled display names — a shared labels file maps keys to human-readable strings and badge variants |
+| Dashboard tooltips via CSS `group-hover` | No tooltip library installed — uses Tailwind `group/tip` + `group-hover/tip` for zero-dependency hover tooltips. `position` prop controls above/below placement to avoid viewport clipping |
+| Dashboard drilldown via inline filter | Each click handler computes a filtered `ActionItem[]` inline and passes it to a shared `DrilldownDialog`. Reverse-lookup maps (`STATUS_KEY_BY_LABEL`, etc.) convert display labels back to Dataverse numeric keys |
 | Customer lookup via OData bind | Action items use `tdvsp_Customer@odata.bind` with `/accounts(guid)` format for writes, `_tdvsp_customer_value` for reads — same polymorphic pattern as contacts |
 | Account/Contact lookups on Ideas | Ideas use both `tdvsp_Account@odata.bind` and `tdvsp_Contact@odata.bind` for writes, with `_tdvsp_account_value` / `_tdvsp_contact_value` for reads |
 | Meeting Summary account lookup | Uses `tdvsp_Account@odata.bind` for writes, `_tdvsp_account_value` for reads |

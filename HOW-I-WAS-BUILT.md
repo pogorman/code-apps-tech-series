@@ -207,3 +207,29 @@ An ELI5-style walkthrough of how this Code App was built, documenting prompts, e
 All changes in `src/components/layout/app-layout.tsx`.
 
 **Tracked notes:** `docs/tracked/phase-8-ui-enhance/3-multiple-minor-ui-tweaks.md`
+
+## Phase 11 — Dashboard Tooltips & Drilldown Cards
+
+**Prompt:** "all of the tiles on the dashboard should allow me to hover over them and see some data that makes up the visualization, but then click on them and have a card open that shows the data that makes up those vis's"
+
+**What happened:**
+
+1. Created `src/components/dashboard/drilldown-dialog.tsx` — reusable Radix Dialog showing a filtered table of action items (Name, Customer, Priority badge, Status badge, Date). Sticky header, scrollable body (`max-h-[60vh]`), wide layout (`max-w-3xl`)
+2. Added a `Tip` component to `dashboard.tsx` — generic CSS tooltip wrapper using Tailwind `group/tip` + `group-hover/tip` (no tooltip library). Shows item count, first 4 names, "+N more", "Click to view details". Supports `position` prop (`"above"` | `"below"`)
+3. Made all 4 KPI cards clickable with hover tooltips (`position="below"` to avoid viewport clipping)
+4. Made all chart sub-elements (`StatusRow`, `HBar`, `AccountRow`, type rows) independently clickable with hover tooltips
+5. Created reverse-lookup maps (`STATUS_KEY_BY_LABEL`, `PRIORITY_KEY_BY_LABEL`, `TYPE_KEY_BY_LABEL`) to convert display labels back to Dataverse numeric choice keys for filtering
+6. Added hover styling: `cursor-pointer hover:bg-muted/60` on sub-elements, `hover:shadow-md` on KPI cards
+
+**Fix:** KPI tooltips positioned above (`bottom-full`) clipped off-screen. Added `position` prop — KPI cards use `"below"` (renders with `top-full mt-2`), chart sub-elements use default `"above"`.
+
+**Tracked notes:** `docs/tracked/phase-8-ui-enhance/4-tool-tips-and-blowouts-for-dash.md`
+
+## Presentation Materials — Slide Outline & Live Demo Script
+
+**Prompt:** Create a slide outline and live demo script for the Code Apps tech series presentation targeting SLED customers.
+
+**What happened:**
+
+1. Created `docs/slide-outline.md` — 14-slide outline covering: app spectrum comparison (Canvas vs Model-Driven vs Code Apps), what/why/when for SLED, the stack, environment setup, AI-assisted development, deploy & govern, live demo transition, recap, resources
+2. Created `docs/live-demo-script.md` — 8-act live demo script (~30 min) with exact click/type/narrate instructions, pre-demo checklist, and recovery plays for common issues (Dataverse latency, create failures, Canvas vs Code Apps questions, licensing)

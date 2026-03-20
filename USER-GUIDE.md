@@ -8,6 +8,22 @@ This Code App provides a "My Work" interface for managing accounts, contacts, ac
 
 **Quick Create Bar** — Colored pill buttons across the top of the content area, ordered to match the sidebar nav. Click any button to navigate to that entity's list and immediately open a new record form. Buttons (left to right): account, contact, task (action item), summary (meeting), idea.
 
+## Dashboard
+
+The Dashboard is the home view, showing action item analytics.
+
+### KPI Cards (top row)
+
+Four summary cards: Total Items, Completion Rate, In Progress, and High/Top Priority. Hover any card to see a tooltip with item count and first 4 item names. Click to open a drilldown table showing all matching action items.
+
+### Charts (bottom row)
+
+Four visualizations: Status Breakdown (donut), Priority Distribution (horizontal bars), Work vs Personal (progress bars), and Items by Account (horizontal bars). Each sub-element (individual status row, priority bar, type row, account row) is independently hoverable and clickable. Hover for a tooltip preview; click for a full drilldown table.
+
+### Drilldown Dialog
+
+Clicking any dashboard element opens a dialog with a filtered table of action items. Columns: Name, Customer, Priority (color-coded badge), Status (color-coded badge), and Date. The dialog scrolls internally for long lists.
+
 ## Accounts
 
 ### Viewing Accounts
