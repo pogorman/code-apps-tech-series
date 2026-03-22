@@ -225,6 +225,30 @@ All changes in `src/components/layout/app-layout.tsx`.
 
 **Tracked notes:** `docs/tracked/phase-8-ui-enhance/4-tool-tips-and-blowouts-for-dash.md`
 
+## Phase 12 — AI Action Item Extraction & Command Palette
+
+**Prompt:** Add AI-powered action item extraction from meeting notes and a Ctrl+K command palette for global search.
+
+**What happened:**
+
+1. Created `src/lib/azure-openai.ts` — Azure OpenAI integration that sends meeting notes to a chat completion endpoint and parses the response into structured action items (name, priority, due date, notes). Maps AI priority strings ("High", "Medium", "Low") to Dataverse numeric choice keys. Gracefully checks for env var configuration
+2. Created `src/components/meeting-summaries/extract-action-items-dialog.tsx` — dialog triggered by a sparkle icon on each meeting summary row. Shows extracted items in a reviewable list; user can edit or remove before confirming. On confirm, bulk-creates action items in Dataverse with the meeting's account linked
+3. Created `src/components/command-palette.tsx` — global Ctrl+K search using cmdk + shadcn Dialog. Searches TanStack Query cache client-side (no extra API calls). Results grouped by entity with highlighted matches. Select to navigate
+4. Added `.env.example` documenting the three Azure OpenAI env vars
+5. Added Ctrl+K hint to sidebar footer
+
+**Tracked notes:** `docs/tracked/phase-9-ai-command-palette/`
+
+## Fix — CommandPalette Outside HashRouter (White Screen)
+
+**Problem:** After deploying the command palette, the app showed a blank white screen in Power Platform.
+
+**Root cause:** `CommandPalette` uses `useNavigate()` from react-router-dom, which requires a `<Router>` ancestor. It was rendered outside `<HashRouter>` in `App.tsx`, causing an uncaught error that crashed the entire React tree.
+
+**Fix:** Moved `<CommandPalette />` inside `<HashRouter>` in `App.tsx`. Redeployed via `npm run build && pac code push`.
+
+**Lesson:** Any component using React Router hooks (`useNavigate`, `useLocation`, `useParams`, etc.) must be rendered inside the Router provider. In a Power Platform Code App, there's no browser DevTools fallback — you just get a white screen.
+
 ## Presentation Materials — Slide Outline & Live Demo Script
 
 **Prompt:** Create a slide outline and live demo script for the Code Apps tech series presentation targeting SLED customers.

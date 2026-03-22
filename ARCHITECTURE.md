@@ -22,10 +22,11 @@ The `pac code run` proxy bridges local dev to the Dataverse environment. In prod
 - **`accounts/`** — Account list (table), detail dialog, form dialog, delete confirmation
 - **`contacts/`** — Contact list (table), detail dialog, form dialog, delete confirmation
 - **`action-items/`** — Action item list (table), detail dialog, form dialog, delete confirmation, shared label/variant helpers
-- **`meeting-summaries/`** — Meeting Summary list (table), detail dialog, form dialog, delete confirmation; account lookup + summary textarea
+- **`meeting-summaries/`** — Meeting Summary list (table), detail dialog, form dialog, delete confirmation; account lookup + summary textarea; AI extraction dialog (`extract-action-items-dialog.tsx`) that calls Azure OpenAI to pull action items from meeting notes
 - **`ideas/`** — Idea list (table), detail dialog, form dialog, delete confirmation; category choice field + account and contact lookups, shared label/variant helpers
 - **`dashboard/`** — Action item analytics with KPI cards and pure CSS/SVG visualizations (status donut, priority bars, type breakdown, by-account bars). Hover tooltips preview underlying data; click any tile or sub-element to open a drilldown dialog (`drilldown-dialog.tsx`) showing a filtered table of action items
 - **`layout/`** — App shell with left vertical sidebar (Briefcase icon + "My Work" brand, grouped nav: core, activity, capture) and top horizontal quick create bar with colored pill buttons ordered to match nav
+- **`command-palette.tsx`** — Global Ctrl+K search dialog (cmdk + shadcn Dialog). Searches TanStack Query cache client-side across all entities. Must be rendered inside `<HashRouter>` because it uses `useNavigate()`
 - **`ui/`** — shadcn/ui primitives (Button, Dialog, Table, Select, etc.)
 
 ### Data Hooks (`src/hooks/`)
@@ -40,6 +41,7 @@ The `pac code run` proxy bridges local dev to the Dataverse environment. In prod
 
 - `utils.ts` — `cn()` helper for Tailwind class merging
 - `get-parent-account-id.ts` — Extracts account GUID from a contact, working around Dataverse polymorphic lookup field naming
+- `azure-openai.ts` — Azure OpenAI integration for AI action item extraction. Calls a chat completion endpoint to parse meeting notes into structured action items. Configured via Vite env vars (`VITE_AOAI_ENDPOINT`, `VITE_AOAI_API_KEY`, `VITE_AOAI_DEPLOYMENT`). Maps AI priority strings to Dataverse numeric choice keys
 
 ### Generated Code (`src/generated/`, `.power/`)
 
@@ -86,3 +88,6 @@ All colors flow through CSS variables consumed by shadcn/ui components via the `
 | Account/Contact lookups on Ideas | Ideas use both `tdvsp_Account@odata.bind` and `tdvsp_Contact@odata.bind` for writes, with `_tdvsp_account_value` / `_tdvsp_contact_value` for reads |
 | Meeting Summary account lookup | Uses `tdvsp_Account@odata.bind` for writes, `_tdvsp_account_value` for reads |
 | Idea category labels in `labels.ts` | Same pattern as action item choice fields — numeric keys mapped to human-readable labels (Copilot Studio, Canvas Apps, Azure, etc.) |
+| AI extraction via Azure OpenAI | Meeting summary detail view offers "Extract Action Items with AI" — calls Azure OpenAI chat completion, parses JSON response into structured action items, maps priority strings to Dataverse choice keys, and bulk-creates via the action items mutation. Gracefully degrades with a toast if env vars aren't configured |
+| Command palette inside HashRouter | `CommandPalette` uses `useNavigate()` so it must be rendered inside `<HashRouter>`. Rendering it outside crashes React with a white screen |
+| Client-side command palette search | Ctrl+K searches TanStack Query cache — no extra Dataverse API calls. Results grouped by entity with highlighted matches |

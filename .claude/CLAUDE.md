@@ -22,7 +22,7 @@ The "Extract Action Items with AI" feature on meeting summaries calls Azure Open
 
 ## Command Palette (Ctrl+K)
 
-Global search across all entities via `src/components/command-palette.tsx`. Uses cmdk + shadcn Dialog. Searches TanStack Query cache client-side — no extra API calls. Mounted at app root in `App.tsx`. Ctrl+K hint in sidebar footer.
+Global search across all entities via `src/components/command-palette.tsx`. Uses cmdk + shadcn Dialog. Searches TanStack Query cache client-side — no extra API calls. **Must be rendered inside `<HashRouter>`** in `App.tsx` (uses `useNavigate()`). Ctrl+K hint in sidebar footer.
 
 ## Local Dev
 

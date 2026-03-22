@@ -34,8 +34,8 @@ export function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </AppLayout>
+        <CommandPalette />
       </HashRouter>
-      <CommandPalette />
       <Toaster richColors position="bottom-right" />
     </QueryClientProvider>
   );

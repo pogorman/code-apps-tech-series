@@ -60,6 +60,18 @@ Same pattern as action item Priority/Status/Type. The `tdvsp_category` field use
 
 Hover any dashboard tile (KPI card or chart sub-element) to see a tooltip previewing the underlying data — item count, first 4 item names, and a "Click to view details" hint. Click to open a drilldown dialog showing a full filtered table of the action items behind that visualization. Tooltips use a pure CSS approach (Tailwind `group/tip` + `group-hover/tip`) — no tooltip library. KPI cards at the top use `position="below"` to avoid clipping off the viewport; chart sub-elements use `position="above"` (default). Reverse-lookup maps (`STATUS_KEY_BY_LABEL`, `PRIORITY_KEY_BY_LABEL`, `TYPE_KEY_BY_LABEL`) convert display labels back to Dataverse numeric choice keys for filtering.
 
+## How does the "Extract Action Items with AI" feature work?
+
+On the Meeting Summaries page, click the sparkle icon on any meeting summary row to open the AI extraction dialog. It sends the meeting notes to Azure OpenAI (configured via `VITE_AOAI_ENDPOINT`, `VITE_AOAI_API_KEY`, `VITE_AOAI_DEPLOYMENT` env vars). The AI returns a JSON array of action items with name, priority, due date, and notes. You can review, edit, or remove items before confirming. On confirm, each item is created in Dataverse as a `tdvsp_actionitem` with the meeting's account linked automatically. If the env vars aren't set, the button shows a toast instead.
+
+## How does the Command Palette (Ctrl+K) work?
+
+Press Ctrl+K (or Cmd+K on Mac) to open a global search dialog. It searches across all entities (accounts, contacts, action items, meeting summaries, ideas) using the TanStack Query cache — no extra Dataverse API calls. Results are grouped by entity type with matching text highlighted. Select a result to navigate to that entity's list page.
+
+## Why did the app show a white screen after adding the Command Palette?
+
+`CommandPalette` uses React Router's `useNavigate()` hook, which requires a `<Router>` ancestor. It was initially rendered outside `<HashRouter>` in `App.tsx`, causing an uncaught error that crashed the entire React tree. The fix was moving `<CommandPalette />` inside `<HashRouter>`.
+
 ## What ports does local dev use?
 
 Vite runs on port 5173 (`npm run dev`). The Power Platform proxy (`pac code run`) runs on its own port — use the URL it prints, not the Vite URL directly.
