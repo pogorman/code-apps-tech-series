@@ -8,6 +8,7 @@ import { ActionItemList } from "@/components/action-items";
 import { MeetingSummaryList } from "@/components/meeting-summaries";
 import { IdeaList } from "@/components/ideas";
 import { Dashboard } from "@/components/dashboard";
+import { CommandPalette } from "@/components/command-palette";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,6 +35,7 @@ export function App() {
           </Routes>
         </AppLayout>
       </HashRouter>
+      <CommandPalette />
       <Toaster richColors position="bottom-right" />
     </QueryClientProvider>
   );

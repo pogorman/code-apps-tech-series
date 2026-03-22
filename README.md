@@ -41,6 +41,8 @@ Open the URL from `pac code run` (not Vite directly) — it wraps the app in the
 | State | Zustand |
 | Icons | Lucide React |
 | Toasts | Sonner |
+| Command Palette | cmdk |
+| AI | Azure OpenAI (optional — see `.env.example`) |
 
 ## Project Structure
 
@@ -56,9 +58,10 @@ src/
     ideas/            # Idea CRUD components
     dashboard/        # Analytics dashboard (tooltips + drilldown dialogs)
     layout/           # App shell (left sidebar + quick create bar)
+    command-palette.tsx # Global Ctrl+K search
   stores/             # Zustand stores (quick create)
   hooks/              # TanStack Query hooks wrapping Dataverse services
-  lib/                # Utilities (cn helper, Dataverse field helpers)
+  lib/                # Utilities (cn helper, Dataverse field helpers, Azure OpenAI service)
 docs/                 # Tracked notes, research, slide outline, demo script
 .power/               # Power Platform schemas (auto-generated)
 power.config.json     # Code App configuration

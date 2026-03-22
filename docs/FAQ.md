@@ -50,6 +50,14 @@ Auto-generated TypeScript services and models for each registered Dataverse tabl
 
 Hover any dashboard tile to see a tooltip previewing the underlying data. Click to open a drilldown dialog with a full filtered table. Tooltips use pure CSS (`group-hover/tip`), not a library. KPI cards use `position="below"` to avoid viewport clipping; chart sub-elements use `position="above"`.
 
+## How does the AI "Extract Action Items" feature work?
+
+Open a meeting summary detail view and click the purple **Extract Action Items** button. The app sends the meeting notes to Azure OpenAI, which returns structured action items (name, priority, due date, notes). You preview them in a table with checkboxes, deselect any you don't want, and click **Create**. Records are written to the `tdvsp_actionitem` table linked to the same account. Requires `VITE_AOAI_*` env vars — see `.env.example`.
+
+## How does the command palette work?
+
+Press **Ctrl+K** (or **Cmd+K** on Mac) anywhere in the app. A search modal opens with fuzzy search across all five entity types. Results are grouped by entity, with icons and subtitles. Arrow keys to navigate, Enter to select, Escape to close. It searches TanStack Query's cached data — no extra API calls.
+
 ## My deployed app shows a blank white screen but works locally?
 
 Vite defaults to `base: "/"`, which generates absolute asset paths (`/assets/index.js`). Power Platform serves Code Apps from a nested hosting path, so those paths 404. Set `base: "./"` in `vite.config.ts` to use relative paths. Local dev isn't affected because `pac code run` proxies to `localhost:3000` where root paths resolve naturally.

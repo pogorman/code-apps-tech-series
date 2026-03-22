@@ -1,6 +1,6 @@
 # Live Demo Script — "My Work" Code App
 
-Estimated time: 25–30 minutes.
+Estimated time: 30–35 minutes.
 Pre-requisites: App running via `pac code run` in browser, a few sample accounts/contacts/action items already in Dataverse.
 
 ---
@@ -11,7 +11,8 @@ Pre-requisites: App running via `pac code run` in browser, a few sample accounts
 - [ ] Browser open to the `pac code run` URL (NOT localhost:5173 — needs Platform context)
 - [ ] VS Code open to the project root with `src/components/` visible in the explorer
 - [ ] At least 3 accounts, 5+ contacts, 8+ action items with mixed statuses/priorities in Dataverse
-- [ ] At least 1 meeting summary and 1 idea linked to an account
+- [ ] At least 1 meeting summary (with substantial notes) and 1 idea linked to an account
+- [ ] `.env` configured with `VITE_AOAI_ENDPOINT`, `VITE_AOAI_API_KEY`, `VITE_AOAI_DEPLOYMENT` (Azure OpenAI)
 - [ ] Browser zoom set so sidebar + content area are clearly visible on the projector
 
 ---
@@ -162,7 +163,81 @@ Pre-requisites: App running via `pac code run` in browser, a few sample accounts
 
 ---
 
-## Act 6 — Under the Hood (5 min)
+## Act 6 — Command Palette (2 min)
+
+### Ctrl+K Global Search
+
+**PRESS:** Ctrl+K.
+
+> *"Watch this. Ctrl+K — command palette. Search across every entity in the app."*
+
+**TYPE:** A partial account name.
+
+> *"I typed three letters and it found accounts, contacts linked to that account, action items, meetings, ideas — all grouped with icons. This searches the TanStack Query cache, so it's instant. Zero API calls."*
+
+**PRESS:** Arrow down to a contact result, then Enter.
+
+> *"Arrow keys to navigate, Enter to jump straight there. This is the kind of UX people associate with Linear or Notion — not a Power App."*
+
+**PRESS:** Escape to close (or let navigation close it).
+
+> *"There's also a Search button in the sidebar footer with the Ctrl+K hint — for discoverability."*
+
+---
+
+## Act 7 — AI: Extract Action Items from Meeting Notes (5 min)
+
+### The Showstopper
+
+> *"Now for the feature that makes people do a double-take. We're going to have Azure OpenAI read meeting notes and automatically create action items in Dataverse."*
+
+### Navigate to a Meeting Summary
+
+**CLICK:** Sidebar → Meetings. Click a meeting summary with substantial notes.
+
+> *"Here's a meeting summary. Notes from a quarterly review. Notice the purple button — Extract Action Items. That's our AI integration."*
+
+### Extract
+
+**CLICK:** The purple **Extract Action Items** button.
+
+> *"It's sending the meeting notes to Azure OpenAI right now. The model reads the notes and extracts every actionable task — name, priority, due date, context."*
+
+**WAIT:** Watch the animated sparkle loading state (~2-3 seconds).
+
+> *"Here's what came back."*
+
+### Preview
+
+> *"A preview table. Each row is an action item the AI found. Name, priority badge, due date. Every item is checked by default — I can deselect anything I don't want."*
+
+**(Optional)** Uncheck one item to show interactivity.
+
+> *"Let's say I don't need this one. Uncheck it. Now I'll create the rest."*
+
+### Create
+
+**CLICK:** **Create N Action Items**.
+
+> *"Writing to Dataverse... done. Those are real records now — linked to the same account as this meeting summary."*
+
+### Verify
+
+**CLICK:** Sidebar → Action Items.
+
+> *"There they are. Priority badges, dates, everything the AI extracted. If I go to the dashboard..."*
+
+**CLICK:** Sidebar → Dashboard.
+
+> *"The numbers updated. New items in the status breakdown, priority distribution shifted. All reactive."*
+
+**Pause.** Let it land.
+
+> *"That's Azure OpenAI calling Dataverse, inside a Power App, deployed with one command. The AI service is a single TypeScript file — 60 lines. The preview dialog is a React component. Standard patterns, nothing exotic."*
+
+---
+
+## Act 8 — Under the Hood (5 min)
 
 ### Switch to VS Code
 
@@ -204,7 +279,7 @@ Pre-requisites: App running via `pac code run` in browser, a few sample accounts
 
 ---
 
-## Act 7 — Deploy (2 min)
+## Act 9 — Deploy (2 min)
 
 > *"Let's talk about getting this to production."*
 
@@ -221,11 +296,13 @@ pac code push
 
 ---
 
-## Act 8 — Wrap Up (2 min)
+## Act 10 — Wrap Up (2 min)
 
-> *"So what did we see? A real app — five entities, full CRUD, relationships, a dashboard with live charts — built with React and TypeScript, running on Dataverse, deployed to Power Platform with one command."*
+> *"So what did we see? A real app — five entities, full CRUD, relationships, a dashboard with live charts, a command palette, and AI-powered action item extraction — built with React and TypeScript, running on Dataverse, deployed to Power Platform with one command."*
 
 > *"This isn't a toy. It's the same stack your developers already use, wired into the same data and governance your admins already manage. Code Apps don't replace Canvas or Model-Driven — they give you a third option for when you need full control."*
+
+> *"And with Azure OpenAI in the mix, you're not just building forms — you're building intelligent apps, inside the governance boundary your admins already trust."*
 
 > *"If you're a developer: this is your IDE, your framework, your Git workflow — just plugged into Power Platform. If you're not a developer: the browser experience lets you start with AI and refine from there. Either way, you own the code."*
 

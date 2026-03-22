@@ -14,7 +14,15 @@ A Power Platform Code App demo for a tech series. React + TypeScript SPA deploye
 
 ## Stack
 
-Vite 7 + React 19 + TypeScript 5.9 + Tailwind v4 + shadcn/ui + TanStack Query + Zustand + Lucide + Sonner
+Vite 7 + React 19 + TypeScript 5.9 + Tailwind v4 + shadcn/ui + TanStack Query + Zustand + Lucide + Sonner + cmdk
+
+## AI Integration (Azure OpenAI)
+
+The "Extract Action Items with AI" feature on meeting summaries calls Azure OpenAI via `src/lib/azure-openai.ts`. Configured by Vite env vars (`VITE_AOAI_ENDPOINT`, `VITE_AOAI_API_KEY`, `VITE_AOAI_DEPLOYMENT`). If not configured, the button shows a toast. Priority strings from AI are mapped to Dataverse numeric choice keys in the same file.
+
+## Command Palette (Ctrl+K)
+
+Global search across all entities via `src/components/command-palette.tsx`. Uses cmdk + shadcn Dialog. Searches TanStack Query cache client-side — no extra API calls. Mounted at app root in `App.tsx`. Ctrl+K hint in sidebar footer.
 
 ## Local Dev
 
@@ -40,7 +48,7 @@ The generated types declare `parentcustomerid` (write field) but Dataverse OData
 
 ## Tracked Notes
 
-Research and decision notes live in `docs/tracked/`. Use `/track` to append, `/tracknew` to start a new version. First-cut build notes are in `docs/tracked/phase-1-first-steps/`. Phase 3 (relationships) notes are in `docs/tracked/phase-3-relationships/`. Phase 4 (UI theme) notes are in `docs/tracked/phase-4-ui-enhance/`. Phase 5 (action items) notes are in `docs/tracked/phase-5-action-items/`. Phase 6 (navigation rework) notes are in `docs/tracked/phase-6-ui-enhance/`. Phase 7 (HVA, meeting summary, idea CRUD) notes are in `docs/tracked/phase-7-idea-meet-hva-crud/`. Phase 8 (dashboard CSS rewrite, sidebar/quick-create, minor UI tweaks, dashboard tooltips/drilldown) notes are in `docs/tracked/phase-8-ui-enhance/`. Phase 9 (sidebar, quick create, drop HVAs) notes are in `docs/tracked/2-quick-create-bar-drop-hvas.md`. Presentation materials (slide outline, live demo script) are in `docs/`.
+Research and decision notes live in `docs/tracked/`. Use `/track` to append, `/tracknew` to start a new version. First-cut build notes are in `docs/tracked/phase-1-first-steps/`. Phase 3 (relationships) notes are in `docs/tracked/phase-3-relationships/`. Phase 4 (UI theme) notes are in `docs/tracked/phase-4-ui-enhance/`. Phase 5 (action items) notes are in `docs/tracked/phase-5-action-items/`. Phase 6 (navigation rework) notes are in `docs/tracked/phase-6-ui-enhance/`. Phase 7 (HVA, meeting summary, idea CRUD) notes are in `docs/tracked/phase-7-idea-meet-hva-crud/`. Phase 8 (dashboard CSS rewrite, sidebar/quick-create, minor UI tweaks, dashboard tooltips/drilldown) notes are in `docs/tracked/phase-8-ui-enhance/`. Phase 9 (AI + command palette) notes are in `docs/tracked/phase-9-ai-command-palette/`. Presentation materials (slide outline, live demo script) are in `docs/`.
 
 ## Dataverse Customer Lookup on Action Items (Gotcha)
 

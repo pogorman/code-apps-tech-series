@@ -165,7 +165,8 @@ pac code push       # Deploy to Power Platform
 - Full CRUD: create, read, update, delete
 - Cross-entity relationships (Account -> Contacts, Account -> Action Items)
 - Quick create bar for rapid data entry
-- Search, sort, and filter across all entities
+- Global command palette (Ctrl+K) — instant search across all entities
+- **AI-powered action item extraction** — Azure OpenAI reads meeting notes and creates Dataverse records
 
 *Let's switch to the live app.*
 
@@ -177,7 +178,8 @@ pac code push       # Deploy to Power Platform
 2. Standard React/TypeScript — your developers already know this stack
 3. Same Dataverse data, same security, same governance
 4. Two on-ramps: browser-based (AI-first) or local dev (full control)
-5. Deploy with one command — no separate hosting to manage
+5. Azure OpenAI integrates naturally — AI features inside a governed Power Platform app
+6. Deploy with one command — no separate hosting to manage
 
 ---
 

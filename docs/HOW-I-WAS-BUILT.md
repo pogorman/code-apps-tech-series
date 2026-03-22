@@ -89,3 +89,51 @@ This makes built output use relative paths (`./assets/...`), which resolve corre
 
 - Reorganized `docs/tracked/` — moved first-cut docs into `docs/tracked/phase-1-first-steps/`
 - Updated `/track` skill to stop prepending `tracked-` to named doc filenames
+
+## Sessions 4–8 — Iterative Feature Build
+
+Multiple sessions added: contacts CRUD, account-contact relationships, action items with Dataverse choice fields, meeting summaries, ideas, Fluent Design theming, sidebar navigation, quick create bar, pure CSS/SVG dashboard with tooltips and drilldown, and "My Work" rebrand. Detailed notes in `docs/tracked/phase-2-contacts/` through `docs/tracked/phase-8-ui-enhance/`.
+
+## Session 9 — AI Integration + Command Palette
+
+**Goal:** Add two "wow" features to make the audience say "That's a Power App?!"
+
+### Feature 1: AI Meeting Summary → Extract Action Items
+
+**Prompt:** "Add a feature where user views a meeting summary, clicks a button, Azure OpenAI extracts action items, user previews and confirms, Dataverse records are created."
+
+**What was built:**
+
+1. **`src/lib/azure-openai.ts`** — Service wrapper for Azure OpenAI Chat Completions API. System prompt instructs GPT-4o to extract action items as a JSON array. Maps AI priority strings ("High"/"Medium"/"Low") to Dataverse numeric choice keys. Gracefully degrades if env vars aren't set.
+
+2. **`src/components/meeting-summaries/extract-action-items-dialog.tsx`** — Multi-phase dialog:
+   - **Extracting** — animated sparkle icon + spinner
+   - **Preview** — table with checkboxes, priority badges, due dates. User can deselect items.
+   - **Creating** — progress spinner while writing to Dataverse
+   - **Done** — green checkmark with count
+
+3. **Modified `meeting-summary-detail-dialog.tsx`** — Added purple gradient "Extract Action Items" button with sparkle icon next to the Edit button.
+
+4. **`.env.example`** — Documents `VITE_AOAI_ENDPOINT`, `VITE_AOAI_API_KEY`, `VITE_AOAI_DEPLOYMENT`.
+
+**Key decisions:**
+- Vite env vars baked at build time (no server-side runtime in Code Apps). Production would route through APIM.
+- Bulk create uses sequential `mutateAsync` calls to handle partial failures gracefully.
+- Items linked to same account as the meeting summary via `tdvsp_Customer@odata.bind`.
+
+### Feature 2: Command Palette (Ctrl+K)
+
+**Prompt:** "Add a global Ctrl+K command palette that searches across all entities — Linear/Notion-style."
+
+**What was built:**
+
+1. **`src/components/command-palette.tsx`** — Full command palette using `cmdk` library + Radix Dialog. Searches TanStack Query's cached data (no extra API calls). Results grouped by entity type with Lucide icons. Fuzzy matching with highlighted text. Max 5 results per group. Keyboard navigation via cmdk.
+
+2. **Modified `App.tsx`** — Mounted `<CommandPalette />` at root level.
+
+3. **Modified `app-layout.tsx`** — Added "Search Ctrl+K" button in sidebar footer with keyboard shortcut hint.
+
+**Key decisions:**
+- Used `cmdk` rather than building from scratch — well-maintained, accessible, tiny bundle.
+- Client-side search against TanStack Query cache = instant results, zero latency.
+- Dispatches synthetic `KeyboardEvent` from sidebar button to reuse the same listener.

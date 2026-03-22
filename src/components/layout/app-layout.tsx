@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   FileText,
   Lightbulb,
+  Search,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQuickCreateStore } from "@/stores/quick-create-store";
@@ -170,8 +171,18 @@ export function AppLayout({ children }: AppLayoutProps) {
         </nav>
 
         {/* Footer */}
-        <div className="border-t border-border px-4 py-3">
-          <span className="text-[10px] text-muted-foreground/50">
+        <div className="border-t border-border px-4 py-3 space-y-1.5">
+          <button
+            onClick={() => window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", ctrlKey: true }))}
+            className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground/60 transition-colors hover:bg-muted hover:text-foreground"
+          >
+            <Search className="h-3 w-3" />
+            Search
+            <kbd className="ml-auto rounded border bg-muted px-1 py-0.5 font-mono text-[10px]">
+              Ctrl+K
+            </kbd>
+          </button>
+          <span className="block text-[10px] text-muted-foreground/50">
             Power Platform
           </span>
         </div>

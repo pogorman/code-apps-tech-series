@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,7 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import type { Tdvsp_meetingsummariesModel } from "@/generated";
 import { useAccounts } from "@/hooks/use-accounts";
-import { Pencil } from "lucide-react";
+import { Pencil, Sparkles } from "lucide-react";
+import { ExtractActionItemsDialog } from "./extract-action-items-dialog";
 
 type MeetingSummary = Tdvsp_meetingsummariesModel.Tdvsp_meetingsummaries;
 
@@ -37,6 +39,7 @@ export function MeetingSummaryDetailDialog({
   onEdit,
 }: MeetingSummaryDetailDialogProps) {
   const { data: accounts } = useAccounts();
+  const [extractOpen, setExtractOpen] = useState(false);
 
   if (!meetingSummary) return null;
 
@@ -50,14 +53,24 @@ export function MeetingSummaryDetailDialog({
         <DialogHeader>
           <div className="flex items-center justify-between pr-8">
             <DialogTitle>{meetingSummary.tdvsp_name}</DialogTitle>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onEdit(meetingSummary)}
-            >
-              <Pencil className="mr-2 h-3 w-3" />
-              Edit
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                size="sm"
+                onClick={() => setExtractOpen(true)}
+                className="bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white shadow-sm"
+              >
+                <Sparkles className="mr-2 h-3 w-3" />
+                Extract Action Items
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onEdit(meetingSummary)}
+              >
+                <Pencil className="mr-2 h-3 w-3" />
+                Edit
+              </Button>
+            </div>
           </div>
         </DialogHeader>
 
@@ -96,6 +109,12 @@ export function MeetingSummaryDetailDialog({
           </dl>
         </div>
       </DialogContent>
+
+      <ExtractActionItemsDialog
+        open={extractOpen}
+        onOpenChange={setExtractOpen}
+        meetingSummary={meetingSummary}
+      />
     </Dialog>
   );
 }
