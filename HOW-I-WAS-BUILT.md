@@ -249,6 +249,22 @@ All changes in `src/components/layout/app-layout.tsx`.
 
 **Lesson:** Any component using React Router hooks (`useNavigate`, `useLocation`, `useParams`, etc.) must be rendered inside the Router provider. In a Power Platform Code App, there's no browser DevTools fallback — you just get a white screen.
 
+## Phase 13 — Table/Card View Toggle
+
+**Prompt:** "i want my table views to have a selector for list/grid view and card view"
+
+**What happened:**
+
+1. Created `src/hooks/use-view-preference.ts` — localStorage-backed hook that persists the selected view mode (`"table"` | `"card"`) per entity across sessions
+2. Created `src/components/ui/view-toggle.tsx` — toggle button group with List and LayoutGrid Lucide icons, using shadcn Button with secondary/ghost variants
+3. Updated all 5 entity list components (`account-list.tsx`, `contact-list.tsx`, `action-item-list.tsx`, `idea-list.tsx`, `meeting-summary-list.tsx`):
+   - Added ViewToggle in toolbar between search bar and "New" button
+   - Added card view: responsive 3-column grid (`sm:grid-cols-2 lg:grid-cols-3`) of shadcn Card components
+   - Cards show entity-specific fields (badges for priority/status/category, account names, dates, contacts)
+   - Edit/delete buttons on each card header
+   - Cards are clickable to open detail dialog (same as table rows)
+   - Loading skeleton and empty states handled for both views
+
 ## Presentation Materials — Slide Outline & Live Demo Script
 
 **Prompt:** Create a slide outline and live demo script for the Code Apps tech series presentation targeting SLED customers.

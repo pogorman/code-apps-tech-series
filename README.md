@@ -60,7 +60,7 @@ src/
     layout/           # App shell (left sidebar + quick create bar)
     command-palette.tsx # Global Ctrl+K search
   stores/             # Zustand stores (quick create)
-  hooks/              # TanStack Query hooks wrapping Dataverse services
+  hooks/              # TanStack Query hooks wrapping Dataverse services + view preference
   lib/                # Utilities (cn helper, Dataverse field helpers, Azure OpenAI service)
 docs/                 # Tracked notes, research, slide outline, demo script
 .power/               # Power Platform schemas (auto-generated)

@@ -20,6 +20,9 @@ import { Pencil, Plus, Search, Trash2, Users } from "lucide-react";
 import type { ContactsModel } from "@/generated";
 import { toast } from "sonner";
 import { useQuickCreateStore } from "@/stores/quick-create-store";
+import { useViewPreference } from "@/hooks/use-view-preference";
+import { ViewToggle } from "@/components/ui/view-toggle";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type Contact = ContactsModel.Contacts;
 
@@ -27,6 +30,7 @@ export function ContactList() {
   const quickTarget = useQuickCreateStore((s) => s.target);
   const clearQuickCreate = useQuickCreateStore((s) => s.clear);
 
+  const [viewMode, setViewMode] = useViewPreference("contacts");
   const [search, setSearch] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
 
@@ -101,91 +105,153 @@ export function ContactList() {
             className="pl-9"
           />
         </div>
-        <Button onClick={() => setCreateOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          New Contact
-        </Button>
+        <div className="flex items-center gap-2">
+          <ViewToggle mode={viewMode} onChange={setViewMode} />
+          <Button onClick={() => setCreateOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            New Contact
+          </Button>
+        </div>
       </div>
 
-      <div className="overflow-hidden rounded-lg border bg-card shadow-sm">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Account</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Job Title</TableHead>
-              <TableHead className="w-[100px]">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {isLoading ? (
-              Array.from({ length: 5 }).map((_, i) => (
-                <TableRow key={i}>
-                  {Array.from({ length: 5 }).map((_, j) => (
-                    <TableCell key={j}>
-                      <Skeleton className="h-4 w-full" />
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : contacts?.length === 0 ? (
+      {viewMode === "table" ? (
+        <div className="overflow-hidden rounded-lg border bg-card shadow-sm">
+          <Table>
+            <TableHeader>
               <TableRow>
-                <TableCell
-                  colSpan={5}
-                  className="text-center text-muted-foreground py-8"
-                >
-                  {search
-                    ? "No contacts match your search."
-                    : "No contacts found. Create one to get started."}
-                </TableCell>
+                <TableHead>Name</TableHead>
+                <TableHead>Account</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Job Title</TableHead>
+                <TableHead className="w-[100px]">Actions</TableHead>
               </TableRow>
-            ) : (
-              contacts?.map((contact) => {
-                const displayName =
-                  contact.fullname ??
-                  `${contact.firstname ?? ""} ${contact.lastname}`.trim();
-                return (
-                  <TableRow
-                    key={contact.contactid}
-                    className="cursor-pointer"
-                    onClick={() => setViewContact(contact)}
-                  >
-                    <TableCell className="font-medium">{displayName}</TableCell>
-                    <TableCell>
-                      {accountNameMap.get(getParentAccountId(contact) ?? "") ?? "\u2014"}
-                    </TableCell>
-                    <TableCell>{contact.emailaddress1 ?? "\u2014"}</TableCell>
-                    <TableCell>{contact.jobtitle ?? "\u2014"}</TableCell>
-                    <TableCell>
-                      <div
-                        className="flex gap-1"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => setEditContact(contact)}
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-destructive hover:text-destructive"
-                          onClick={() => setDeleteContact(contact)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <TableRow key={i}>
+                    {Array.from({ length: 5 }).map((_, j) => (
+                      <TableCell key={j}>
+                        <Skeleton className="h-4 w-full" />
+                      </TableCell>
+                    ))}
                   </TableRow>
-                );
-              })
-            )}
-          </TableBody>
-        </Table>
-      </div>
+                ))
+              ) : contacts?.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={5}
+                    className="text-center text-muted-foreground py-8"
+                  >
+                    {search
+                      ? "No contacts match your search."
+                      : "No contacts found. Create one to get started."}
+                  </TableCell>
+                </TableRow>
+              ) : (
+                contacts?.map((contact) => {
+                  const displayName =
+                    contact.fullname ??
+                    `${contact.firstname ?? ""} ${contact.lastname}`.trim();
+                  return (
+                    <TableRow
+                      key={contact.contactid}
+                      className="cursor-pointer"
+                      onClick={() => setViewContact(contact)}
+                    >
+                      <TableCell className="font-medium">{displayName}</TableCell>
+                      <TableCell>
+                        {accountNameMap.get(getParentAccountId(contact) ?? "") ?? "\u2014"}
+                      </TableCell>
+                      <TableCell>{contact.emailaddress1 ?? "\u2014"}</TableCell>
+                      <TableCell>{contact.jobtitle ?? "\u2014"}</TableCell>
+                      <TableCell>
+                        <div
+                          className="flex gap-1"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setEditContact(contact)}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-destructive hover:text-destructive"
+                            onClick={() => setDeleteContact(contact)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      ) : isLoading ? (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Card key={i}>
+              <CardHeader><Skeleton className="h-5 w-3/4" /></CardHeader>
+              <CardContent className="space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-2/3" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : contacts?.length === 0 ? (
+        <div className="text-center text-muted-foreground py-8">
+          {search ? "No contacts match your search." : "No contacts found. Create one to get started."}
+        </div>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {contacts?.map((contact) => {
+            const displayName =
+              contact.fullname ??
+              `${contact.firstname ?? ""} ${contact.lastname}`.trim();
+            return (
+              <Card
+                key={contact.contactid}
+                className="cursor-pointer transition-shadow hover:shadow-md"
+                onClick={() => setViewContact(contact)}
+              >
+                <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
+                  <CardTitle className="text-base font-semibold">{displayName}</CardTitle>
+                  <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
+                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setEditContact(contact)}>
+                      <Pencil className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => setDeleteContact(contact)}>
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-1 text-sm text-muted-foreground">
+                  <div>
+                    <span className="font-medium text-foreground">Account: </span>
+                    {accountNameMap.get(getParentAccountId(contact) ?? "") ?? "\u2014"}
+                  </div>
+                  <div>
+                    <span className="font-medium text-foreground">Email: </span>
+                    {contact.emailaddress1 ?? "\u2014"}
+                  </div>
+                  <div>
+                    <span className="font-medium text-foreground">Title: </span>
+                    {contact.jobtitle ?? "\u2014"}
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      )}
 
       <ContactFormDialog
         open={createOpen}

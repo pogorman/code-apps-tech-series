@@ -26,6 +26,9 @@ import {
   priorityVariant,
   statusVariant,
 } from "./labels";
+import { useViewPreference } from "@/hooks/use-view-preference";
+import { ViewToggle } from "@/components/ui/view-toggle";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type ActionItem = Tdvsp_actionitemsModel.Tdvsp_actionitems;
 
@@ -33,6 +36,7 @@ export function ActionItemList() {
   const quickTarget = useQuickCreateStore((s) => s.target);
   const clearQuickCreate = useQuickCreateStore((s) => s.clear);
 
+  const [viewMode, setViewMode] = useViewPreference("action-items");
   const [search, setSearch] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
 
@@ -103,98 +107,168 @@ export function ActionItemList() {
             className="pl-9"
           />
         </div>
-        <Button onClick={() => setCreateOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          New Action Item
-        </Button>
+        <div className="flex items-center gap-2">
+          <ViewToggle mode={viewMode} onChange={setViewMode} />
+          <Button onClick={() => setCreateOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            New Action Item
+          </Button>
+        </div>
       </div>
 
-      <div className="overflow-hidden rounded-lg border bg-card shadow-sm">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Customer</TableHead>
-              <TableHead className="whitespace-nowrap">Priority</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead className="w-[100px]">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {isLoading ? (
-              Array.from({ length: 5 }).map((_, i) => (
-                <TableRow key={i}>
-                  {Array.from({ length: 6 }).map((_, j) => (
-                    <TableCell key={j}>
-                      <Skeleton className="h-4 w-full" />
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : items?.length === 0 ? (
+      {viewMode === "table" ? (
+        <div className="overflow-hidden rounded-lg border bg-card shadow-sm">
+          <Table>
+            <TableHeader>
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
-                  {search ? "No action items match your search." : "No action items found. Create one to get started."}
-                </TableCell>
+                <TableHead>Name</TableHead>
+                <TableHead>Customer</TableHead>
+                <TableHead className="whitespace-nowrap">Priority</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead className="w-[100px]">Actions</TableHead>
               </TableRow>
-            ) : (
-              items?.map((item) => {
-                const customerId = (item as unknown as Record<string, string>)._tdvsp_customer_value;
-                const customerName = item.tdvsp_customername ?? accountNameMap.get(customerId ?? "") ?? "\u2014";
-                return (
-                  <TableRow
-                    key={item.tdvsp_actionitemid}
-                    className="cursor-pointer"
-                    onClick={() => setViewItem(item)}
-                  >
-                    <TableCell className="font-medium">{item.tdvsp_name}</TableCell>
-                    <TableCell>{customerName}</TableCell>
-                    <TableCell className="whitespace-nowrap">
-                      {item.tdvsp_priority != null ? (
-                        <Badge variant={priorityVariant(item.tdvsp_priority)}>
-                          {PRIORITY_LABELS[item.tdvsp_priority]}
-                        </Badge>
-                      ) : "\u2014"}
-                    </TableCell>
-                    <TableCell>
-                      {item.tdvsp_taskstatus != null ? (
-                        <Badge variant={statusVariant(item.tdvsp_taskstatus)}>
-                          {STATUS_LABELS[item.tdvsp_taskstatus]}
-                        </Badge>
-                      ) : "\u2014"}
-                    </TableCell>
-                    <TableCell>
-                      {item.tdvsp_date
-                        ? new Date(item.tdvsp_date).toLocaleDateString()
-                        : "\u2014"}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => setEditItem(item)}
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-destructive hover:text-destructive"
-                          onClick={() => setDeleteItem(item)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <TableRow key={i}>
+                    {Array.from({ length: 6 }).map((_, j) => (
+                      <TableCell key={j}>
+                        <Skeleton className="h-4 w-full" />
+                      </TableCell>
+                    ))}
                   </TableRow>
-                );
-              })
-            )}
-          </TableBody>
-        </Table>
-      </div>
+                ))
+              ) : items?.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                    {search ? "No action items match your search." : "No action items found. Create one to get started."}
+                  </TableCell>
+                </TableRow>
+              ) : (
+                items?.map((item) => {
+                  const customerId = (item as unknown as Record<string, string>)._tdvsp_customer_value;
+                  const customerName = item.tdvsp_customername ?? accountNameMap.get(customerId ?? "") ?? "\u2014";
+                  return (
+                    <TableRow
+                      key={item.tdvsp_actionitemid}
+                      className="cursor-pointer"
+                      onClick={() => setViewItem(item)}
+                    >
+                      <TableCell className="font-medium">{item.tdvsp_name}</TableCell>
+                      <TableCell>{customerName}</TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        {item.tdvsp_priority != null ? (
+                          <Badge variant={priorityVariant(item.tdvsp_priority)}>
+                            {PRIORITY_LABELS[item.tdvsp_priority]}
+                          </Badge>
+                        ) : "\u2014"}
+                      </TableCell>
+                      <TableCell>
+                        {item.tdvsp_taskstatus != null ? (
+                          <Badge variant={statusVariant(item.tdvsp_taskstatus)}>
+                            {STATUS_LABELS[item.tdvsp_taskstatus]}
+                          </Badge>
+                        ) : "\u2014"}
+                      </TableCell>
+                      <TableCell>
+                        {item.tdvsp_date
+                          ? new Date(item.tdvsp_date).toLocaleDateString()
+                          : "\u2014"}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setEditItem(item)}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-destructive hover:text-destructive"
+                            onClick={() => setDeleteItem(item)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      ) : isLoading ? (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Card key={i}>
+              <CardHeader><Skeleton className="h-5 w-3/4" /></CardHeader>
+              <CardContent className="space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-2/3" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : items?.length === 0 ? (
+        <div className="text-center text-muted-foreground py-8">
+          {search ? "No action items match your search." : "No action items found. Create one to get started."}
+        </div>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {items?.map((item) => {
+            const customerId = (item as unknown as Record<string, string>)._tdvsp_customer_value;
+            const customerName = item.tdvsp_customername ?? accountNameMap.get(customerId ?? "") ?? "\u2014";
+            return (
+              <Card
+                key={item.tdvsp_actionitemid}
+                className="cursor-pointer transition-shadow hover:shadow-md"
+                onClick={() => setViewItem(item)}
+              >
+                <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
+                  <CardTitle className="text-base font-semibold">{item.tdvsp_name}</CardTitle>
+                  <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
+                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setEditItem(item)}>
+                      <Pencil className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => setDeleteItem(item)}>
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-2 text-sm">
+                  <div className="text-muted-foreground">
+                    <span className="font-medium text-foreground">Customer: </span>
+                    {customerName}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {item.tdvsp_priority != null && (
+                      <Badge variant={priorityVariant(item.tdvsp_priority)}>
+                        {PRIORITY_LABELS[item.tdvsp_priority]}
+                      </Badge>
+                    )}
+                    {item.tdvsp_taskstatus != null && (
+                      <Badge variant={statusVariant(item.tdvsp_taskstatus)}>
+                        {STATUS_LABELS[item.tdvsp_taskstatus]}
+                      </Badge>
+                    )}
+                  </div>
+                  {item.tdvsp_date && (
+                    <div className="text-muted-foreground">
+                      {new Date(item.tdvsp_date).toLocaleDateString()}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      )}
 
       <ActionItemFormDialog
         open={createOpen}

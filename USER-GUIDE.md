@@ -24,11 +24,20 @@ Four visualizations: Status Breakdown (donut), Priority Distribution (horizontal
 
 Clicking any dashboard element opens a dialog with a filtered table of action items. Columns: Name, Customer, Priority (color-coded badge), Status (color-coded badge), and Date. The dialog scrolls internally for long lists.
 
+## View Toggle (Table / Card)
+
+All entity lists include a view toggle in the toolbar (between the search bar and the "New" button). Two modes are available:
+
+- **Table view** (list icon) — Traditional data table with column headers. Default view.
+- **Card view** (grid icon) — Responsive card grid (up to 3 columns). Each card shows key fields, edit/delete buttons, and is clickable to open the detail dialog.
+
+Your preference is saved per entity and persists across sessions.
+
 ## Accounts
 
 ### Viewing Accounts
 
-The Accounts page shows a page header with icon, a search bar, and a data table with Microsoft Blue column headers. Columns: Name, Contacts, CSA, CSAM, AE, and Actions. The Contacts column lists all contacts linked to the account, stacked vertically. CSA, CSAM, and AE are placeholder columns for future use. Click any row to open the account detail card.
+The Accounts page shows a page header with icon, a search bar, a view toggle, and a data table with Microsoft Blue column headers. Columns: Name, Contacts, CSA, CSAM, AE, and Actions. The Contacts column lists all contacts linked to the account, stacked vertically. CSA, CSAM, and AE are placeholder columns for future use. Click any row to open the account detail card. In card view, each card shows the account name and linked contacts.
 
 ### Account Detail Card
 
@@ -46,7 +55,7 @@ Use the pencil (edit) and trash (delete) icons in the Actions column, or click *
 
 ### Viewing Contacts
 
-The Contacts page shows a page header with icon, a search bar, and a data table with Microsoft Blue column headers. Columns: Name, Account, Email, Job Title, and Actions. Click any row to open the contact detail card.
+The Contacts page shows a page header with icon, a search bar, a view toggle, and a data table with Microsoft Blue column headers. Columns: Name, Account, Email, Job Title, and Actions. Click any row to open the contact detail card. In card view, each card shows name, account, email, and job title.
 
 ### Contact Detail Card
 
@@ -68,7 +77,7 @@ Use the pencil (edit) and trash (delete) icons in the Actions column, or click *
 
 ### Viewing Action Items
 
-The Action Items page shows a page header with icon, a search bar, and a data table. Columns: Name, Customer, Priority, Status, Date, and Actions. Priority and Status display as color-coded badges. Click any row to open the detail card.
+The Action Items page shows a page header with icon, a search bar, a view toggle, and a data table. Columns: Name, Customer, Priority, Status, Date, and Actions. Priority and Status display as color-coded badges. Click any row to open the detail card. In card view, each card shows name, customer, priority/status badges, and date.
 
 ### Action Item Detail Card
 
@@ -93,7 +102,7 @@ Use the pencil (edit) and trash (delete) icons in the Actions column, or click *
 
 ### Viewing Meeting Summaries
 
-The Meetings page shows a page header with a FileText icon, a search bar, and a data table. Columns: Title, Account, Date, and Actions. Click any row to open the detail card.
+The Meetings page shows a page header with a FileText icon, a search bar, a view toggle, and a data table. Columns: Title, Account, Date, and Actions. Click any row to open the detail card. In card view, each card shows title, account, and date.
 
 ### Meeting Summary Detail Card
 
@@ -125,7 +134,7 @@ Press **Ctrl+K** (or **Cmd+K** on Mac) anywhere in the app to open a global sear
 
 ### Viewing Ideas
 
-The Ideas page shows a page header with a Lightbulb icon, a search bar, and a data table. Columns: Name, Account, Category (as a color-coded badge), and Actions. Click any row to open the detail card.
+The Ideas page shows a page header with a Lightbulb icon, a search bar, a view toggle, and a data table. Columns: Name, Account, Category (as a color-coded badge), and Actions. Click any row to open the detail card. In card view, each card shows name, account, and category badge.
 
 ### Idea Detail Card
 

@@ -72,6 +72,10 @@ Press Ctrl+K (or Cmd+K on Mac) to open a global search dialog. It searches acros
 
 `CommandPalette` uses React Router's `useNavigate()` hook, which requires a `<Router>` ancestor. It was initially rendered outside `<HashRouter>` in `App.tsx`, causing an uncaught error that crashed the entire React tree. The fix was moving `<CommandPalette />` inside `<HashRouter>`.
 
+## How does the table/card view toggle work?
+
+Each entity list (Accounts, Contacts, Action Items, Meeting Summaries, Ideas) has a toggle in the toolbar between the search bar and the "New" button. Click the list icon for table view or the grid icon for card view. Card view shows a responsive 3-column grid of shadcn `Card` components with the same click-to-view, edit, and delete actions. Your preference is saved per entity in `localStorage` via the `useViewPreference()` hook, so it persists across sessions.
+
 ## What ports does local dev use?
 
 Vite runs on port 5173 (`npm run dev`). The Power Platform proxy (`pac code run`) runs on its own port — use the URL it prints, not the Vite URL directly.

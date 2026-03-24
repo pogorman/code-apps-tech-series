@@ -21,6 +21,9 @@ import type { AccountsModel } from "@/generated";
 import { toast } from "sonner";
 import { useQuickCreateStore } from "@/stores/quick-create-store";
 import { getParentAccountId } from "@/lib/get-parent-account-id";
+import { useViewPreference } from "@/hooks/use-view-preference";
+import { ViewToggle } from "@/components/ui/view-toggle";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type Account = AccountsModel.Accounts;
 
@@ -29,6 +32,7 @@ export function AccountList() {
   const quickTarget = useQuickCreateStore((s) => s.target);
   const clearQuickCreate = useQuickCreateStore((s) => s.clear);
 
+  const [viewMode, setViewMode] = useViewPreference("accounts");
   const [search, setSearch] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
 
@@ -106,90 +110,142 @@ export function AccountList() {
             className="pl-9"
           />
         </div>
-        <Button onClick={() => setCreateOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          New Account
-        </Button>
+        <div className="flex items-center gap-2">
+          <ViewToggle mode={viewMode} onChange={setViewMode} />
+          <Button onClick={() => setCreateOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            New Account
+          </Button>
+        </div>
       </div>
 
-      <div className="overflow-hidden rounded-lg border bg-card shadow-sm">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[39%]">Name</TableHead>
-              <TableHead>Contacts</TableHead>
-              <TableHead>CSA</TableHead>
-              <TableHead>CSAM</TableHead>
-              <TableHead>AE</TableHead>
-              <TableHead className="w-[100px]">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {isLoading ? (
-              Array.from({ length: 5 }).map((_, i) => (
-                <TableRow key={i}>
-                  {Array.from({ length: 6 }).map((_, j) => (
-                    <TableCell key={j}>
-                      <Skeleton className="h-4 w-full" />
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : accounts?.length === 0 ? (
+      {viewMode === "table" ? (
+        <div className="overflow-hidden rounded-lg border bg-card shadow-sm">
+          <Table>
+            <TableHeader>
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
-                  {search ? "No accounts match your search." : "No accounts found. Create one to get started."}
-                </TableCell>
+                <TableHead className="w-[39%]">Name</TableHead>
+                <TableHead>Contacts</TableHead>
+                <TableHead>CSA</TableHead>
+                <TableHead>CSAM</TableHead>
+                <TableHead>AE</TableHead>
+                <TableHead className="w-[100px]">Actions</TableHead>
               </TableRow>
-            ) : (
-              accounts?.map((account) => (
-                <TableRow
-                  key={account.accountid}
-                  className="cursor-pointer"
-                  onClick={() => setViewAccount(account)}
-                >
-                  <TableCell className="font-medium">{account.name}</TableCell>
-                  <TableCell>
-                    {(() => {
-                      const contacts = contactsByAccount.get(account.accountid);
-                      if (!contacts?.length) return <span className="text-muted-foreground">—</span>;
-                      return (
-                        <div className="flex flex-col gap-0.5">
-                          {contacts.map((c, i) => (
-                            <span key={i} className="text-sm">{c.name}</span>
-                          ))}
-                        </div>
-                      );
-                    })()}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">—</TableCell>
-                  <TableCell className="text-muted-foreground">—</TableCell>
-                  <TableCell className="text-muted-foreground">—</TableCell>
-                  <TableCell>
-                    <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setEditAccount(account)}
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-destructive hover:text-destructive"
-                        onClick={() => setDeleteAccount(account)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <TableRow key={i}>
+                    {Array.from({ length: 6 }).map((_, j) => (
+                      <TableCell key={j}>
+                        <Skeleton className="h-4 w-full" />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : accounts?.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                    {search ? "No accounts match your search." : "No accounts found. Create one to get started."}
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
+              ) : (
+                accounts?.map((account) => (
+                  <TableRow
+                    key={account.accountid}
+                    className="cursor-pointer"
+                    onClick={() => setViewAccount(account)}
+                  >
+                    <TableCell className="font-medium">{account.name}</TableCell>
+                    <TableCell>
+                      {(() => {
+                        const contacts = contactsByAccount.get(account.accountid);
+                        if (!contacts?.length) return <span className="text-muted-foreground">—</span>;
+                        return (
+                          <div className="flex flex-col gap-0.5">
+                            {contacts.map((c, i) => (
+                              <span key={i} className="text-sm">{c.name}</span>
+                            ))}
+                          </div>
+                        );
+                      })()}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">—</TableCell>
+                    <TableCell className="text-muted-foreground">—</TableCell>
+                    <TableCell className="text-muted-foreground">—</TableCell>
+                    <TableCell>
+                      <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setEditAccount(account)}
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-destructive hover:text-destructive"
+                          onClick={() => setDeleteAccount(account)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      ) : isLoading ? (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Card key={i}>
+              <CardHeader><Skeleton className="h-5 w-3/4" /></CardHeader>
+              <CardContent className="space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-2/3" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : accounts?.length === 0 ? (
+        <div className="text-center text-muted-foreground py-8">
+          {search ? "No accounts match your search." : "No accounts found. Create one to get started."}
+        </div>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {accounts?.map((account) => {
+            const contacts = contactsByAccount.get(account.accountid);
+            return (
+              <Card
+                key={account.accountid}
+                className="cursor-pointer transition-shadow hover:shadow-md"
+                onClick={() => setViewAccount(account)}
+              >
+                <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
+                  <CardTitle className="text-base font-semibold">{account.name}</CardTitle>
+                  <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
+                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setEditAccount(account)}>
+                      <Pencil className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => setDeleteAccount(account)}>
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-1 text-sm text-muted-foreground">
+                  <div>
+                    <span className="font-medium text-foreground">Contacts: </span>
+                    {contacts?.length ? contacts.map((c) => c.name).join(", ") : "—"}
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      )}
 
       <AccountFormDialog
         open={createOpen}

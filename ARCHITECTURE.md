@@ -19,15 +19,15 @@ The `pac code run` proxy bridges local dev to the Dataverse environment. In prod
 
 ### UI Components (`src/components/`)
 
-- **`accounts/`** — Account list (table), detail dialog, form dialog, delete confirmation
-- **`contacts/`** — Contact list (table), detail dialog, form dialog, delete confirmation
-- **`action-items/`** — Action item list (table), detail dialog, form dialog, delete confirmation, shared label/variant helpers
-- **`meeting-summaries/`** — Meeting Summary list (table), detail dialog, form dialog, delete confirmation; account lookup + summary textarea; AI extraction dialog (`extract-action-items-dialog.tsx`) that calls Azure OpenAI to pull action items from meeting notes
-- **`ideas/`** — Idea list (table), detail dialog, form dialog, delete confirmation; category choice field + account and contact lookups, shared label/variant helpers
+- **`accounts/`** — Account list (table/card toggle), detail dialog, form dialog, delete confirmation
+- **`contacts/`** — Contact list (table/card toggle), detail dialog, form dialog, delete confirmation
+- **`action-items/`** — Action item list (table/card toggle), detail dialog, form dialog, delete confirmation, shared label/variant helpers
+- **`meeting-summaries/`** — Meeting Summary list (table/card toggle), detail dialog, form dialog, delete confirmation; account lookup + summary textarea; AI extraction dialog (`extract-action-items-dialog.tsx`) that calls Azure OpenAI to pull action items from meeting notes
+- **`ideas/`** — Idea list (table/card toggle), detail dialog, form dialog, delete confirmation; category choice field + account and contact lookups, shared label/variant helpers
 - **`dashboard/`** — Action item analytics with KPI cards and pure CSS/SVG visualizations (status donut, priority bars, type breakdown, by-account bars). Hover tooltips preview underlying data; click any tile or sub-element to open a drilldown dialog (`drilldown-dialog.tsx`) showing a filtered table of action items
 - **`layout/`** — App shell with left vertical sidebar (Briefcase icon + "My Work" brand, grouped nav: core, activity, capture) and top horizontal quick create bar with colored pill buttons ordered to match nav
 - **`command-palette.tsx`** — Global Ctrl+K search dialog (cmdk + shadcn Dialog). Searches TanStack Query cache client-side across all entities. Must be rendered inside `<HashRouter>` because it uses `useNavigate()`
-- **`ui/`** — shadcn/ui primitives (Button, Dialog, Table, Select, etc.)
+- **`ui/`** — shadcn/ui primitives (Button, Dialog, Table, Select, etc.) + `ViewToggle` component for list/card view switching
 
 ### Data Hooks (`src/hooks/`)
 
@@ -36,6 +36,7 @@ The `pac code run` proxy bridges local dev to the Dataverse environment. In prod
 - `use-action-items.ts` — TanStack Query hooks wrapping `Tdvsp_actionitemsService` (CRUD + cache invalidation)
 - `use-meeting-summaries.ts` — TanStack Query hooks wrapping `Tdvsp_meetingsummariesService` (CRUD + cache invalidation)
 - `use-ideas.ts` — TanStack Query hooks wrapping `Tdvsp_ideasService` (CRUD + cache invalidation)
+- `use-view-preference.ts` — localStorage-backed hook for persisting table/card view mode per entity
 
 ### Utilities (`src/lib/`)
 
@@ -91,3 +92,4 @@ All colors flow through CSS variables consumed by shadcn/ui components via the `
 | AI extraction via Azure OpenAI | Meeting summary detail view offers "Extract Action Items with AI" — calls Azure OpenAI chat completion, parses JSON response into structured action items, maps priority strings to Dataverse choice keys, and bulk-creates via the action items mutation. Gracefully degrades with a toast if env vars aren't configured |
 | Command palette inside HashRouter | `CommandPalette` uses `useNavigate()` so it must be rendered inside `<HashRouter>`. Rendering it outside crashes React with a white screen |
 | Client-side command palette search | Ctrl+K searches TanStack Query cache — no extra Dataverse API calls. Results grouped by entity with highlighted matches |
+| Table/card view toggle | All 5 entity lists support a toggle between table and card views. Preference is stored per entity in `localStorage` via `useViewPreference()`. Card view uses a responsive 3-column grid of shadcn `Card` components |
