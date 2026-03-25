@@ -26,7 +26,7 @@ Global search across all entities via `src/components/command-palette.tsx`. Uses
 
 ## Local Dev
 
-Two terminals: `npm run dev` (port 5173) + `pac code run`
+Two terminals: `npm run dev` (port 3001) + `pac code run --appUrl http://localhost:3001`
 
 ## Deploy
 
@@ -46,9 +46,13 @@ Then create hooks in `src/hooks/` and components in `src/components/<table>/`.
 
 The generated types declare `parentcustomerid` (write field) but Dataverse OData returns the GUID as `_parentcustomerid_value` at runtime. The generated type omits this field. Use `getParentAccountId()` from `src/lib/get-parent-account-id.ts` to safely extract the account ID from a contact. Same pattern applies to `parentcustomeridname` — resolve account names via `useAccounts()` lookup instead.
 
+## Board (Kanban Dashboard)
+
+The Board view (`/#/board`) is a 4-column Kanban board in `src/components/dashboard/board-dashboard.tsx`. Columns: parking lot (Recognized action items), work (active action items), projects (accounts), ideas. Uses `useActionItems()`, `useAccounts()`, and `useIdeas()` hooks. Sidebar nav item "Board" with `Columns3` icon sits alongside "Dashboard".
+
 ## Tracked Notes
 
-Research and decision notes live in `docs/tracked/`. Use `/track` to append, `/tracknew` to start a new version. First-cut build notes are in `docs/tracked/phase-1-first-steps/`. Phase 3 (relationships) notes are in `docs/tracked/phase-3-relationships/`. Phase 4 (UI theme) notes are in `docs/tracked/phase-4-ui-enhance/`. Phase 5 (action items) notes are in `docs/tracked/phase-5-action-items/`. Phase 6 (navigation rework) notes are in `docs/tracked/phase-6-ui-enhance/`. Phase 7 (HVA, meeting summary, idea CRUD) notes are in `docs/tracked/phase-7-idea-meet-hva-crud/`. Phase 8 (dashboard CSS rewrite, sidebar/quick-create, minor UI tweaks, dashboard tooltips/drilldown) notes are in `docs/tracked/phase-8-ui-enhance/`. Phase 9 (AI + command palette) notes are in `docs/tracked/phase-9-ai-command-palette/`. Presentation materials (slide outline, live demo script) are in `docs/`.
+Research and decision notes live in `docs/tracked/`. Use `/track` to append, `/tracknew` to start a new version. First-cut build notes are in `docs/tracked/phase-1-first-steps/`. Phase 3 (relationships) notes are in `docs/tracked/phase-3-relationships/`. Phase 4 (UI theme) notes are in `docs/tracked/phase-4-ui-enhance/`. Phase 5 (action items) notes are in `docs/tracked/phase-5-action-items/`. Phase 6 (navigation rework) notes are in `docs/tracked/phase-6-ui-enhance/`. Phase 7 (HVA, meeting summary, idea CRUD) notes are in `docs/tracked/phase-7-idea-meet-hva-crud/`. Phase 8 (dashboard CSS rewrite, sidebar/quick-create, minor UI tweaks, dashboard tooltips/drilldown) notes are in `docs/tracked/phase-8-ui-enhance/`. Phase 9 (AI + command palette) notes are in `docs/tracked/phase-9-ai-command-palette/`. Phase 10 (table/card view toggle, CommandPalette HashRouter fix) notes are in `docs/tracked/phase-10-view-toggle/`. Phase 11 (board/Kanban dashboard) notes are in `docs/tracked/phase-11-dashboard-updates/`. Presentation materials (slide outline, live demo script) are in `docs/`.
 
 ## Dataverse Customer Lookup on Action Items (Gotcha)
 

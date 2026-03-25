@@ -46,5 +46,12 @@ export const dataSourcesInfo = {
     "primaryKey": "tdvsp_meetingsummaryid",
     "dataSourceType": "Dataverse",
     "apis": {}
+  },
+  "tdvsp_projects": {
+    "tableId": "",
+    "version": "",
+    "primaryKey": "tdvsp_projectid",
+    "dataSourceType": "Dataverse",
+    "apis": {}
   }
 };

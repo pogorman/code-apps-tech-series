@@ -7,7 +7,7 @@ import { ContactList } from "@/components/contacts";
 import { ActionItemList } from "@/components/action-items";
 import { MeetingSummaryList } from "@/components/meeting-summaries";
 import { IdeaList } from "@/components/ideas";
-import { Dashboard } from "@/components/dashboard";
+import { Dashboard, BoardDashboard } from "@/components/dashboard";
 import { CommandPalette } from "@/components/command-palette";
 
 const queryClient = new QueryClient({
@@ -26,6 +26,7 @@ export function App() {
         <AppLayout>
           <Routes>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/board" element={<BoardDashboard />} />
             <Route path="/accounts" element={<AccountList />} />
             <Route path="/contacts" element={<ContactList />} />
             <Route path="/action-items" element={<ActionItemList />} />

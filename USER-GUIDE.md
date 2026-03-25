@@ -4,7 +4,7 @@
 
 This Code App provides a "My Work" interface for managing accounts, contacts, action items, meeting summaries, and ideas stored in Dataverse. The app uses a Microsoft Fluent Design-inspired theme with a left vertical sidebar for navigation and a top quick create bar for fast record creation.
 
-**Left Sidebar** — Briefcase icon + "My Work" brand at the top. Grouped navigation (core: Accounts/Contacts, activity: Action Items, capture: Meetings/Ideas). Active page is highlighted with a cyan left border. Dashboard is the home view.
+**Left Sidebar** — Briefcase icon + "My Work" brand at the top. Grouped navigation (core: Accounts/Contacts, activity: Action Items, capture: Meetings/Ideas). Active page is highlighted with a cyan left border. Dashboard and Board are the top-level views.
 
 **Quick Create Bar** — Colored pill buttons across the top of the content area, ordered to match the sidebar nav. Click any button to navigate to that entity's list and immediately open a new record form. Buttons (left to right): account, contact, task (action item), summary (meeting), idea.
 
@@ -23,6 +23,17 @@ Four visualizations: Status Breakdown (donut), Priority Distribution (horizontal
 ### Drilldown Dialog
 
 Clicking any dashboard element opens a dialog with a filtered table of action items. Columns: Name, Customer, Priority (color-coded badge), Status (color-coded badge), and Date. The dialog scrolls internally for long lists.
+
+## Board (Kanban View)
+
+Click **Board** in the sidebar to open a Kanban-style view with four vertical columns:
+
+- **Parking Lot** (red accent) — Action items with status "Recognized" (not yet started). Cards show name, date, customer, priority badge, and task type badge.
+- **Work** (blue accent) — Action items in active statuses (In Progress, Pending Comms, On Hold, Wrapping Up). Cards show name, date, customer, and status badge.
+- **Projects** (purple accent) — All accounts. Cards show the account name.
+- **Ideas** (amber accent) — All ideas. Cards show the idea name and category badge.
+
+Each column header displays an item count. Columns scroll independently when content overflows.
 
 ## View Toggle (Table / Card)
 

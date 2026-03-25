@@ -37,6 +37,10 @@
         "ideas": {
           "entitySetName": "tdvsp_ideas",
           "logicalName": "tdvsp_idea"
+        },
+        "projects": {
+          "entitySetName": "tdvsp_projects",
+          "logicalName": "tdvsp_project"
         }
       },
       "actions": null

@@ -8,8 +8,12 @@ export function useAccounts(options?: { filter?: string; orderBy?: string[] }) {
   return useQuery({
     queryKey: [...ACCOUNTS_KEY, options],
     queryFn: async () => {
+      const activeFilter = "statecode eq 0";
+      const filter = options?.filter
+        ? `${activeFilter} and (${options.filter})`
+        : activeFilter;
       const result = await AccountsService.getAll({
-        filter: options?.filter,
+        filter,
         orderBy: options?.orderBy ?? ["name asc"],
       });
       return result.data ?? [];

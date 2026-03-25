@@ -20,3 +20,19 @@ export function categoryVariant(c: Category): "default" | "secondary" | "destruc
   if (c === 468510006) return "destructive";   // AI General
   return "outline";
 }
+
+/* ── Priority (same global choice list as action items) ──────────── */
+
+export const IDEA_PRIORITY_LABELS: Record<number, string> = {
+  468510001: "Eh",
+  468510000: "Low",
+  468510003: "High",
+  468510002: "Top Priority",
+};
+
+export function ideaPriorityVariant(p: number): "default" | "secondary" | "destructive" | "outline" {
+  if (p === 468510002) return "destructive";
+  if (p === 468510003) return "default";
+  if (p === 468510000) return "secondary";
+  return "outline";
+}

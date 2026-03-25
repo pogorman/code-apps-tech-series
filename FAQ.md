@@ -76,6 +76,10 @@ Press Ctrl+K (or Cmd+K on Mac) to open a global search dialog. It searches acros
 
 Each entity list (Accounts, Contacts, Action Items, Meeting Summaries, Ideas) has a toggle in the toolbar between the search bar and the "New" button. Click the list icon for table view or the grid icon for card view. Card view shows a responsive 3-column grid of shadcn `Card` components with the same click-to-view, edit, and delete actions. Your preference is saved per entity in `localStorage` via the `useViewPreference()` hook, so it persists across sessions.
 
+## What is the Board view?
+
+The Board (`/#/board`) is a Kanban-style dashboard with four vertical columns pulling from multiple entities. **Parking lot** shows action items with status "Recognized" (not yet started). **Work** shows action items in active statuses (In Progress, Pending Comms, On Hold, Wrapping Up). **Projects** shows all accounts. **Ideas** shows all ideas. Each column has a colored accent bar (red, blue, purple, amber) and a scrollable card list with relevant badges.
+
 ## What ports does local dev use?
 
-Vite runs on port 5173 (`npm run dev`). The Power Platform proxy (`pac code run`) runs on its own port — use the URL it prints, not the Vite URL directly.
+Vite runs on port 3001 (`npm run dev`). The Power Platform proxy (`pac code run`) runs on its own port — use the URL it prints, not the Vite URL directly.

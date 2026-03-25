@@ -8,8 +8,12 @@ export function useMeetingSummaries(options?: { filter?: string; orderBy?: strin
   return useQuery({
     queryKey: [...MEETING_SUMMARIES_KEY, options],
     queryFn: async () => {
+      const activeFilter = "statecode eq 0";
+      const filter = options?.filter
+        ? `${activeFilter} and (${options.filter})`
+        : activeFilter;
       const result = await Tdvsp_meetingsummariesService.getAll({
-        filter: options?.filter,
+        filter,
         orderBy: options?.orderBy ?? ["tdvsp_name asc"],
       });
       return result.data ?? [];

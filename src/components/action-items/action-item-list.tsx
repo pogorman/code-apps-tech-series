@@ -29,6 +29,10 @@ import {
 import { useViewPreference } from "@/hooks/use-view-preference";
 import { ViewToggle } from "@/components/ui/view-toggle";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { TileColorDots } from "@/components/ui/tile-color-dots";
+import { priorityToColorIndex, tileBgClass, COLOR_TO_PRIORITY } from "@/lib/tile-colors";
+import { useUpdateActionItem } from "@/hooks/use-action-items";
+import { cn } from "@/lib/utils";
 
 type ActionItem = Tdvsp_actionitemsModel.Tdvsp_actionitems;
 
@@ -57,6 +61,7 @@ export function ActionItemList() {
   const { data: items, isLoading, error } = useActionItems({ filter });
   const { data: accounts } = useAccounts();
   const deleteMutation = useDeleteActionItem();
+  const updateMutation = useUpdateActionItem();
 
   const accountNameMap = useMemo(() => {
     const map = new Map<string, string>();
@@ -224,15 +229,25 @@ export function ActionItemList() {
           {items?.map((item) => {
             const customerId = (item as unknown as Record<string, string>)._tdvsp_customer_value;
             const customerName = item.tdvsp_customername ?? accountNameMap.get(customerId ?? "") ?? "\u2014";
+            const colorIdx = priorityToColorIndex(item.tdvsp_priority);
             return (
               <Card
                 key={item.tdvsp_actionitemid}
-                className="cursor-pointer transition-shadow hover:shadow-md"
+                className={cn("group cursor-pointer transition-shadow hover:shadow-md", tileBgClass(colorIdx))}
                 onClick={() => setViewItem(item)}
               >
                 <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
                   <CardTitle className="text-base font-semibold">{item.tdvsp_name}</CardTitle>
-                  <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
+                  <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                    <TileColorDots
+                      activeIndex={colorIdx}
+                      onChange={(idx) => {
+                        updateMutation.mutate({
+                          id: item.tdvsp_actionitemid,
+                          fields: { tdvsp_priority: COLOR_TO_PRIORITY[idx] } as never,
+                        });
+                      }}
+                    />
                     <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setEditItem(item)}>
                       <Pencil className="h-3.5 w-3.5" />
                     </Button>

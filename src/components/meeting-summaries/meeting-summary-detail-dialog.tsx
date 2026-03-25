@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import type { Tdvsp_meetingsummariesModel } from "@/generated";
 import { useAccounts } from "@/hooks/use-accounts";
+import { useProjects } from "@/hooks/use-projects";
 import { Pencil, Sparkles } from "lucide-react";
 import { ExtractActionItemsDialog } from "./extract-action-items-dialog";
 
@@ -39,6 +40,7 @@ export function MeetingSummaryDetailDialog({
   onEdit,
 }: MeetingSummaryDetailDialogProps) {
   const { data: accounts } = useAccounts();
+  const { data: projectsList } = useProjects();
   const [extractOpen, setExtractOpen] = useState(false);
 
   if (!meetingSummary) return null;
@@ -46,6 +48,10 @@ export function MeetingSummaryDetailDialog({
   const accountId = (meetingSummary as unknown as Record<string, string>)._tdvsp_account_value;
   const accountName = meetingSummary.tdvsp_accountname
     ?? accounts?.find((a) => a.accountid === accountId)?.name;
+
+  const projectId = (meetingSummary as unknown as Record<string, string>)._tdvsp_project_value;
+  const projectName = (meetingSummary as unknown as Record<string, string>).tdvsp_projectname
+    ?? projectsList?.find((p) => p.tdvsp_projectid === projectId)?.tdvsp_name;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -84,6 +90,7 @@ export function MeetingSummaryDetailDialog({
           <Separator />
 
           <dl>
+            <DetailRow label="Project" value={projectName} />
             <DetailRow label="Account" value={accountName} />
             <DetailRow
               label="Date"

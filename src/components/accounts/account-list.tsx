@@ -24,8 +24,58 @@ import { getParentAccountId } from "@/lib/get-parent-account-id";
 import { useViewPreference } from "@/hooks/use-view-preference";
 import { ViewToggle } from "@/components/ui/view-toggle";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { TileColorDots } from "@/components/ui/tile-color-dots";
+import { getTileColor, setTileColor, tileBgClass } from "@/lib/tile-colors";
+import { cn } from "@/lib/utils";
 
 type Account = AccountsModel.Accounts;
+
+function AccountCardItem({
+  account,
+  contacts,
+  onView,
+  onEdit,
+  onDelete,
+}: {
+  account: Account;
+  contacts: { name: string }[] | undefined;
+  onView: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  const [colorIdx, setColorIdx] = useState(() => getTileColor("account", account.accountid));
+  return (
+    <Card
+      className={cn("group cursor-pointer transition-shadow hover:shadow-md", tileBgClass(colorIdx))}
+      onClick={onView}
+    >
+      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
+        <CardTitle className="text-base font-semibold">{account.name}</CardTitle>
+        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+          <TileColorDots
+            activeIndex={colorIdx}
+            onChange={(idx) => {
+              setTileColor("account", account.accountid, idx);
+              setColorIdx(idx);
+            }}
+          />
+          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onEdit}>
+            <Pencil className="h-3.5 w-3.5" />
+          </Button>
+          <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={onDelete}>
+            <Trash2 className="h-3.5 w-3.5" />
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-1 text-sm text-muted-foreground">
+        <div>
+          <span className="font-medium text-foreground">Contacts: </span>
+          {contacts?.length ? contacts.map((c) => c.name).join(", ") : "\u2014"}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
 export function AccountList() {
   const navigate = useNavigate();
@@ -216,34 +266,16 @@ export function AccountList() {
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {accounts?.map((account) => {
-            const contacts = contactsByAccount.get(account.accountid);
-            return (
-              <Card
-                key={account.accountid}
-                className="cursor-pointer transition-shadow hover:shadow-md"
-                onClick={() => setViewAccount(account)}
-              >
-                <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-                  <CardTitle className="text-base font-semibold">{account.name}</CardTitle>
-                  <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
-                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setEditAccount(account)}>
-                      <Pencil className="h-3.5 w-3.5" />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => setDeleteAccount(account)}>
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-1 text-sm text-muted-foreground">
-                  <div>
-                    <span className="font-medium text-foreground">Contacts: </span>
-                    {contacts?.length ? contacts.map((c) => c.name).join(", ") : "—"}
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
+          {accounts?.map((account) => (
+            <AccountCardItem
+              key={account.accountid}
+              account={account}
+              contacts={contactsByAccount.get(account.accountid)}
+              onView={() => setViewAccount(account)}
+              onEdit={() => setEditAccount(account)}
+              onDelete={() => setDeleteAccount(account)}
+            />
+          ))}
         </div>
       )}
 

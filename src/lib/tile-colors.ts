@@ -1,0 +1,87 @@
+/**
+ * Priority ↔ color-dot mapping for tile color-coding.
+ *
+ * Entities WITH a priority field (action items, ideas):
+ *   dot click → PATCH priority → background derived from priority value.
+ *
+ * Entities WITHOUT a priority field (accounts/projects):
+ *   dot click → localStorage → background derived from stored color index.
+ */
+
+/* ── Dataverse priority choice keys ─────────────────────────────── */
+
+export const PRIORITY_EH = 468510001;
+export const PRIORITY_LOW = 468510000;
+export const PRIORITY_HIGH = 468510003;
+export const PRIORITY_TOP = 468510002;
+
+/* ── Color-dot spectrum (left → right) ──────────────────────────── */
+
+export const COLOR_DOTS = [
+  { index: 0, hex: "transparent", ring: "#a1a1aa", label: "Clear" },
+  { index: 1, hex: "#93c5fd", ring: "#93c5fd", label: "Low" },       // blue
+  { index: 2, hex: "#fdba74", ring: "#fdba74", label: "Eh" },        // orange
+  { index: 3, hex: "#fca5a5", ring: "#fca5a5", label: "High" },      // red
+  { index: 4, hex: "#b91c1c", ring: "#b91c1c", label: "Top Priority" }, // dark red
+] as const;
+
+/* ── Color index ↔ priority mapping ─────────────────────────────── */
+
+export const COLOR_TO_PRIORITY: Record<number, number | null> = {
+  0: null,
+  1: PRIORITY_LOW,
+  2: PRIORITY_EH,
+  3: PRIORITY_HIGH,
+  4: PRIORITY_TOP,
+};
+
+export const PRIORITY_TO_COLOR: Record<number, number> = {
+  [PRIORITY_LOW]: 1,
+  [PRIORITY_EH]: 2,
+  [PRIORITY_HIGH]: 3,
+  [PRIORITY_TOP]: 4,
+};
+
+export function priorityToColorIndex(priority: number | null | undefined): number {
+  if (priority == null) return 0;
+  return PRIORITY_TO_COLOR[priority] ?? 0;
+}
+
+/* ── Tile background class from color index ─────────────────────── */
+
+const BG_CLASSES: Record<number, string> = {
+  0: "",
+  1: "bg-blue-50",
+  2: "bg-orange-50",
+  3: "bg-red-50",
+  4: "bg-red-100",
+};
+
+export function tileBgClass(colorIndex: number): string {
+  return BG_CLASSES[colorIndex] ?? "";
+}
+
+/* ── localStorage helpers for entities without priority ──────────── */
+
+const STORAGE_PREFIX = "tile-color-";
+
+export function getTileColor(entity: string, id: string): number {
+  try {
+    const v = localStorage.getItem(`${STORAGE_PREFIX}${entity}-${id}`);
+    return v ? Number(v) : 0;
+  } catch {
+    return 0;
+  }
+}
+
+export function setTileColor(entity: string, id: string, colorIndex: number): void {
+  try {
+    if (colorIndex === 0) {
+      localStorage.removeItem(`${STORAGE_PREFIX}${entity}-${id}`);
+    } else {
+      localStorage.setItem(`${STORAGE_PREFIX}${entity}-${id}`, String(colorIndex));
+    }
+  } catch {
+    // localStorage unavailable
+  }
+}

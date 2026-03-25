@@ -9,8 +9,12 @@ export function useContacts(options?: { filter?: string; orderBy?: string[] }) {
   return useQuery({
     queryKey: [...CONTACTS_KEY, options],
     queryFn: async () => {
+      const activeFilter = "statecode eq 0";
+      const filter = options?.filter
+        ? `${activeFilter} and (${options.filter})`
+        : activeFilter;
       const result = await ContactsService.getAll({
-        filter: options?.filter,
+        filter,
         orderBy: options?.orderBy ?? ["lastname asc"],
       });
       return result.data ?? [];

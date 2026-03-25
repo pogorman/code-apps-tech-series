@@ -10,8 +10,9 @@ import { Separator } from "@/components/ui/separator";
 import type { Tdvsp_ideasModel } from "@/generated";
 import { useAccounts } from "@/hooks/use-accounts";
 import { useContacts } from "@/hooks/use-contacts";
+import { useProjects } from "@/hooks/use-projects";
 import { Pencil } from "lucide-react";
-import { CATEGORY_LABELS, categoryVariant } from "./labels";
+import { CATEGORY_LABELS, categoryVariant, IDEA_PRIORITY_LABELS, ideaPriorityVariant } from "./labels";
 
 type Idea = Tdvsp_ideasModel.Tdvsp_ideas;
 
@@ -40,6 +41,7 @@ export function IdeaDetailDialog({
 }: IdeaDetailDialogProps) {
   const { data: accounts } = useAccounts();
   const { data: contacts } = useContacts();
+  const { data: projectsList } = useProjects();
 
   if (!idea) return null;
 
@@ -52,6 +54,12 @@ export function IdeaDetailDialog({
     ?? contacts?.find((c) => c.contactid === contactId)
       ? `${contacts?.find((c) => c.contactid === contactId)?.firstname ?? ""} ${contacts?.find((c) => c.contactid === contactId)?.lastname ?? ""}`.trim()
       : undefined;
+
+  const projectId = (idea as unknown as Record<string, string>)._tdvsp_project_value;
+  const projectName = (idea as unknown as Record<string, string>).tdvsp_projectname
+    ?? projectsList?.find((p) => p.tdvsp_projectid === projectId)?.tdvsp_name;
+
+  const priority = (idea as unknown as Record<string, number>).tdvsp_priority;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -80,16 +88,26 @@ export function IdeaDetailDialog({
                 {CATEGORY_LABELS[idea.tdvsp_category]}
               </Badge>
             )}
+            {priority != null && (
+              <Badge variant={ideaPriorityVariant(priority)}>
+                {IDEA_PRIORITY_LABELS[priority]}
+              </Badge>
+            )}
           </div>
 
           <Separator />
 
           <dl>
+            <DetailRow label="Project" value={projectName} />
             <DetailRow label="Account" value={accountName} />
             <DetailRow label="Contact" value={contactName} />
             <DetailRow
               label="Category"
               value={idea.tdvsp_category != null ? CATEGORY_LABELS[idea.tdvsp_category] : null}
+            />
+            <DetailRow
+              label="Priority"
+              value={priority != null ? IDEA_PRIORITY_LABELS[priority] : null}
             />
           </dl>
 

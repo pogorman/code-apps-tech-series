@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { useCreateMeetingSummary, useUpdateMeetingSummary } from "@/hooks/use-meeting-summaries";
 import { useAccounts } from "@/hooks/use-accounts";
+import { useProjects } from "@/hooks/use-projects";
 import type { Tdvsp_meetingsummariesModel } from "@/generated";
 import { toast } from "sonner";
 
@@ -36,6 +37,7 @@ interface FormData {
   tdvsp_summary: string;
   tdvsp_date: string;
   tdvsp_account: string;
+  tdvsp_project: string;
 }
 
 const EMPTY_FORM: FormData = {
@@ -43,17 +45,21 @@ const EMPTY_FORM: FormData = {
   tdvsp_summary: "",
   tdvsp_date: "",
   tdvsp_account: "",
+  tdvsp_project: "",
 };
 
 const NONE_VALUE = "__none__";
 
 function meetingSummaryToForm(item: MeetingSummary): FormData {
-  const accountId = (item as unknown as Record<string, string>)._tdvsp_account_value ?? "";
+  const raw = item as unknown as Record<string, string>;
+  const accountId = raw._tdvsp_account_value ?? "";
+  const projectId = raw._tdvsp_project_value ?? "";
   return {
     tdvsp_name: item.tdvsp_name ?? "",
     tdvsp_summary: item.tdvsp_summary ?? "",
     tdvsp_date: item.tdvsp_date ? item.tdvsp_date.slice(0, 10) : "",
     tdvsp_account: accountId,
+    tdvsp_project: projectId,
   };
 }
 
@@ -67,6 +73,7 @@ export function MeetingSummaryFormDialog({
   const createMutation = useCreateMeetingSummary();
   const updateMutation = useUpdateMeetingSummary();
   const { data: accounts } = useAccounts();
+  const { data: projectsList } = useProjects();
   const isPending = createMutation.isPending || updateMutation.isPending;
 
   useEffect(() => {
@@ -97,6 +104,12 @@ export function MeetingSummaryFormDialog({
       record["tdvsp_Account@odata.bind"] = `/accounts(${form.tdvsp_account})`;
     } else {
       record["tdvsp_Account@odata.bind"] = undefined;
+    }
+
+    if (form.tdvsp_project) {
+      record["tdvsp_Project@odata.bind"] = `/tdvsp_projects(${form.tdvsp_project})`;
+    } else {
+      record["tdvsp_Project@odata.bind"] = undefined;
     }
 
     if (mode === "create") {
@@ -167,14 +180,36 @@ export function MeetingSummaryFormDialog({
                 </Select>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="tdvsp_date">Date</Label>
-                <Input
-                  id="tdvsp_date"
-                  type="date"
-                  value={form.tdvsp_date}
-                  onChange={(e) => updateField("tdvsp_date", e.target.value)}
-                />
+                <Label htmlFor="tdvsp_project">Project</Label>
+                <Select
+                  value={form.tdvsp_project || NONE_VALUE}
+                  onValueChange={(v) =>
+                    updateField("tdvsp_project", v === NONE_VALUE ? "" : v)
+                  }
+                >
+                  <SelectTrigger id="tdvsp_project">
+                    <SelectValue placeholder="Select a project" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={NONE_VALUE}>None</SelectItem>
+                    {projectsList?.map((p) => (
+                      <SelectItem key={p.tdvsp_projectid} value={p.tdvsp_projectid}>
+                        {p.tdvsp_name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="tdvsp_date">Date</Label>
+              <Input
+                id="tdvsp_date"
+                type="date"
+                value={form.tdvsp_date}
+                onChange={(e) => updateField("tdvsp_date", e.target.value)}
+              />
             </div>
 
             <div className="grid gap-2">

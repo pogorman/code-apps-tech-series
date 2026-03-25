@@ -265,6 +265,21 @@ All changes in `src/components/layout/app-layout.tsx`.
    - Cards are clickable to open detail dialog (same as table rows)
    - Loading skeleton and empty states handled for both views
 
+## Phase 14 — Board (Kanban Dashboard)
+
+**Prompt:** "I want the dashboard to look like that [screenshot]. Parking lot, work, projects, and ideas in vertical columns."
+
+**What happened:**
+
+1. Created `src/components/dashboard/board-dashboard.tsx` — a Kanban-style board with 4 vertical columns pulling from 3 data sources (action items, accounts, ideas)
+2. **Parking lot** column: Action items with status "Recognized" (not yet started). Shows name, date, customer, priority badge, task type badge. Red accent bar
+3. **Work** column: Action items in active statuses (In Progress, Pending Comms, On Hold, Wrapping Up — excludes Recognized and Complete). Shows name, date, customer, status badge. Blue accent bar
+4. **Projects** column: All accounts. Shows account name and customer type. Purple accent bar
+5. **Ideas** column: All ideas. Shows idea name and category badge. Amber accent bar
+6. Each column is a scrollable container with header (icon + title + count) and colored bottom accent bar
+7. Added `/board` route in `App.tsx` and "Board" nav item with `Columns3` icon in sidebar alongside Dashboard
+8. Kept the existing analytics dashboard intact at `/` — no changes to that view
+
 ## Presentation Materials — Slide Outline & Live Demo Script
 
 **Prompt:** Create a slide outline and live demo script for the Code Apps tech series presentation targeting SLED customers.

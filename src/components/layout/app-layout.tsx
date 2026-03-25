@@ -6,6 +6,7 @@ import {
   ClipboardList,
   Briefcase,
   LayoutDashboard,
+  Columns3,
   FileText,
   Lightbulb,
   Search,
@@ -28,7 +29,10 @@ interface NavSection {
 const NAV_SECTIONS: NavSection[] = [
   {
     label: "",
-    items: [{ to: "/", label: "Dashboard", icon: LayoutDashboard }],
+    items: [
+      { to: "/", label: "Dashboard", icon: LayoutDashboard },
+      { to: "/board", label: "Board", icon: Columns3 },
+    ],
   },
   {
     label: "core",

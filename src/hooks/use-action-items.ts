@@ -8,8 +8,12 @@ export function useActionItems(options?: { filter?: string; orderBy?: string[] }
   return useQuery({
     queryKey: [...ACTION_ITEMS_KEY, options],
     queryFn: async () => {
+      const activeFilter = "statecode eq 0";
+      const filter = options?.filter
+        ? `${activeFilter} and (${options.filter})`
+        : activeFilter;
       const result = await Tdvsp_actionitemsService.getAll({
-        filter: options?.filter,
+        filter,
         orderBy: options?.orderBy ?? ["tdvsp_name asc"],
       });
       return result.data ?? [];

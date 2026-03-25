@@ -1,6 +1,6 @@
-# My Work — Accounts, Contacts, Action Items, Meeting Summaries & Ideas
+# My Work — Accounts, Contacts, Action Items, Meeting Summaries, Ideas & Projects
 
-A Power Platform Code App built with React + TypeScript for the Code Apps tech series. Full CRUD on Dataverse `account`, `contact`, `tdvsp_actionitem`, `tdvsp_meetingsummary`, and `tdvsp_idea` tables with account-contact relationships, customer-linked action items, and cross-entity lookups, deployed via `pac code push`.
+A Power Platform Code App built with React + TypeScript for the Code Apps tech series. Full CRUD on Dataverse `account`, `contact`, `tdvsp_actionitem`, `tdvsp_meetingsummary`, `tdvsp_idea`, and `tdvsp_project` tables with account-contact relationships, customer-linked action items, project lookups, and cross-entity lookups, deployed via `pac code push`. All entity queries filter to active records only (`statecode eq 0`).
 
 ## Prerequisites
 
@@ -21,7 +21,7 @@ pac code push
 Two terminals required:
 
 ```bash
-# Terminal 1 — Vite dev server (port 5173)
+# Terminal 1 — Vite dev server (port 3001)
 npm run dev
 
 # Terminal 2 — Power Platform connection proxy
@@ -42,6 +42,7 @@ Open the URL from `pac code run` (not Vite directly) — it wraps the app in the
 | Icons | Lucide React |
 | Toasts | Sonner |
 | Command Palette | cmdk |
+| Drag & Drop | @dnd-kit (core, sortable, utilities) |
 | AI | Azure OpenAI (optional — see `.env.example`) |
 
 ## Project Structure
@@ -56,12 +57,13 @@ src/
     action-items/     # Action Item CRUD components
     meeting-summaries/# Meeting Summary CRUD components
     ideas/            # Idea CRUD components
-    dashboard/        # Analytics dashboard (tooltips + drilldown dialogs)
+    projects/         # Project CRUD components
+    dashboard/        # Analytics dashboard + Kanban board view (drag-and-drop sortable)
     layout/           # App shell (left sidebar + quick create bar)
     command-palette.tsx # Global Ctrl+K search
   stores/             # Zustand stores (quick create)
   hooks/              # TanStack Query hooks wrapping Dataverse services + view preference
-  lib/                # Utilities (cn helper, Dataverse field helpers, Azure OpenAI service)
+  lib/                # Utilities (cn helper, Dataverse field helpers, Azure OpenAI service, tile color helpers)
 docs/                 # Tracked notes, research, slide outline, demo script
 .power/               # Power Platform schemas (auto-generated)
 power.config.json     # Code App configuration
@@ -71,7 +73,7 @@ power.config.json     # Code App configuration
 
 | Command | Purpose |
 |---------|---------|
-| `npm run dev` | Start Vite dev server on port 5173 |
+| `npm run dev` | Start Vite dev server on port 3001 |
 | `npm run build` | TypeScript check + production build to `dist/` |
 | `pac code run` | Start Power Platform connection proxy |
 | `pac code push` | Deploy to Power Platform |

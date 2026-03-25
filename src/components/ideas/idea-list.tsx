@@ -20,10 +20,14 @@ import { Lightbulb, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import type { Tdvsp_ideasModel } from "@/generated";
 import { toast } from "sonner";
 import { useQuickCreateStore } from "@/stores/quick-create-store";
-import { CATEGORY_LABELS, categoryVariant } from "./labels";
+import { CATEGORY_LABELS, categoryVariant, IDEA_PRIORITY_LABELS, ideaPriorityVariant } from "./labels";
 import { useViewPreference } from "@/hooks/use-view-preference";
 import { ViewToggle } from "@/components/ui/view-toggle";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { TileColorDots } from "@/components/ui/tile-color-dots";
+import { priorityToColorIndex, tileBgClass, COLOR_TO_PRIORITY } from "@/lib/tile-colors";
+import { useUpdateIdea } from "@/hooks/use-ideas";
+import { cn } from "@/lib/utils";
 
 type Idea = Tdvsp_ideasModel.Tdvsp_ideas;
 
@@ -52,6 +56,7 @@ export function IdeaList() {
   const { data: items, isLoading, error } = useIdeas({ filter });
   const { data: accounts } = useAccounts();
   const deleteMutation = useDeleteIdea();
+  const updateMutation = useUpdateIdea();
 
   const accountNameMap = useMemo(() => {
     const map = new Map<string, string>();
@@ -119,6 +124,7 @@ export function IdeaList() {
                 <TableHead>Name</TableHead>
                 <TableHead>Account</TableHead>
                 <TableHead>Category</TableHead>
+                <TableHead>Priority</TableHead>
                 <TableHead className="w-[100px]">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -126,7 +132,7 @@ export function IdeaList() {
               {isLoading ? (
                 Array.from({ length: 5 }).map((_, i) => (
                   <TableRow key={i}>
-                    {Array.from({ length: 4 }).map((_, j) => (
+                    {Array.from({ length: 5 }).map((_, j) => (
                       <TableCell key={j}>
                         <Skeleton className="h-4 w-full" />
                       </TableCell>
@@ -135,7 +141,7 @@ export function IdeaList() {
                 ))
               ) : items?.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
+                  <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
                     {search ? "No ideas match your search." : "No ideas found. Create one to get started."}
                   </TableCell>
                 </TableRow>
@@ -157,6 +163,16 @@ export function IdeaList() {
                             {CATEGORY_LABELS[item.tdvsp_category]}
                           </Badge>
                         ) : "\u2014"}
+                      </TableCell>
+                      <TableCell>
+                        {(() => {
+                          const p = (item as unknown as Record<string, number>).tdvsp_priority;
+                          return p != null ? (
+                            <Badge variant={ideaPriorityVariant(p)}>
+                              {IDEA_PRIORITY_LABELS[p]}
+                            </Badge>
+                          ) : "\u2014";
+                        })()}
                       </TableCell>
                       <TableCell>
                         <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
@@ -205,15 +221,26 @@ export function IdeaList() {
           {items?.map((item) => {
             const accountId = (item as unknown as Record<string, string>)._tdvsp_account_value;
             const accountName = item.tdvsp_accountname ?? accountNameMap.get(accountId ?? "") ?? "\u2014";
+            const priority = (item as unknown as Record<string, number>).tdvsp_priority;
+            const colorIdx = priorityToColorIndex(priority);
             return (
               <Card
                 key={item.tdvsp_ideaid}
-                className="cursor-pointer transition-shadow hover:shadow-md"
+                className={cn("group cursor-pointer transition-shadow hover:shadow-md", tileBgClass(colorIdx))}
                 onClick={() => setViewItem(item)}
               >
                 <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
                   <CardTitle className="text-base font-semibold">{item.tdvsp_name}</CardTitle>
-                  <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
+                  <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                    <TileColorDots
+                      activeIndex={colorIdx}
+                      onChange={(idx) => {
+                        updateMutation.mutate({
+                          id: item.tdvsp_ideaid,
+                          fields: { tdvsp_priority: COLOR_TO_PRIORITY[idx] } as never,
+                        });
+                      }}
+                    />
                     <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setEditItem(item)}>
                       <Pencil className="h-3.5 w-3.5" />
                     </Button>
@@ -227,11 +254,18 @@ export function IdeaList() {
                     <span className="font-medium text-foreground">Account: </span>
                     {accountName}
                   </div>
-                  {item.tdvsp_category != null && (
-                    <Badge variant={categoryVariant(item.tdvsp_category)}>
-                      {CATEGORY_LABELS[item.tdvsp_category]}
-                    </Badge>
-                  )}
+                  <div className="flex flex-wrap gap-2">
+                    {item.tdvsp_category != null && (
+                      <Badge variant={categoryVariant(item.tdvsp_category)}>
+                        {CATEGORY_LABELS[item.tdvsp_category]}
+                      </Badge>
+                    )}
+                    {priority != null && (
+                      <Badge variant={ideaPriorityVariant(priority)}>
+                        {IDEA_PRIORITY_LABELS[priority]}
+                      </Badge>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             );
