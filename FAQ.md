@@ -80,6 +80,30 @@ Each entity list (Accounts, Contacts, Action Items, Meeting Summaries, Ideas) ha
 
 The Board (`/#/board`) is a Kanban-style dashboard with four vertical columns pulling from multiple entities. **Parking lot** shows action items with status "Recognized" (not yet started). **Work** shows action items in active statuses (In Progress, Pending Comms, On Hold, Wrapping Up). **Projects** shows all accounts. **Ideas** shows all ideas. Each column has a colored accent bar (red, blue, purple, amber) and a scrollable card list with relevant badges.
 
+## How do the color dots on card views work?
+
+Hover over any card in card view to reveal a row of 5 colored dots (clear, blue, orange, red, dark-red). Click a dot to set the card's priority color. For action items and ideas, clicking a dot immediately PATCHes the `tdvsp_priority` field in Dataverse — no save button needed. Accounts don't have a priority field in Dataverse, so their color is stored in localStorage. The card background color updates to reflect the chosen priority. Color mapping is in `src/lib/tile-colors.ts`.
+
+## How does drag-and-drop work on the Board?
+
+Board cards are drag-and-drop sortable within their column using `@dnd-kit`. Grab a card and drag it up or down to reorder. The sort order is persisted in localStorage per column, so it survives page refreshes. Drag-and-drop does NOT move cards between columns — it only reorders within a single column.
+
+## Why does the Projects column show `tdvsp_project` records instead of accounts?
+
+The Board was updated to show actual project records from the `tdvsp_project` Dataverse table instead of accounts. Projects have name, description, priority, and an account lookup — they represent discrete workstreams better than raw account records for Kanban tracking.
+
+## Why are there only 3 columns on the Board now?
+
+The parking lot column was removed. The Board now has 3 columns: **Work** (Work-type action items), **Projects** (`tdvsp_project` records), and **Ideas**. This keeps the board focused on actionable workstreams.
+
+## Why do I only see active records?
+
+All entity hooks filter by `statecode eq 0`, which returns only active records from Dataverse. Deactivated or deleted records are excluded from all list views, dashboards, card views, and the Board. This is intentional — the app shows your current work, not historical records.
+
+## How does the project lookup work on Ideas and Meeting Summaries?
+
+Ideas and meeting summaries gained a `tdvsp_Project@odata.bind` field. Writes use `/tdvsp_projects(guid)` format. Reads return the GUID as `_tdvsp_project_value`. The form shows a project dropdown populated from `useProjects()`. Same OData bind pattern as the account and contact lookups.
+
 ## What ports does local dev use?
 
 Vite runs on port 3001 (`npm run dev`). The Power Platform proxy (`pac code run`) runs on its own port — use the URL it prints, not the Vite URL directly.

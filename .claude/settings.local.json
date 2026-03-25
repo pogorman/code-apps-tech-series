@@ -36,7 +36,17 @@
       "Bash(wmic process:*)",
       "Bash(powershell -Command \"Get-Process -Id 25488 | Select-Object ProcessName,Id,Path\")",
       "Bash(powershell -Command \"Get-Process -Id 25536 | Select-Object ProcessName,Id,Path\")",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "Bash(git pull:*)",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(sc query:*)",
+      "Bash(netsh http:*)",
+      "Bash(taskkill:*)",
+      "Bash(for dir:*)",
+      "Bash(do echo:*)",
+      "Read(//c/Users/pogorman/source/repos/code-apps-tech-series/src/components/**)",
+      "Bash(done)",
+      "Bash(powershell -Command \"Get-NetTCPConnection -State Listen | Where-Object { @\\(8080,8181,8282,8383,9090\\) -contains $_ocalPort } | Select-Object LocalPort,OwningProcess | Format-Table -AutoSize\")"
     ]
   }
 }

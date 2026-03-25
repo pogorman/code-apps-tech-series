@@ -2,7 +2,7 @@
 
 ## Overview
 
-This Code App provides a "My Work" interface for managing accounts, contacts, action items, meeting summaries, and ideas stored in Dataverse. The app uses a Microsoft Fluent Design-inspired theme with a left vertical sidebar for navigation and a top quick create bar for fast record creation.
+This Code App provides a "My Work" interface for managing accounts, contacts, action items, meeting summaries, ideas, and projects stored in Dataverse. All views show active records only. The app uses a Microsoft Fluent Design-inspired theme with a left vertical sidebar for navigation and a top quick create bar for fast record creation.
 
 **Left Sidebar** — Briefcase icon + "My Work" brand at the top. Grouped navigation (core: Accounts/Contacts, activity: Action Items, capture: Meetings/Ideas). Active page is highlighted with a cyan left border. Dashboard and Board are the top-level views.
 
@@ -26,14 +26,17 @@ Clicking any dashboard element opens a dialog with a filtered table of action it
 
 ## Board (Kanban View)
 
-Click **Board** in the sidebar to open a Kanban-style view with four vertical columns:
+Click **Board** in the sidebar to open a Kanban-style view with three drag-and-drop sortable columns:
 
-- **Parking Lot** (red accent) — Action items with status "Recognized" (not yet started). Cards show name, date, customer, priority badge, and task type badge.
-- **Work** (blue accent) — Action items in active statuses (In Progress, Pending Comms, On Hold, Wrapping Up). Cards show name, date, customer, and status badge.
-- **Projects** (purple accent) — All accounts. Cards show the account name.
+- **Work** (blue accent) — Action items with type "Work". Cards show name, date, customer, and status badge.
+- **Projects** (purple accent) — All `tdvsp_project` records. Cards show the project name and account.
 - **Ideas** (amber accent) — All ideas. Cards show the idea name and category badge.
 
 Each column header displays an item count. Columns scroll independently when content overflows.
+
+### Drag-and-Drop Sorting
+
+Grab any card and drag it up or down to reorder within its column. The sort order is saved in localStorage and persists across sessions. Drag-and-drop reorders within a column only — it does not move cards between columns.
 
 ## View Toggle (Table / Card)
 
@@ -43,6 +46,18 @@ All entity lists include a view toggle in the toolbar (between the search bar an
 - **Card view** (grid icon) — Responsive card grid (up to 3 columns). Each card shows key fields, edit/delete buttons, and is clickable to open the detail dialog.
 
 Your preference is saved per entity and persists across sessions.
+
+## Priority Color-Coding (Card View)
+
+In card view, hover over any card to reveal a row of 5 colored dots at the top:
+
+- **Clear** — no color (default)
+- **Blue** — low priority
+- **Orange** — medium priority
+- **Red** — high priority
+- **Dark Red** — top priority
+
+Click a dot to set the card's color. For **action items** and **ideas**, clicking a dot immediately updates the `tdvsp_priority` field in Dataverse — no save needed. For **accounts**, the color is saved in localStorage (accounts don't have a priority field in Dataverse). The card background updates to reflect the chosen priority color.
 
 ## Accounts
 

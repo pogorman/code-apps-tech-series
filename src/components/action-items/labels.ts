@@ -19,9 +19,10 @@ export const STATUS_LABELS: Record<TaskStatus, string> = {
   468510005: "Complete",
 };
 
-export const TASK_TYPE_LABELS: Record<Tdvsp_actionitemsModel.Tdvsp_actionitemstdvsp_tasktype, string> = {
+export const TASK_TYPE_LABELS: Record<number, string> = {
   468510000: "Personal",
   468510001: "Work",
+  468510002: "Learning",
 };
 
 export function priorityVariant(p: Priority): "default" | "secondary" | "destructive" | "outline" {
