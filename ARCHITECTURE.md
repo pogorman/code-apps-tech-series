@@ -92,6 +92,16 @@ The dark color palette is a complete set of CSS custom properties in `index.css 
 
 A toggle button (Sun/Moon icon) sits in the sidebar footer beneath the Ctrl+K shortcut hint.
 
+## Non-App Artifacts
+
+### `demo-materials/`
+
+Companion presentation for the tech series — "Code Apps: Under the Hood." Contains `generate-deck.py` (python-pptx + fpdf2), which produces `code-apps-under-the-hood.pptx` (6-slide deck) and `code-apps-under-the-hood-talk-track.pdf` (speaker notes). The script is the single source of truth for both outputs. Slide content draws on runtime analysis from the DevTools export in `inbox/`.
+
+### `inbox/`
+
+Raw source artifacts. Currently contains `08587a10-83ed-43d0-8be4-8b145f5a7ee3.devtools` — an HTML export from browser DevTools of the deployed Code App, analyzed to extract runtime facts (77 scripts, 230KB localization, ClassicCanvasApp classification, 55 feature gates, `paauth`/`dynamicauth` auth, Copilot sidecar, sovereign cloud support, a11y).
+
 ## Key Design Decisions
 
 | Decision | Rationale |

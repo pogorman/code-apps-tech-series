@@ -414,6 +414,19 @@ All changes in `src/components/layout/app-layout.tsx`.
 
 **Tracked notes:** `docs/tracked/phase-12-adding-agent/1-adding-my-copilot-studio-agent.md`
 
+## Phase 19 — "Under the Hood" Presentation Deck (Agentic Generation)
+
+**Prompt:** Analyze the deployed Code App's runtime using a browser DevTools HTML export, then generate a companion slide deck and talk track for the tech series.
+
+**What happened:**
+
+1. **Runtime analysis** — The `inbox/08587a10-83ed-43d0-8be4-8b145f5a7ee3.devtools` file (a full HTML export from browser DevTools of the deployed app) was analyzed by Claude Code to extract runtime facts: 77 scripts loaded, 230KB of localization data, ClassicCanvasApp iframe classification, 55 feature gates, server-side auth via `paauth`/`dynamicauth`, Copilot sidecar injection, sovereign cloud readiness, and accessibility annotations
+2. **Slide content authoring** — Claude Code drafted 6 slides of content: runtime internals, two gotcha stories (Dataverse polymorphic lookups where writes worked but reads silently failed; Copilot Studio Direct Line + MSAL working locally but failing deployed due to custom auth — pivoted to iframe), the 18-phase agentic build story, reusable patterns (TanStack Query cache powering Ctrl+K, 27-line Zustand quick-create store, dnd-kit + Dataverse mutations, Tailwind v4 class-based dark mode), and a 7-beat live demo transition
+3. **Programmatic generation** — Created `demo-materials/generate-deck.py` using `python-pptx` (for the `.pptx` deck) and `fpdf2` (for the speaker notes PDF). The script is the single source of truth — edit content there, run `python generate-deck.py` to regenerate both outputs
+4. **Output** — `demo-materials/code-apps-under-the-hood.pptx` (6 slides) and `demo-materials/code-apps-under-the-hood-talk-track.pdf` (full talk track)
+
+**Key detail:** No manual PowerPoint editing. The entire deck — including layout, fonts, colors, and content — is generated programmatically from the Python script, keeping it version-controllable and reproducible.
+
 ## Presentation Materials — Slide Outline & Live Demo Script
 
 **Prompt:** Create a slide outline and live demo script for the Code Apps tech series presentation targeting SLED customers.

@@ -198,6 +198,24 @@ Click **New Project** to open the form. Fields:
 
 Use the pencil (edit) and trash (delete) icons in the Actions column, or click **Edit** from the detail card.
 
+## Regenerating the Presentation Deck
+
+The `demo-materials/` folder contains a "Code Apps: Under the Hood" slide deck and talk track. Both files are generated from a single Python script.
+
+### Prerequisites
+
+- Python 3.10+
+- `pip install python-pptx fpdf2`
+
+### Regenerate
+
+```bash
+cd demo-materials
+python generate-deck.py
+```
+
+This overwrites `code-apps-under-the-hood.pptx` and `code-apps-under-the-hood-talk-track.pdf` in place. To change slide content, edit the content directly in `generate-deck.py` — it is the single source of truth.
+
 ## Command Palette (Ctrl+K)
 
 Press **Ctrl+K** (or **Cmd+K** on Mac) anywhere in the app to open a global search dialog. Type to search across all records — accounts, contacts, action items, meeting summaries, ideas, and projects. Results are grouped by entity type with matching text highlighted in purple. Click a result to navigate to that entity's page. Press **Esc** to close. A "Ctrl+K to search" hint appears in the sidebar footer.

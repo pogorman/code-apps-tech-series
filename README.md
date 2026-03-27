@@ -67,6 +67,8 @@ src/
   hooks/              # TanStack Query hooks wrapping Dataverse services + view preference
   lib/                # Utilities (cn helper, Dataverse field helpers, Azure OpenAI service, tile color helpers incl. tileGradient() with dark mode support)
 docs/                 # Tracked notes, research, slide outline, demo script
+demo-materials/       # Presentation deck (.pptx), talk track (.pdf), generator script (.py)
+inbox/                # Raw artifacts (browser DevTools HTML export of deployed app runtime)
 .power/               # Power Platform schemas (auto-generated)
 power.config.json     # Code App configuration
 ```
@@ -97,6 +99,26 @@ The app uses a monospace font stack (JetBrains Mono > Fira Code > Cascadia Code 
 ## Copilot Studio Agent
 
 A floating chat button (bottom-right) opens a Copilot Studio agent panel. The agent is embedded via iframe from the same Power Platform environment, so SSO is handled natively by the platform — no Direct Line secrets or MSAL configuration needed. Click the blue gradient chat bubble to open; use the refresh button to restart the conversation.
+
+## Demo Materials
+
+The `demo-materials/` folder contains a companion presentation deck for the Code Apps tech series — designed to follow a colleague's "Intro to Code Apps" talk with a deep dive into runtime internals, gotcha stories, and agentic development patterns.
+
+| File | Description |
+|------|-------------|
+| `code-apps-under-the-hood.pptx` | 6-slide deck: runtime analysis, gotchas, AI-agent build story, patterns |
+| `code-apps-under-the-hood-talk-track.pdf` | Full speaker notes / talk track PDF |
+| `generate-deck.py` | Python script (python-pptx + fpdf2) that regenerates both files |
+
+To regenerate the deck and talk track:
+
+```bash
+cd demo-materials
+pip install python-pptx fpdf2
+python generate-deck.py
+```
+
+The `inbox/` folder at the project root contains a browser DevTools HTML export (`08587a10-83ed-43d0-8be4-8b145f5a7ee3.devtools`) of the deployed Code App runtime — used as source material for the "What's Actually Running" slide.
 
 ## Action Item Type Filters
 
