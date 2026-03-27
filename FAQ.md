@@ -94,7 +94,7 @@ The Board was updated to show actual project records from the `tdvsp_project` Da
 
 ## How does the floating card toolbar work on the Board?
 
-Hovering over any card on the Board reveals a floating `CardToolbar` popover positioned above the card. The toolbar contains (left to right): a GripVertical drag handle, a vertical separator, 5 priority color dots, a separator, a Pencil edit button, and a Pin button. The pin button is green when the item is pinned to parking lot. Click the pencil to open the entity's edit form dialog. Click the pin to toggle the `tdvsp_pinned` field in Dataverse. The toolbar uses `opacity-0 group-hover:opacity-100` for show/hide transitions.
+Hovering over any card on the Board reveals a floating `CardToolbar` in the top-right corner of the card (`-top-2.5 -right-2.5`). The toolbar contains (left to right): a GripVertical drag handle, 5 priority color dots, a separator, a Pencil edit button, and a Car icon button. The Car button is green when the item is parked. Click the pencil to open the entity's edit form dialog. Click the Car to toggle the `tdvsp_pinned` field in Dataverse. The toolbar uses `opacity-0 group-hover:opacity-100` for show/hide transitions. You can also **click any card directly** to open its edit form — no need to hover for the toolbar pencil.
 
 ## How does the Work column task type filter work?
 
