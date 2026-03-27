@@ -20,8 +20,8 @@ export const PRIORITY_TOP = 468510002;
 export const COLOR_DOTS = [
   { index: 0, hex: "transparent", ring: "#a1a1aa", label: "Clear" },
   { index: 1, hex: "#93c5fd", ring: "#93c5fd", label: "Low" },       // blue
-  { index: 2, hex: "#fdba74", ring: "#fdba74", label: "Eh" },        // orange
-  { index: 3, hex: "#fca5a5", ring: "#fca5a5", label: "High" },      // red
+  { index: 2, hex: "#fde047", ring: "#fde047", label: "Eh" },        // yellow
+  { index: 3, hex: "#fb923c", ring: "#fb923c", label: "High" },      // orange
   { index: 4, hex: "#b91c1c", ring: "#b91c1c", label: "Top Priority" }, // dark red
 ] as const;
 
@@ -52,8 +52,8 @@ export function priorityToColorIndex(priority: number | null | undefined): numbe
 const BG_CLASSES: Record<number, string> = {
   0: "",
   1: "bg-blue-50 dark:bg-blue-950/40",
-  2: "bg-orange-50 dark:bg-orange-950/40",
-  3: "bg-red-50 dark:bg-red-950/40",
+  2: "bg-yellow-50 dark:bg-yellow-950/40",
+  3: "bg-orange-50 dark:bg-orange-950/40",
   4: "bg-red-100 dark:bg-red-950/60",
 };
 
@@ -66,16 +66,16 @@ export function tileBgClass(colorIndex: number): string {
 const GRADIENT_STYLES: Record<number, string> = {
   0: "linear-gradient(to bottom, hsl(0 0% 100% / 0.7), hsl(0 0% 98% / 0.4))",
   1: "linear-gradient(to bottom, hsl(213 97% 87% / 0.35), hsl(213 97% 87% / 0.08))",
-  2: "linear-gradient(to bottom, hsl(27 98% 72% / 0.3), hsl(27 98% 72% / 0.06))",
-  3: "linear-gradient(to bottom, hsl(0 94% 82% / 0.3), hsl(0 94% 82% / 0.06))",
+  2: "linear-gradient(to bottom, hsl(53 96% 64% / 0.3), hsl(53 96% 64% / 0.06))",
+  3: "linear-gradient(to bottom, hsl(27 96% 61% / 0.3), hsl(27 96% 61% / 0.06))",
   4: "linear-gradient(to bottom, hsl(0 73% 41% / 0.2), hsl(0 73% 41% / 0.05))",
 };
 
 const DARK_GRADIENT_STYLES: Record<number, string> = {
   0: "linear-gradient(to bottom, hsl(222 20% 15% / 0.6), hsl(222 20% 13% / 0.3))",
   1: "linear-gradient(to bottom, hsl(213 80% 30% / 0.25), hsl(213 80% 30% / 0.06))",
-  2: "linear-gradient(to bottom, hsl(27 80% 35% / 0.25), hsl(27 80% 35% / 0.06))",
-  3: "linear-gradient(to bottom, hsl(0 70% 35% / 0.25), hsl(0 70% 35% / 0.06))",
+  2: "linear-gradient(to bottom, hsl(53 80% 30% / 0.25), hsl(53 80% 30% / 0.06))",
+  3: "linear-gradient(to bottom, hsl(27 80% 35% / 0.25), hsl(27 80% 35% / 0.06))",
   4: "linear-gradient(to bottom, hsl(0 73% 25% / 0.3), hsl(0 73% 25% / 0.08))",
 };
 

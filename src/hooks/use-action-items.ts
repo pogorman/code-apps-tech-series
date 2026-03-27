@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Tdvsp_actionitemsService } from "@/generated";
 import type { Tdvsp_actionitemsModel } from "@/generated";
+import confetti from "canvas-confetti";
 
 const ACTION_ITEMS_KEY = ["action-items"] as const;
 
@@ -60,8 +61,11 @@ export function useUpdateActionItem() {
       const result = await Tdvsp_actionitemsService.update(id, fields);
       return result.data;
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ACTION_ITEMS_KEY });
+      if (variables.fields.tdvsp_taskstatus === 468510005) {
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+      }
     },
   });
 }

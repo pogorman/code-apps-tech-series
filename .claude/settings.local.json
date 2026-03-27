@@ -57,7 +57,14 @@
       "Bash(pip list:*)",
       "Bash(pip3 list:*)",
       "Bash(python generate-deck.py)",
-      "Bash(xargs cat:*)"
+      "Bash(xargs cat:*)",
+      "Bash(node --version:*)",
+      "Bash(nvm list:*)",
+      "Bash(nvm use:*)",
+      "Bash(export PATH=\"/c/Users/pogorman/AppData/Local/nvm/v22.22.0:$PATH\")",
+      "Bash(git stash:*)",
+      "Bash(git checkout:*)",
+      "Bash(git restore:*)"
     ]
   }
 }
