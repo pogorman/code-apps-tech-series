@@ -222,14 +222,13 @@ Press **Ctrl+K** (or **Cmd+K** on Mac) anywhere in the app to open a global sear
 
 ## Copilot Studio Agent
 
-A floating **blue chat button** appears in the bottom-right corner of every page. Click it to open a chat panel with the Copilot Studio agent. The agent can query your Dataverse data — ask it questions about your accounts, contacts, action items, and more.
+A floating **blue chat button** appears in the bottom-right corner of every page. Click it to open the Copilot Studio agent in a popup window. The agent can query your Dataverse data — ask it questions about your accounts, contacts, action items, and more.
 
-- **Open:** Click the blue gradient circle (chat bubble icon) in the bottom-right
-- **Close:** Click the **X** in the chat panel header
-- **Restart conversation:** Click the **refresh** icon (circular arrow) in the panel header
-- **Dark mode:** The panel matches your current theme
+- **Open:** Click the blue gradient circle (chat bubble icon) in the bottom-right — this opens a popup window with the agent
+- **Reopen / Focus:** Click the button again to focus the existing popup, or open a new one if you closed it
+- **Close:** Close the popup window directly
 
-The agent authenticates automatically using your Power Platform session — no sign-in needed.
+The agent authenticates automatically in the popup — no sign-in needed.
 
 ## Ideas
 

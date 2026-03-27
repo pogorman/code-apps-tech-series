@@ -150,11 +150,11 @@ The body font is set to a monospace stack: `"JetBrains Mono", "Fira Code", "Casc
 
 ## How does the Copilot Studio agent integration work?
 
-A floating blue gradient button (bottom-right corner, `MessageCircle` icon) opens a 400x600 chat panel containing the Copilot Studio agent. The agent is embedded as an iframe from the same Power Platform environment. Because the Code App runs inside the Power Platform host (which already has an authenticated session), the iframe inherits SSO natively — no Direct Line secrets, MSAL, or token exchange middleware needed. The agent uses federated credentials via an app registration for Dataverse access, so it can query your data. Click the refresh button (top-right of the panel header) to restart the conversation. The panel respects dark/light mode.
+A floating blue gradient button (bottom-right corner, `MessageCircle` icon) opens the Copilot Studio agent in a popup window. Clicking the button calls `window.open` with the Copilot Studio webchat URL. The popup handles its own authentication natively within the Power Platform context — no Direct Line secrets, MSAL, iframe, or `botframework-webchat` dependency needed. The agent uses federated credentials via an app registration for Dataverse access, so it can query your data. Clicking the button again focuses the existing popup, or opens a new one if it was closed.
 
-## Why use an iframe instead of botframework-webchat for the agent?
+## Why use a popup window instead of botframework-webchat or an iframe for the agent?
 
-The Code App's `@microsoft/power-apps` SDK authenticates via custom `paauth`/`dynamicauth` token schemes — not standard OAuth Bearer tokens. There's no public API to extract a Bearer token for Direct Line's SSO token exchange flow. The iframe embed sidesteps this entirely because Copilot Studio's hosted webchat handles its own auth within the Power Platform context.
+The Code App's `@microsoft/power-apps` SDK authenticates via custom `paauth`/`dynamicauth` token schemes — not standard OAuth Bearer tokens. There's no public API to extract a Bearer token for Direct Line's SSO token exchange flow. An iframe embed was tried but had CSP and auth friction. A popup window (`window.open`) sidesteps both problems entirely because Copilot Studio's hosted webchat handles its own auth in its own browsing context. This also eliminated the `@azure/msal-browser` and `botframework-webchat` dependencies.
 
 ## What ports does local dev use?
 

@@ -410,9 +410,22 @@ All changes in `src/components/layout/app-layout.tsx`.
 4. Added `<CopilotChat />` to `App.tsx` alongside `<CommandPalette />` (outside `AppLayout`, inside `HashRouter`)
 5. No new dependencies — zero packages added
 
-**Key decision:** Iframe over Direct Line because the Power Platform host's custom auth tokens aren't compatible with Direct Line's SSO token exchange. The iframe embed is simpler, dependency-free, and handles auth natively.
+**Key decision:** Iframe over Direct Line because the Power Platform host's custom auth tokens aren't compatible with Direct Line's SSO token exchange. The iframe embed was simpler, dependency-free, and handled auth natively.
 
 **Tracked notes:** `docs/tracked/phase-12-adding-agent/1-adding-my-copilot-studio-agent.md`
+
+## Phase 18b — Copilot Chat Simplified to Popup Window
+
+**Prompt:** Simplify the Copilot chat — the iframe approach still had friction. Just open it in a popup window.
+
+**What happened:**
+
+1. Rewrote `src/components/copilot-chat.tsx` from a full iframe-based chat panel (400x600, header with refresh/close, dark mode support, `iframeKey` remounting) to a minimal floating button that calls `window.open()` with the Copilot Studio webchat URL
+2. Removed `@azure/msal-browser` and `botframework-webchat` from `package.json` — these were dead dependencies left over from the Direct Line experiment that never worked in the Code App context
+3. Removed `VITE_COPILOT_DIRECT_LINE_SECRET` from `.env.example`
+4. The popup window approach lets Copilot Studio handle its own auth in its own browsing context — no iframe CSP issues, no token exchange, no dependencies
+
+**Key decision:** The evolution was Direct Line + MSAL (failed due to `paauth`/`dynamicauth` tokens) -> iframe embed (worked but had friction) -> popup window (simplest, zero dependencies). The popup window is the right answer for Code Apps where the host SDK's auth is incompatible with standard OAuth flows.
 
 ## Phase 19 — "Under the Hood" Presentation Deck (Agentic Generation)
 

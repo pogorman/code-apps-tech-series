@@ -46,7 +46,18 @@
       "Bash(do echo:*)",
       "Read(//c/Users/pogorman/source/repos/code-apps-tech-series/src/components/**)",
       "Bash(done)",
-      "Bash(powershell -Command \"Get-NetTCPConnection -State Listen | Where-Object { @\\(8080,8181,8282,8383,9090\\) -contains $_ocalPort } | Select-Object LocalPort,OwningProcess | Format-Table -AutoSize\")"
+      "Bash(powershell -Command \"Get-NetTCPConnection -State Listen | Where-Object { @\\(8080,8181,8282,8383,9090\\) -contains $_ocalPort } | Select-Object LocalPort,OwningProcess | Format-Table -AutoSize\")",
+      "Bash(find /c/Users/pogorman/source/repos/code-apps-tech-series -type f \\\\\\(-name *actionitem* -o -name *meetingsummary* -o -name *idea* -o -name *account* \\\\\\))",
+      "Bash(node:*)",
+      "Bash(awk '{print length}' \"C:/Users/pogorman/source/repos/code-apps-tech-series/inbox/08587a10-83ed-43d0-8be4-8b145f5a7ee3.devtools\")",
+      "Bash(python3 -c \"import sys,json; s=sys.stdin.read\\(\\); start=s.find\\(''''{''''\\); end=s.find\\('''';'''',start\\); print\\(json.dumps\\(json.loads\\(s[start:end]\\),indent=2\\)[:3000]\\)\")",
+      "Bash(xargs grep:*)",
+      "Bash(python3 -c \"import sys,json; data=json.loads\\(''''{''''+sys.stdin.read\\(\\)+''''}''''\\); [print\\(f[''''src'''']\\) for f in data[''''files'''']]\")",
+      "Bash(find /c/Users/pogorman/source/repos/code-apps-tech-series/docs/tracked -type f -name *.md)",
+      "Bash(pip list:*)",
+      "Bash(pip3 list:*)",
+      "Bash(python generate-deck.py)",
+      "Bash(xargs cat:*)"
     ]
   }
 }

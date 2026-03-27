@@ -44,7 +44,7 @@ Open the URL from `pac code run` (not Vite directly) — it wraps the app in the
 | Command Palette | cmdk |
 | Drag & Drop | @dnd-kit (core, sortable, utilities) |
 | AI | Azure OpenAI (optional — see `.env.example`) |
-| Agent | Copilot Studio (iframe embed) |
+| Agent | Copilot Studio (popup window) |
 
 ## Project Structure
 
@@ -62,7 +62,7 @@ src/
     dashboard/        # Analytics dashboard + Kanban board view (4-column drag-and-drop, clickable cards, custom collision detection, column drop highlights)
     layout/           # App shell (left sidebar with colored nav icons + quick create bar with task-type presets + dark mode toggle)
     command-palette.tsx # Global Ctrl+K search
-    copilot-chat.tsx    # Copilot Studio agent (floating iframe panel)
+    copilot-chat.tsx    # Copilot Studio agent (floating button → popup window)
   stores/             # Zustand stores (quick create)
   hooks/              # TanStack Query hooks wrapping Dataverse services + view preference
   lib/                # Utilities (cn helper, Dataverse field helpers, Azure OpenAI service, tile color helpers incl. tileGradient() with dark mode support)
@@ -98,7 +98,7 @@ The app uses a monospace font stack (JetBrains Mono > Fira Code > Cascadia Code 
 
 ## Copilot Studio Agent
 
-A floating chat button (bottom-right) opens a Copilot Studio agent panel. The agent is embedded via iframe from the same Power Platform environment, so SSO is handled natively by the platform — no Direct Line secrets or MSAL configuration needed. Click the blue gradient chat bubble to open; use the refresh button to restart the conversation.
+A floating chat button (bottom-right) opens the Copilot Studio agent in a popup window. The popup handles its own auth natively — no Direct Line secrets, MSAL, iframe, or `botframework-webchat` dependency needed. Click the blue gradient chat bubble to open; click again to focus the existing popup or open a new one.
 
 ## Demo Materials
 
