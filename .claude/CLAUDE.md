@@ -16,6 +16,14 @@ A Power Platform Code App demo for a tech series. React + TypeScript SPA deploye
 
 Vite 7 + React 19 + TypeScript 5.9 + Tailwind v4 + shadcn/ui + TanStack Query + Zustand + Lucide + Sonner + cmdk
 
+## Dark Mode
+
+Toggle in sidebar footer (Moon/Sun icon). `ThemeProvider` in `src/components/theme-provider.tsx` wraps the app. CSS variables for the dark theme live in `index.css` under the `.dark` class. Tailwind v4 uses `@custom-variant dark (&:where(.dark, .dark *))` for class-based dark mode (NOT media query). Theme persists to `localStorage` and respects `prefers-color-scheme` on first visit. Hardcoded `bg-white` replaced with `bg-white dark:bg-card`. Quick-create pills and tile colors have `dark:` variants.
+
+## Monospace Font
+
+Global font set to monospace stack in the `body` rule in `index.css`: JetBrains Mono, Fira Code, Cascadia Code, Consolas, ui-monospace, monospace.
+
 ## AI Integration (Azure OpenAI)
 
 The "Extract Action Items with AI" feature on meeting summaries calls Azure OpenAI via `src/lib/azure-openai.ts`. Configured by Vite env vars (`VITE_AOAI_ENDPOINT`, `VITE_AOAI_API_KEY`, `VITE_AOAI_DEPLOYMENT`). If not configured, the button shows a toast. Priority strings from AI are mapped to Dataverse numeric choice keys in the same file.
@@ -56,11 +64,11 @@ The parking lot column shows items pinned via `tdvsp_pinned` (boolean) from any 
 
 ### Cross-Column Drag-and-Drop
 
-A single `DndContext` wraps all 4 columns. Each column uses `useDroppable` (id: `col-<key>`) so it accepts drops. Within-column reorder uses `SortableContext` + `arrayMove`. Cross-column: dragging to parking lot sets `tdvsp_pinned = true`; dragging from parking lot to another column sets `tdvsp_pinned = false`. The `getColumnForId()` helper resolves which column owns a card ID.
+A single `DndContext` wraps all 4 columns. Each column uses `useDroppable` (id: `col-<key>`) so it accepts drops. Within-column reorder uses `SortableContext` + `arrayMove`. Cross-column: dragging to parking lot sets `tdvsp_pinned = true`; dragging from parking lot to another column sets `tdvsp_pinned = false`. The `getColumnForId()` helper resolves which column owns a card ID. Custom collision detection: `closestCenter` for within-column reorder, `pointerWithin` for cross-column drops. Drop target columns highlight with accent-colored border, ring, and glow. Dragged card z-index uses inline style (not CSS class) to escape column stacking context.
 
 ### Floating CardToolbar
 
-Every board card renders a `CardToolbar` component that appears on hover (`opacity-0 group-hover:opacity-100`). Contains: GripVertical drag handle (spreads `dragHandle.attributes` + `dragHandle.listeners`), priority color dots (`TileColorDots`), Pencil edit button, and Pin toggle. The pin button is green when pinned. All pointer events are stopped to prevent card click-through.
+Every board card renders a `CardToolbar` component positioned `-top-2.5 -right-2.5` (floats above-right of card), appears on hover (`opacity-0 group-hover:opacity-100`). Contains: GripVertical drag handle (spreads `dragHandle.attributes` + `dragHandle.listeners`), priority color dots (`TileColorDots`), Pencil edit button, and Pin toggle (Car icon for parking lot). All pointer events are stopped to prevent card click-through.
 
 ### Dynamic Work Column
 
@@ -72,11 +80,31 @@ The pencil button in `CardToolbar` opens the correct entity form dialog (ActionI
 
 ### Board Card Visual Polish
 
-Cards have hover lift (`-translate-y-0.5`), graduated shadows (sm → md → xl for drag). Drag state: `scale-[1.03]`, `rotate-[1.5deg]`, `ring-2 ring-primary/40`. Entity-type icons (h-3 w-3) inline with card titles: Briefcase (action items), FolderKanban (projects), Lightbulb (ideas), FileText (meeting summaries). 1-line description snippets below titles when available. Subtle priority-tinted gradient backgrounds via `tileGradient()` in `src/lib/tile-colors.ts`. Glass-morphism sticky column headers (`backdrop-blur-md`, `bg-background/60`) with overlapping accent-colored count badges. Improved empty state with large faded icon. Card titles use `text-xs` for compact display.
+Cards are clickable (open edit form dialog for the entity). Parking lot cards also open edit form on click. Cards have hover lift (`-translate-y-0.5`), graduated shadows (sm → md → xl for drag). Drag state: `scale-[1.03]`, `rotate-[1.5deg]`, `ring-2 ring-primary/40`. Entity-type icons (h-3 w-3) inline with card titles: Briefcase (action items), FolderKanban (projects), Lightbulb (ideas), FileText (meeting summaries). 1-line description snippets below titles when available. Subtle priority-tinted gradient backgrounds via `tileGradient()` in `src/lib/tile-colors.ts`. Glass-morphism sticky column headers (`backdrop-blur-md`, `bg-background/60`) with overlapping accent-colored count badges. Improved empty state with large faded icon. Card titles use `text-xs` for compact display.
+
+### Board Layout
+
+Column widths use `grid-cols-[1fr_2fr_1fr_1fr]` — the work column is wider than the other three.
 
 ### Outline-Style Priority/Status/Category Pills
 
 Board cards use outline-style pills instead of solid Badge components. `priorityPillClass()` and `statusPillClass()` in `src/components/action-items/labels.ts`. `categoryPillClass()` in `src/components/ideas/labels.ts`. Pills are absolute positioned: priority bottom-left, status bottom-right. `rounded-sm border` style with semantic colors (red for top priority, blue for in progress, amber for pending, etc.).
+
+## Action Items List
+
+Task type filter pills at top of the list view: All, Work (red/Briefcase), Personal (blue/House), Learning (fuchsia/BookOpen). Customer column removed from all views (table and card). Task type icon shown to left of name in both table and card views. Filters client-side via `filteredItems` memo.
+
+## Labels
+
+"Eh" priority renamed to "Med" in `src/components/action-items/labels.ts`.
+
+## Table Density
+
+`TableHead` height reduced from `h-11` to `h-8`, `TableCell` padding from `p-4` to `px-3 py-1.5` (globally in `src/components/ui/table.tsx`).
+
+## Tile Colors (Dark Mode Aware)
+
+`tileGradient()` in `src/lib/tile-colors.ts` is theme-aware — checks `document.documentElement.classList.contains("dark")` at render time and returns dark-specific gradients. `BG_CLASSES` have `dark:` variants appended.
 
 ## Quick Create Payload
 

@@ -2,11 +2,14 @@ import { useState, useCallback } from "react";
 import {
   DndContext,
   closestCenter,
+  pointerWithin,
   PointerSensor,
   useSensor,
   useSensors,
   useDroppable,
+  type CollisionDetection,
   type DragEndEvent,
+  type DragOverEvent,
 } from "@dnd-kit/core";
 import {
   SortableContext,
@@ -56,7 +59,6 @@ import {
   LayoutGrid,
   Lightbulb,
   Pencil,
-  Pin,
   X,
 } from "lucide-react";
 import type { Tdvsp_actionitemsModel } from "@/generated";
@@ -168,9 +170,10 @@ function SortableCard({
     isDragging,
   } = useSortable({ id });
 
-  const style = {
+  const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
     transition,
+    ...(isDragging ? { position: "relative" as const, zIndex: 9999 } : {}),
   };
 
   return (
@@ -180,7 +183,7 @@ function SortableCard({
       className={cn(
         "group transition-all duration-200",
         isDragging
-          ? "z-50 opacity-90 scale-[1.03] rotate-[1.5deg] ring-2 ring-primary/40 rounded-lg shadow-xl"
+          ? "opacity-90 scale-[1.03] rotate-[1.5deg] ring-2 ring-primary/40 rounded-lg shadow-xl"
           : "hover:-translate-y-0.5",
       )}
     >
@@ -209,9 +212,9 @@ function CardToolbar({
   return (
     <div
       className={cn(
-        "absolute -top-3 right-1 z-10 flex items-center gap-2",
-        "rounded-lg border border-border bg-popover px-2 py-1",
-        "shadow-lg opacity-0 group-hover:opacity-100 transition-opacity",
+        "absolute -top-2.5 -right-2.5 z-10 flex items-center gap-1.5",
+        "rounded-md border border-border bg-popover/95 backdrop-blur-sm px-1.5 py-0.5",
+        "shadow-md opacity-0 group-hover:opacity-100 transition-opacity",
       )}
       onClick={(e) => e.stopPropagation()}
       onPointerDown={(e) => e.stopPropagation()}
@@ -225,10 +228,7 @@ function CardToolbar({
         <GripVertical className="h-4 w-4" />
       </div>
 
-      {/* separator */}
-      <div className="h-4 w-px bg-border" />
-
-      {/* priority color dots — override the built-in opacity since toolbar handles it */}
+      {/* priority color dots */}
       <TileColorDots
         activeIndex={colorIdx}
         onChange={onPriorityChange}
@@ -236,14 +236,14 @@ function CardToolbar({
       />
 
       {/* separator */}
-      <div className="h-4 w-px bg-border" />
+      <div className="h-4 w-px bg-border shrink-0" />
 
       {/* edit */}
       {onEdit && (
         <button
           type="button"
           title="Edit"
-          className="text-muted-foreground hover:text-foreground transition-colors"
+          className="shrink-0 text-muted-foreground hover:text-foreground transition-colors"
           onClick={(e) => {
             e.stopPropagation();
             onEdit();
@@ -254,12 +254,12 @@ function CardToolbar({
         </button>
       )}
 
-      {/* pin */}
+      {/* park / unpark */}
       <button
         type="button"
-        title={pinned ? "Unpin from parking lot" : "Pin to parking lot"}
+        title={pinned ? "Remove from parking lot" : "Park this item"}
         className={cn(
-          "transition-colors",
+          "shrink-0 transition-colors",
           pinned
             ? "text-green-500 hover:text-green-400"
             : "text-muted-foreground hover:text-foreground",
@@ -270,7 +270,7 @@ function CardToolbar({
         }}
         onPointerDown={(e) => e.stopPropagation()}
       >
-        <Pin className="h-3.5 w-3.5" />
+        <Car className="h-3.5 w-3.5" />
       </button>
     </div>
   );
@@ -313,11 +313,12 @@ function ActionItemCard({
   return (
     <div
       className={cn(
-        "relative rounded-lg border border-border/60 bg-card px-3.5 pt-3 pb-7",
+        "relative rounded-lg border border-border/60 bg-card px-3.5 pt-3 pb-7 cursor-pointer",
         "shadow-sm hover:shadow-md transition-all duration-200",
         tileBgClass(colorIdx),
       )}
       style={{ backgroundImage: tileGradient(colorIdx) }}
+      onClick={() => onEdit(item)}
     >
       <CardToolbar
         colorIdx={colorIdx}
@@ -339,7 +340,7 @@ function ActionItemCard({
         </p>
       )}
       {(date || customer) && (
-        <div className="mt-1.5 flex items-center gap-2 text-[11px] text-muted-foreground pl-[1.125rem]">
+        <div className="mt-1.5 flex items-center gap-2 text-xs text-muted-foreground pl-[1.125rem]">
           {date && <span>{date}</span>}
           {date && customer && <span>·</span>}
           {customer && <span className="truncate">{customer}</span>}
@@ -386,11 +387,12 @@ function ProjectCard({
   return (
     <div
       className={cn(
-        "relative rounded-lg border border-border/60 bg-card px-3.5 pt-3 pb-7",
+        "relative rounded-lg border border-border/60 bg-card px-3.5 pt-3 pb-7 cursor-pointer",
         "shadow-sm hover:shadow-md transition-all duration-200",
         tileBgClass(colorIdx),
       )}
       style={{ backgroundImage: tileGradient(colorIdx) }}
+      onClick={() => onEdit(project)}
     >
       <CardToolbar
         colorIdx={colorIdx}
@@ -448,11 +450,12 @@ function IdeaCard({
   return (
     <div
       className={cn(
-        "relative rounded-lg border border-border/60 bg-card px-3.5 pt-3 pb-7",
+        "relative rounded-lg border border-border/60 bg-card px-3.5 pt-3 pb-7 cursor-pointer",
         "shadow-sm hover:shadow-md transition-all duration-200",
         tileBgClass(colorIdx),
       )}
       style={{ backgroundImage: tileGradient(colorIdx) }}
+      onClick={() => onEdit(idea)}
     >
       <CardToolbar
         colorIdx={colorIdx}
@@ -492,6 +495,7 @@ type ParkingLotEntry = {
   label: string;
   colorIdx: number;
   onUnpin: () => void;
+  onEdit: () => void;
 };
 
 const KIND_ICON: Record<ParkingLotEntry["kind"], typeof Briefcase> = {
@@ -507,15 +511,20 @@ function ParkingLotCard({ entry, dragHandle }: { entry: ParkingLotEntry; dragHan
   return (
     <div
       className={cn(
-        "relative rounded-lg border border-border/60 bg-card px-3.5 py-3",
+        "relative rounded-lg border border-border/60 bg-card px-3.5 py-3 cursor-pointer",
         "shadow-sm hover:shadow-md transition-all duration-200",
         tileBgClass(entry.colorIdx),
       )}
       style={{ backgroundImage: tileGradient(entry.colorIdx) }}
+      onClick={() => entry.onEdit()}
     >
       {/* minimal toolbar: grip + unpin */}
       <div
-        className="absolute -top-3 right-1 z-10 flex items-center gap-2 rounded-lg border border-border bg-popover px-2 py-1 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+        className={cn(
+          "absolute -top-2.5 -right-2.5 z-10 flex items-center gap-1.5",
+          "rounded-md border border-border bg-popover/95 backdrop-blur-sm px-1.5 py-0.5",
+          "shadow-md opacity-0 group-hover:opacity-100 transition-opacity",
+        )}
         onClick={(e) => e.stopPropagation()}
         onPointerDown={(e) => e.stopPropagation()}
       >
@@ -526,11 +535,11 @@ function ParkingLotCard({ entry, dragHandle }: { entry: ParkingLotEntry; dragHan
         >
           <GripVertical className="h-4 w-4" />
         </div>
-        <div className="h-4 w-px bg-border" />
+        <div className="h-4 w-px bg-border shrink-0" />
         <button
           type="button"
-          title="Unpin"
-          className="text-muted-foreground hover:text-foreground transition-colors"
+          title="Remove from parking lot"
+          className="shrink-0 text-muted-foreground hover:text-foreground transition-colors"
           onClick={(e) => {
             e.stopPropagation();
             entry.onUnpin();
@@ -559,6 +568,7 @@ function SortableColumn({
   accent,
   ids,
   headerInline,
+  isDropTarget,
   children,
 }: {
   columnKey: string;
@@ -567,13 +577,22 @@ function SortableColumn({
   accent: string;
   ids: string[];
   headerInline?: React.ReactNode;
+  isDropTarget?: boolean;
   children: React.ReactNode;
 }) {
   /* Make the card list a drop target so items can be dropped here even when empty */
   const { setNodeRef } = useDroppable({ id: `col-${columnKey}` });
 
   return (
-    <div className="flex min-w-0 rounded-xl border border-border/50 bg-muted/30 backdrop-blur-sm">
+    <div
+      className={cn(
+        "flex min-w-0 rounded-xl border bg-muted/30 backdrop-blur-sm transition-all duration-200",
+        isDropTarget
+          ? "border-2 ring-2 ring-offset-1 scale-[1.01] shadow-lg"
+          : "border-border/50",
+      )}
+      style={isDropTarget ? { borderColor: accent, boxShadow: `0 0 16px ${accent}40` } : undefined}
+    >
       {/* accent left bar */}
       <div className="w-[3px] shrink-0 rounded-l-xl transition-colors duration-200" style={{ background: accent }} />
       <div className="flex flex-col min-w-0 flex-1">
@@ -594,9 +613,9 @@ function SortableColumn({
             {headerInline}
           </div>
         </div>
-        {/* sortable card list — pt-4 gives room for toolbar overflow above first card */}
+        {/* sortable card list */}
         <SortableContext items={ids} strategy={verticalListSortingStrategy}>
-          <div ref={setNodeRef} className="flex-1 overflow-y-auto overflow-x-visible px-3 pt-4 pb-3 space-y-2.5">
+          <div ref={setNodeRef} className="flex-1 overflow-y-auto px-3 pt-2 pb-3 space-y-2.5">
             {children}
             {ids.length === 0 && (
               <div className="flex flex-col items-center py-8 text-muted-foreground/50">
@@ -641,6 +660,9 @@ export function BoardDashboard() {
 
   /* edit dialog state */
   const [editTarget, setEditTarget] = useState<EditTarget>(null);
+
+  /* drag-over column highlight */
+  const [overColumn, setOverColumn] = useState<string | null>(null);
 
   /* sort order state — seeded from localStorage on first render */
   const [orders, setOrders] = useState<Record<string, string[]>>(() => ({
@@ -710,6 +732,7 @@ export function BoardDashboard() {
       label: taskType,
       colorIdx: priorityToColorIndex(item.tdvsp_priority),
       onUnpin: () => handleActionItemPin(item.tdvsp_actionitemid),
+      onEdit: () => setEditTarget({ kind: "action-item", item }),
     });
   });
 
@@ -722,6 +745,7 @@ export function BoardDashboard() {
       label: "Project",
       colorIdx: priorityToColorIndex(project.tdvsp_priority),
       onUnpin: () => handleProjectPin(project.tdvsp_projectid),
+      onEdit: () => setEditTarget({ kind: "project", item: project }),
     });
   });
 
@@ -735,6 +759,7 @@ export function BoardDashboard() {
       label: "Idea",
       colorIdx: priorityToColorIndex(priority),
       onUnpin: () => handleIdeaPin(idea.tdvsp_ideaid),
+      onEdit: () => setEditTarget({ kind: "idea", item: idea }),
     });
   });
 
@@ -748,6 +773,7 @@ export function BoardDashboard() {
       label: "Meeting",
       colorIdx: priorityToColorIndex(priority),
       onUnpin: () => handleMeetingSummaryPin(ms.tdvsp_meetingsummaryid),
+      onEdit: () => setEditTarget({ kind: "meeting-summary", item: ms }),
     });
   });
 
@@ -789,21 +815,45 @@ export function BoardDashboard() {
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
   );
 
+  /* Use pointerWithin first (precise for columns), fall back to closestCenter (for sortable reorder) */
   const workIdSet = new Set(workIds);
   const projectIdSet = new Set(projectIds);
   const ideaIdSet = new Set(ideaIds);
   const parkingLotIdSet = new Set(parkingLotIds);
 
-  const getColumnForId = (id: string): string | null => {
+  const getColumnForId = useCallback((id: string): string | null => {
     if (id.startsWith("col-")) return id.slice(4);
     if (workIdSet.has(id)) return "work";
     if (projectIdSet.has(id)) return "projects";
     if (ideaIdSet.has(id)) return "ideas";
     if (parkingLotIdSet.has(id)) return "parkingLot";
     return null;
+  }, [workIdSet, projectIdSet, ideaIdSet, parkingLotIdSet]);
+
+  /* closestCenter for within-column reorder; pointerWithin column droppable for cross-column */
+  const collisionDetection: CollisionDetection = useCallback((args) => {
+    const centerHits = closestCenter(args);
+    if (centerHits.length > 0) {
+      const activeCol = getColumnForId(String(args.active.id));
+      const overCol = centerHits[0] ? getColumnForId(String(centerHits[0].id)) : null;
+      // Same column → use closestCenter so cards can reorder
+      if (activeCol && activeCol === overCol) return centerHits;
+    }
+    // Different column or no sortable hit → detect which column the pointer is in
+    const pointerHits = pointerWithin(args);
+    const colHit = pointerHits.find((h) => String(h.id).startsWith("col-"));
+    if (colHit) return [colHit];
+    return centerHits;
+  }, [getColumnForId]);
+
+  const handleBoardDragOver = (event: DragOverEvent) => {
+    const overId = event.over ? String(event.over.id) : null;
+    const col = overId ? getColumnForId(overId) : null;
+    setOverColumn(col);
   };
 
   const handleBoardDragEnd = (event: DragEndEvent) => {
+    setOverColumn(null);
     const { active, over } = event;
     if (!over) return;
 
@@ -872,7 +922,7 @@ export function BoardDashboard() {
           </div>
           <h1 className="text-2xl font-bold tracking-tight">My Board</h1>
         </div>
-        <div className="grid grid-cols-4 gap-4 h-[calc(100vh-12rem)]">
+        <div className="grid grid-cols-[1fr_2fr_1fr_1fr] gap-3 h-[calc(100vh-12rem)]">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="rounded-xl border border-border/50 bg-muted/30 p-4">
               <Skeleton className="h-5 w-24 mb-4" />
@@ -906,10 +956,12 @@ export function BoardDashboard() {
       {/* 4-column board — single DndContext for cross-column drag */}
       <DndContext
         sensors={sensors}
-        collisionDetection={closestCenter}
+        collisionDetection={collisionDetection}
+        onDragOver={handleBoardDragOver}
         onDragEnd={handleBoardDragEnd}
+        onDragCancel={() => setOverColumn(null)}
       >
-      <div className="grid grid-cols-4 gap-4 flex-1 min-h-0">
+      <div className="grid grid-cols-[1fr_2fr_1fr_1fr] gap-3 flex-1 min-h-0">
         {/* Parking Lot */}
         <SortableColumn
           columnKey="parkingLot"
@@ -917,6 +969,7 @@ export function BoardDashboard() {
           icon={Car}
           accent={ACCENT.parkingLot}
           ids={parkingLotIds}
+          isDropTarget={overColumn === "parkingLot"}
         >
           {sortedParkingLot.map((entry) => (
             <SortableCard key={entry.sortId} id={entry.sortId}>
@@ -932,6 +985,7 @@ export function BoardDashboard() {
           icon={workFilterConfig(workFilter).icon}
           accent={workFilterConfig(workFilter).accent}
           ids={workIds}
+          isDropTarget={overColumn === "work"}
           headerInline={
             <div className="ml-auto flex items-center gap-0.5">
               <button
@@ -990,7 +1044,7 @@ export function BoardDashboard() {
           icon={FolderKanban}
           accent={ACCENT.projects}
           ids={projectIds}
-
+          isDropTarget={overColumn === "projects"}
         >
           {projectList.map((project) => (
             <SortableCard key={project.tdvsp_projectid} id={project.tdvsp_projectid}>
@@ -1014,7 +1068,7 @@ export function BoardDashboard() {
           icon={Lightbulb}
           accent={ACCENT.ideas}
           ids={ideaIds}
-
+          isDropTarget={overColumn === "ideas"}
         >
           {ideaList.map((idea) => (
             <SortableCard key={idea.tdvsp_ideaid} id={idea.tdvsp_ideaid}>

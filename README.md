@@ -36,7 +36,7 @@ Open the URL from `pac code run` (not Vite directly) — it wraps the app in the
 |-------|------|
 | Framework | React 19 + TypeScript 5.9 |
 | Build | Vite 7 |
-| Styling | Tailwind CSS v4 + shadcn/ui (Microsoft Fluent Design theme) |
+| Styling | Tailwind CSS v4 + shadcn/ui (Microsoft Fluent Design theme, light/dark mode) |
 | Data | TanStack Query + generated Dataverse services |
 | State | Zustand |
 | Icons | Lucide React |
@@ -58,12 +58,12 @@ src/
     meeting-summaries/# Meeting Summary CRUD components
     ideas/            # Idea CRUD components
     projects/         # Project CRUD components
-    dashboard/        # Analytics dashboard + Kanban board view (4-column drag-and-drop, card hover lift, glass-morphism headers, priority gradient backgrounds)
-    layout/           # App shell (left sidebar with colored nav icons + quick create bar with task-type presets)
+    dashboard/        # Analytics dashboard + Kanban board view (4-column drag-and-drop, clickable cards, custom collision detection, column drop highlights)
+    layout/           # App shell (left sidebar with colored nav icons + quick create bar with task-type presets + dark mode toggle)
     command-palette.tsx # Global Ctrl+K search
   stores/             # Zustand stores (quick create)
   hooks/              # TanStack Query hooks wrapping Dataverse services + view preference
-  lib/                # Utilities (cn helper, Dataverse field helpers, Azure OpenAI service, tile color helpers incl. tileGradient())
+  lib/                # Utilities (cn helper, Dataverse field helpers, Azure OpenAI service, tile color helpers incl. tileGradient() with dark mode support)
 docs/                 # Tracked notes, research, slide outline, demo script
 .power/               # Power Platform schemas (auto-generated)
 power.config.json     # Code App configuration
@@ -83,3 +83,15 @@ power.config.json     # Code App configuration
 
 - **Target:** og-dv (`https://og-dv.crm.dynamics.com/`)
 - **Auth:** `admin@M365x06150305.onmicrosoft.com`
+
+## Dark Mode
+
+Toggle via the Sun/Moon button in the sidebar footer. Preference persists in `localStorage` and respects the system `prefers-color-scheme` on first visit. Dark mode sets a `.dark` class on `<html>`, which drives a full set of CSS custom properties in `index.css`. Quick create pills, board card gradients, and tile backgrounds all have dark-aware variants.
+
+## Typography
+
+The app uses a monospace font stack (JetBrains Mono > Fira Code > Cascadia Code > Consolas > system monospace) set on `<body>` for a developer-tooling aesthetic.
+
+## Action Item Type Filters
+
+The action items list view includes pill-style filter buttons (All / Work / Personal / Learning) in the toolbar. Filters are client-side on the `tdvsp_tasktype` field. Each action item row and card shows an inline type icon (Briefcase, House, or BookOpen) color-coded to match. The Customer column was removed from the table view in favor of the type icon.

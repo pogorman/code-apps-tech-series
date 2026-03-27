@@ -51,10 +51,10 @@ export function priorityToColorIndex(priority: number | null | undefined): numbe
 
 const BG_CLASSES: Record<number, string> = {
   0: "",
-  1: "bg-blue-50",
-  2: "bg-orange-50",
-  3: "bg-red-50",
-  4: "bg-red-100",
+  1: "bg-blue-50 dark:bg-blue-950/40",
+  2: "bg-orange-50 dark:bg-orange-950/40",
+  3: "bg-red-50 dark:bg-red-950/40",
+  4: "bg-red-100 dark:bg-red-950/60",
 };
 
 export function tileBgClass(colorIndex: number): string {
@@ -71,9 +71,20 @@ const GRADIENT_STYLES: Record<number, string> = {
   4: "linear-gradient(to bottom, hsl(0 73% 41% / 0.2), hsl(0 73% 41% / 0.05))",
 };
 
+const DARK_GRADIENT_STYLES: Record<number, string> = {
+  0: "linear-gradient(to bottom, hsl(222 20% 15% / 0.6), hsl(222 20% 13% / 0.3))",
+  1: "linear-gradient(to bottom, hsl(213 80% 30% / 0.25), hsl(213 80% 30% / 0.06))",
+  2: "linear-gradient(to bottom, hsl(27 80% 35% / 0.25), hsl(27 80% 35% / 0.06))",
+  3: "linear-gradient(to bottom, hsl(0 70% 35% / 0.25), hsl(0 70% 35% / 0.06))",
+  4: "linear-gradient(to bottom, hsl(0 73% 25% / 0.3), hsl(0 73% 25% / 0.08))",
+};
+
 const DEFAULT_GRADIENT = "linear-gradient(to bottom, hsl(0 0% 100% / 0.7), hsl(0 0% 98% / 0.4))";
+const DEFAULT_DARK_GRADIENT = "linear-gradient(to bottom, hsl(222 20% 15% / 0.6), hsl(222 20% 13% / 0.3))";
 
 export function tileGradient(colorIndex: number): string {
+  const isDark = document.documentElement.classList.contains("dark");
+  if (isDark) return DARK_GRADIENT_STYLES[colorIndex] ?? DEFAULT_DARK_GRADIENT;
   return GRADIENT_STYLES[colorIndex] ?? DEFAULT_GRADIENT;
 }
 

@@ -4,7 +4,7 @@ type Priority = Tdvsp_actionitemsModel.Tdvsp_actionitemstdvsp_priority;
 type TaskStatus = Tdvsp_actionitemsModel.Tdvsp_actionitemstdvsp_taskstatus;
 
 export const PRIORITY_LABELS: Record<Priority, string> = {
-  468510001: "Eh",
+  468510001: "Med",
   468510000: "Low",
   468510003: "High",
   468510002: "Top Priority",
@@ -43,7 +43,7 @@ export function statusVariant(s: TaskStatus): "default" | "secondary" | "destruc
 const PRIORITY_PILL: Record<Priority, string> = {
   468510002: "border-red-400 text-red-400",        // Top Priority
   468510003: "border-orange-400 text-orange-400",   // High
-  468510001: "border-zinc-400 text-zinc-400",       // Eh
+  468510001: "border-zinc-400 text-zinc-400",       // Med
   468510000: "border-blue-400 text-blue-400",       // Low
 };
 

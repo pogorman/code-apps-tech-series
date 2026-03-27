@@ -347,6 +347,57 @@ All changes in `src/components/layout/app-layout.tsx`.
 
 **Files changed:** `board-dashboard.tsx` (major), `tile-colors.ts`, `action-items/labels.ts`, `ideas/labels.ts`, `action-item-form-dialog.tsx`, `action-item-list.tsx`, `app-layout.tsx`, `quick-create-store.ts`
 
+## Phase 17 — Dark Mode, Monospace Font, Board Improvements & Action Item Filters
+
+**Prompt:** Add dark mode support, switch to monospace font, improve board UX (wider work column, clickable cards, Car icon for parking, custom collision detection, drop target glow, toolbar repositioning), add task-type filter pills on the action items list, rename "Eh" to "Med", tighten table density, and fix Tailwind v4 dark mode.
+
+**What happened:**
+
+1. **Dark mode with ThemeProvider** (`src/components/theme-provider.tsx`, `src/App.tsx`):
+   - Created `ThemeProvider` context with `useTheme()` hook
+   - Stores preference in `localStorage`, falls back to OS `prefers-color-scheme`
+   - Toggles `.dark` class on `<html>` to activate dark CSS variables
+   - Dark mode color palette defined in `src/index.css` under `.dark` — inverted backgrounds, adjusted accent colors, bright blue/cyan sidebar gradient
+   - Moon/Sun toggle button added to sidebar footer in `app-layout.tsx`
+
+2. **Tailwind v4 dark mode fix** (`src/index.css`):
+   - Tailwind v4 removed `darkMode: "class"` from config
+   - Added `@custom-variant dark (&:where(.dark, .dark *));` at the top of `index.css` to tell Tailwind that `dark:` utilities activate on `.dark` class ancestors
+   - Without this line, all `dark:` classes were silently ignored
+
+3. **Monospace font** (`src/index.css`):
+   - Set body font to `"JetBrains Mono", "Fira Code", "Cascadia Code", "Consolas", ui-monospace, monospace`
+   - Gives the app a developer-tool aesthetic fitting a Code Apps demo
+
+4. **Board improvements** (`board-dashboard.tsx`):
+   - **Wider work column:** Grid changed to `grid-cols-[1fr_2fr_1fr_1fr]` — work column gets 2x width
+   - **Clickable cards:** All card types have `cursor-pointer` and clicking the card body opens the entity's edit form dialog via `setEditTarget()`
+   - **Car icon replaces Pin:** The `CardToolbar` pin toggle now uses a Car icon (`lucide-react/Car`) instead of a generic pin. Green when parked
+   - **Toolbar repositioned:** Moved from floating above (`-top-8`) to top-right corner of card (`-top-2.5 -right-2.5`) for better visibility
+   - **Custom collision detection:** Hybrid strategy using `closestCenter` for within-column card reorder + `pointerWithin` for cross-column drops. `getColumnForId()` helper determines whether active and over items are in the same column
+   - **Drop target glow:** `isDropTarget` prop on `SortableColumn` — when a card is dragged over a column, the column gets `border-2 ring-2 ring-offset-1 scale-[1.01] shadow-lg` with accent-colored `boxShadow` glow. Tracked via `overColumn` state set in `handleBoardDragOver`
+   - **`onDragCancel` handler:** Clears `overColumn` state when drag is cancelled
+
+5. **Action item type filters** (`action-item-list.tsx`):
+   - Added `typeFilter` state (numeric Dataverse key or `null` for All)
+   - Four filter pills below search bar: All (dark inverted), Work (red + Briefcase), Personal (blue + House), Learning (magenta + BookOpen)
+   - Active pill: solid fill with white text. Inactive: outline style with entity-specific colors
+   - `TASK_TYPE_ICON` map associates each numeric key with an icon + color
+   - Each table row and card shows a colored task-type icon inline with the name
+   - Dark mode variants on pill styles (`dark:bg-*-950/60 dark:border-*-800`)
+
+6. **"Eh" renamed to "Med"** (`action-items/labels.ts`):
+   - `PRIORITY_LABELS[468510001]` changed from `"Eh"` to `"Med"` for clarity
+
+7. **Customer column removed** (`action-item-list.tsx`):
+   - Removed the Customer column from the action items table view to free horizontal space
+   - Customer is still visible in detail dialog, form, and card view
+
+8. **Tighter table density** (action-item-list.tsx and other list components):
+   - Reduced vertical padding on table cells for a more compact list appearance
+
+**Files changed:** `theme-provider.tsx` (new), `index.css`, `App.tsx`, `app-layout.tsx`, `board-dashboard.tsx`, `action-item-list.tsx`, `action-items/labels.ts`
+
 ## Presentation Materials — Slide Outline & Live Demo Script
 
 **Prompt:** Create a slide outline and live demo script for the Code Apps tech series presentation targeting SLED customers.

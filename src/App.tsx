@@ -10,6 +10,7 @@ import { IdeaList } from "@/components/ideas";
 import { ProjectList } from "@/components/projects";
 import { Dashboard, BoardDashboard } from "@/components/dashboard";
 import { CommandPalette } from "@/components/command-palette";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,6 +23,7 @@ const queryClient = new QueryClient({
 
 export function App() {
   return (
+    <ThemeProvider>
     <QueryClientProvider client={queryClient}>
       <HashRouter>
         <AppLayout>
@@ -41,5 +43,6 @@ export function App() {
       </HashRouter>
       <Toaster richColors position="bottom-right" />
     </QueryClientProvider>
+    </ThemeProvider>
   );
 }

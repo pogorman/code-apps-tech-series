@@ -4,9 +4,15 @@
 
 This Code App provides a "My Work" interface for managing accounts, contacts, action items, meeting summaries, ideas, and projects stored in Dataverse. All views show active records only. The app uses a Microsoft Fluent Design-inspired theme with a left vertical sidebar for navigation and a top quick create bar for fast record creation.
 
-**Left Sidebar** — Briefcase icon + "My Work" brand at the top. Grouped navigation sections: insights (Dashboard, My Board), activity (Action Items), capture (Ideas, Meetings, Projects), core (Accounts, Contacts). Nav icons are colored to match their quick create counterparts. Active page is highlighted with a cyan left border.
+**Left Sidebar** — Briefcase icon + "My Work" brand at the top. Grouped navigation sections: insights (Dashboard, My Board), activity (Action Items), capture (Ideas, Meetings, Projects), core (Accounts, Contacts). Nav icons are colored to match their quick create counterparts. Active page is highlighted with a cyan left border. At the bottom of the sidebar: a dark/light mode toggle (Moon/Sun icon) and a Ctrl+K search hint.
 
 **Quick Create Bar** — Colored pill buttons across the top of the content area. Buttons (left to right): work, personal, learning (these three open the action item form with the task type pre-selected), idea, meeting, project (violet), account, contact. Click any button to navigate to that entity's list and immediately open a new record form.
+
+## Dark Mode
+
+Click the **Moon** icon in the sidebar footer to switch to dark mode. The icon changes to a **Sun** — click it again to return to light mode. Your preference is saved in `localStorage` and persists across sessions. If no preference is saved, the app follows your OS setting (light or dark).
+
+Dark mode inverts all colors: dark backgrounds, light text, and adjusted accent colors. The sidebar gradient changes from dark navy to a bright blue/cyan gradient.
 
 ## Dashboard
 
@@ -33,17 +39,17 @@ Click **My Board** in the sidebar to open a Kanban-style view with four columns:
 - **Projects** (purple accent, FolderKanban icon) — All project records. Cards show project name and priority pill.
 - **Ideas** (amber accent, Lightbulb icon) — All ideas. Cards show idea name and category pill.
 
-Columns have glass-morphism sticky headers (frosted blur effect) with an overlapping accent-colored count badge. Empty columns show a large faded icon. Cards have subtle priority-tinted gradient backgrounds, hover lift animation, and compact `text-xs` titles.
+Columns have glass-morphism sticky headers (frosted blur effect) with an overlapping accent-colored count badge. The work column is wider than the others (2x width) to accommodate more detail. Empty columns show a large faded icon. Cards have subtle priority-tinted gradient backgrounds, hover lift animation, and compact `text-xs` titles. **Click any card** to open its edit form dialog directly — no need to use the toolbar pencil.
 
 ### Floating Card Toolbar
 
-Hover over any card to reveal a floating toolbar above the card. The toolbar contains: a drag grip handle (GripVertical), priority color dots (5 colors), an edit pencil button, and a pin button. Click the pencil to open the entity's edit form. Click the pin to toggle the item in/out of parking lot. The pin button is green when pinned.
+Hover over any card to reveal a floating toolbar in the top-right corner of the card. The toolbar contains: a drag grip handle (GripVertical), priority color dots (5 colors), an edit pencil button, and a Car icon for parking. Click the pencil to open the entity's edit form. Click the Car icon to toggle the item in/out of parking lot. The Car button is green when parked.
 
 ### Drag-and-Drop
 
 **Within-column:** Grab any card and drag it up or down to reorder. The sort order is saved in localStorage and persists across sessions.
 
-**Cross-column:** Drag a card from work, projects, or ideas into the parking lot to pin it. Drag a parking lot card to any other column to unpin it. Cross-column drag does not change record status or move items between entity types.
+**Cross-column:** Drag a card from work, projects, or ideas into the parking lot to pin it. Drag a parking lot card to any other column to unpin it. Cross-column drag does not change record status or move items between entity types. When dragging a card over a column, the target column glows with its accent color (colored border, ring, and box shadow) to indicate it will accept the drop. The board uses a custom collision detection strategy: `closestCenter` for within-column reorder, `pointerWithin` for cross-column drops.
 
 ## View Toggle (Table / Card)
 
@@ -110,7 +116,18 @@ Use the pencil (edit) and trash (delete) icons in the Actions column, or click *
 
 ### Viewing Action Items
 
-The Action Items page shows a page header with icon, a search bar, a view toggle, and a data table. Columns: Name, Customer, Priority, Status, Date, and Actions. Priority and Status display as color-coded badges. Click any row to open the detail card. In card view, each card shows name, customer, priority/status badges, and date.
+The Action Items page shows a page header with icon, a search bar, task-type filter pills, a view toggle, and a data table. Columns: Name, Priority, Status, Date, and Actions. Priority and Status display as color-coded badges. Each row shows a small colored task-type icon (Briefcase for Work, House for Personal, BookOpen for Learning) inline with the action item name. Click any row to open the detail card. In card view, each card shows name, priority/status badges, date, and a task-type icon.
+
+### Task-Type Filter Pills
+
+Below the search bar, four filter pills let you narrow the list by task type:
+
+- **All** (dark/inverted when active) — shows all action items
+- **Work** (red, Briefcase icon) — shows only Work items
+- **Personal** (blue, House icon) — shows only Personal items
+- **Learning** (magenta, BookOpen icon) — shows only Learning items
+
+Filters are applied client-side. The active pill is solid-filled; inactive pills show an outline style.
 
 ### Action Item Detail Card
 
@@ -122,9 +139,9 @@ Click **New Action Item** to open the form. Fields:
 - **Name** (required) — the action item title
 - **Customer** — select an account from the dropdown
 - **Date** — target or due date
-- **Priority** — Eh, Low, High, or Top Priority
+- **Priority** — Med, Low, High, or Top Priority
 - **Status** — Recognized, In Progress, Pending Comms, On Hold, Wrapping Up, or Complete
-- **Type** — Personal or Work
+- **Type** — Work, Personal, or Learning
 - **Description** — free-text notes
 
 ### Editing / Deleting
@@ -174,7 +191,7 @@ Shows project info with account name, priority, and description. Click **Edit** 
 Click **New Project** to open the form. Fields:
 - **Name** (required) — the project title
 - **Account** — select an account from the dropdown
-- **Priority** — Eh, Low, High, or Top Priority
+- **Priority** — Med, Low, High, or Top Priority
 - **Description** — free-text notes
 
 ### Editing / Deleting

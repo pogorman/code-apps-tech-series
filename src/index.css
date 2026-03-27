@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme inline {
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
@@ -55,11 +57,37 @@
     --sidebar-to: #1B3A5C;
   }
 
+  .dark {
+    --background: 222 20% 10%;
+    --foreground: 210 20% 90%;
+    --card: 222 20% 13%;
+    --card-foreground: 210 20% 90%;
+    --popover: 222 20% 13%;
+    --popover-foreground: 210 20% 90%;
+    --primary: 207 100% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 215 20% 18%;
+    --secondary-foreground: 210 20% 90%;
+    --muted: 215 16% 18%;
+    --muted-foreground: 215 13% 60%;
+    --accent: 207 50% 18%;
+    --accent-foreground: 207 100% 70%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 215 16% 22%;
+    --input: 215 16% 24%;
+    --ring: 207 100% 50%;
+
+    --sidebar-from: #50E6FF;
+    --sidebar-to: #0078D4;
+  }
+
   * {
     @apply border-border;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
+    font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", "Consolas", ui-monospace, monospace;
   }
 }

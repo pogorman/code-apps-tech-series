@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { useActionItems, useDeleteActionItem } from "@/hooks/use-action-items";
-import { useAccounts } from "@/hooks/use-accounts";
 import {
   Table,
   TableBody,
@@ -16,7 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ActionItemFormDialog } from "./action-item-form-dialog";
 import { ActionItemDetailDialog } from "./action-item-detail-dialog";
 import { ActionItemDeleteDialog } from "./action-item-delete-dialog";
-import { ClipboardList, Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { BookOpen, Briefcase, ClipboardList, House, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import type { Tdvsp_actionitemsModel } from "@/generated";
 import { toast } from "sonner";
 import { useQuickCreateStore } from "@/stores/quick-create-store";
@@ -36,6 +35,12 @@ import { cn } from "@/lib/utils";
 
 type ActionItem = Tdvsp_actionitemsModel.Tdvsp_actionitems;
 
+const TASK_TYPE_ICON: Record<number, { icon: typeof Briefcase; color: string }> = {
+  468510001: { icon: Briefcase, color: "#ef4444" },
+  468510000: { icon: House, color: "#3b82f6" },
+  468510002: { icon: BookOpen, color: "#d946ef" },
+};
+
 export function ActionItemList() {
   const quickTarget = useQuickCreateStore((s) => s.target);
   const quickPayload = useQuickCreateStore((s) => s.payload);
@@ -43,6 +48,7 @@ export function ActionItemList() {
 
   const [viewMode, setViewMode] = useViewPreference("action-items");
   const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState<number | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [createTaskType, setCreateTaskType] = useState<number | undefined>(undefined);
 
@@ -63,15 +69,13 @@ export function ActionItemList() {
     : undefined;
 
   const { data: items, isLoading, error } = useActionItems({ filter });
-  const { data: accounts } = useAccounts();
   const deleteMutation = useDeleteActionItem();
   const updateMutation = useUpdateActionItem();
 
-  const accountNameMap = useMemo(() => {
-    const map = new Map<string, string>();
-    accounts?.forEach((a) => map.set(a.accountid, a.name));
-    return map;
-  }, [accounts]);
+  const filteredItems = useMemo(() => {
+    if (typeFilter === null) return items;
+    return items?.filter((i) => i.tdvsp_tasktype === typeFilter);
+  }, [items, typeFilter]);
 
   function handleDelete() {
     if (!deleteItem) return;
@@ -117,6 +121,59 @@ export function ActionItemList() {
           />
         </div>
         <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => setTypeFilter(null)}
+              className={cn(
+                "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+                typeFilter === null
+                  ? "border-foreground bg-foreground text-background"
+                  : "border-border text-muted-foreground hover:bg-muted hover:text-foreground",
+              )}
+            >
+              All
+            </button>
+            <button
+              type="button"
+              onClick={() => setTypeFilter(468510001)}
+              className={cn(
+                "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+                typeFilter === 468510001
+                  ? "border-red-500 bg-red-500 text-white"
+                  : "border-red-200 text-red-500 bg-red-50 hover:bg-red-100 dark:bg-red-950/60 dark:border-red-800",
+              )}
+            >
+              <Briefcase className="h-3 w-3" />
+              Work
+            </button>
+            <button
+              type="button"
+              onClick={() => setTypeFilter(468510000)}
+              className={cn(
+                "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+                typeFilter === 468510000
+                  ? "border-blue-500 bg-blue-500 text-white"
+                  : "border-blue-200 text-blue-500 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:border-blue-800",
+              )}
+            >
+              <House className="h-3 w-3" />
+              Personal
+            </button>
+            <button
+              type="button"
+              onClick={() => setTypeFilter(468510002)}
+              className={cn(
+                "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+                typeFilter === 468510002
+                  ? "border-fuchsia-500 bg-fuchsia-500 text-white"
+                  : "border-fuchsia-200 text-fuchsia-500 bg-fuchsia-50 hover:bg-fuchsia-100 dark:bg-fuchsia-950/60 dark:border-fuchsia-800",
+              )}
+            >
+              <BookOpen className="h-3 w-3" />
+              Learning
+            </button>
+          </div>
           <ViewToggle mode={viewMode} onChange={setViewMode} />
           <Button onClick={() => setCreateOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
@@ -131,7 +188,6 @@ export function ActionItemList() {
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
-                <TableHead>Customer</TableHead>
                 <TableHead className="whitespace-nowrap">Priority</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Date</TableHead>
@@ -142,31 +198,35 @@ export function ActionItemList() {
               {isLoading ? (
                 Array.from({ length: 5 }).map((_, i) => (
                   <TableRow key={i}>
-                    {Array.from({ length: 6 }).map((_, j) => (
+                    {Array.from({ length: 5 }).map((_, j) => (
                       <TableCell key={j}>
                         <Skeleton className="h-4 w-full" />
                       </TableCell>
                     ))}
                   </TableRow>
                 ))
-              ) : items?.length === 0 ? (
+              ) : filteredItems?.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
-                    {search ? "No action items match your search." : "No action items found. Create one to get started."}
+                  <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                    {search || typeFilter !== null ? "No action items match your filters." : "No action items found. Create one to get started."}
                   </TableCell>
                 </TableRow>
               ) : (
-                items?.map((item) => {
-                  const customerId = (item as unknown as Record<string, string>)._tdvsp_customer_value;
-                  const customerName = item.tdvsp_customername ?? accountNameMap.get(customerId ?? "") ?? "\u2014";
+                filteredItems?.map((item) => {
+                  const typeInfo = item.tdvsp_tasktype != null ? TASK_TYPE_ICON[item.tdvsp_tasktype] : null;
+                  const TypeIcon = typeInfo?.icon;
                   return (
                     <TableRow
                       key={item.tdvsp_actionitemid}
                       className="cursor-pointer"
                       onClick={() => setViewItem(item)}
                     >
-                      <TableCell className="font-medium">{item.tdvsp_name}</TableCell>
-                      <TableCell>{customerName}</TableCell>
+                      <TableCell className="font-medium">
+                        <div className="flex items-center gap-2">
+                          {TypeIcon && <TypeIcon className="h-3.5 w-3.5 shrink-0" style={{ color: typeInfo.color }} />}
+                          {item.tdvsp_name}
+                        </div>
+                      </TableCell>
                       <TableCell className="whitespace-nowrap">
                         {item.tdvsp_priority != null ? (
                           <Badge variant={priorityVariant(item.tdvsp_priority)}>
@@ -224,16 +284,16 @@ export function ActionItemList() {
             </Card>
           ))}
         </div>
-      ) : items?.length === 0 ? (
+      ) : filteredItems?.length === 0 ? (
         <div className="text-center text-muted-foreground py-8">
-          {search ? "No action items match your search." : "No action items found. Create one to get started."}
+          {search || typeFilter !== null ? "No action items match your filters." : "No action items found. Create one to get started."}
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {items?.map((item) => {
-            const customerId = (item as unknown as Record<string, string>)._tdvsp_customer_value;
-            const customerName = item.tdvsp_customername ?? accountNameMap.get(customerId ?? "") ?? "\u2014";
+          {filteredItems?.map((item) => {
             const colorIdx = priorityToColorIndex(item.tdvsp_priority);
+            const typeInfo = item.tdvsp_tasktype != null ? TASK_TYPE_ICON[item.tdvsp_tasktype] : null;
+            const TypeIcon = typeInfo?.icon;
             return (
               <Card
                 key={item.tdvsp_actionitemid}
@@ -241,7 +301,10 @@ export function ActionItemList() {
                 onClick={() => setViewItem(item)}
               >
                 <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-                  <CardTitle className="text-base font-semibold">{item.tdvsp_name}</CardTitle>
+                  <CardTitle className="text-base font-semibold flex items-center gap-2">
+                    {TypeIcon && <TypeIcon className="h-4 w-4 shrink-0" style={{ color: typeInfo.color }} />}
+                    {item.tdvsp_name}
+                  </CardTitle>
                   <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                     <TileColorDots
                       activeIndex={colorIdx}
@@ -261,10 +324,6 @@ export function ActionItemList() {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm">
-                  <div className="text-muted-foreground">
-                    <span className="font-medium text-foreground">Customer: </span>
-                    {customerName}
-                  </div>
                   <div className="flex flex-wrap gap-2">
                     {item.tdvsp_priority != null && (
                       <Badge variant={priorityVariant(item.tdvsp_priority)}>

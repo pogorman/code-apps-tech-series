@@ -124,6 +124,30 @@ Board cards use outline-style pills instead of solid Badge components. `priority
 
 The sidebar groups nav items into four sections: **insights** (Dashboard, My Board), **activity** (Action Items), **capture** (Ideas, Meetings, Projects), and **core** (Accounts, Contacts). Nav icons are colored to match their quick create counterparts (e.g., red for work action items, emerald for ideas, violet for projects). The `NavItem` interface has an optional `color` field for this.
 
+## How does dark mode work?
+
+The app uses a `ThemeProvider` context (`src/components/theme-provider.tsx`) that manages a `"light"` or `"dark"` theme state. On mount, it checks `localStorage` first; if no stored preference, it falls back to the OS preference via `window.matchMedia("(prefers-color-scheme: dark)")`. Toggling the theme adds or removes the `dark` class on `<html>` and persists the choice in `localStorage`. All colors are CSS custom properties (HSL) defined in `src/index.css` under `:root` (light) and `.dark` (dark), consumed by shadcn/ui and Tailwind. The dark sidebar gradient inverts from navy to a bright Microsoft Blue/cyan.
+
+## How do I switch themes?
+
+Click the Moon/Sun button in the sidebar footer — below the Ctrl+K hint. Moon icon switches to dark mode; Sun icon switches back to light mode. The label reads "Dark mode" or "Light mode" depending on the current state.
+
+## Why use `@custom-variant` instead of a media query for dark mode?
+
+Tailwind v4 dropped the `darkMode: "class"` config option from `tailwind.config.ts`. The equivalent in v4 is `@custom-variant dark (&:where(.dark, .dark *));` at the top of `src/index.css`. This tells Tailwind that `dark:` utility classes should activate when the `.dark` class is present on an ancestor element, which is what the `ThemeProvider` toggles. Without this line, all `dark:` classes in the app would be silently ignored.
+
+## How do the action item type filters work?
+
+The Action Items list page has four filter pills below the header: **All**, **Work** (red, Briefcase icon), **Personal** (blue, House icon), and **Learning** (magenta, BookOpen icon). Clicking a pill sets a `typeFilter` state variable to the corresponding Dataverse numeric choice key (or `null` for All). The displayed list is filtered client-side via `useMemo`. Active pills invert to solid fill with white text; inactive pills show an outline style. Each table row also displays a small colored task-type icon (Briefcase, House, or BookOpen) inline with the action item name.
+
+## Why was the Customer column removed from the action items list?
+
+The Customer column added visual clutter without providing much value in a compact list view. Customer info is still visible in the action item detail dialog, form, and card view. Removing it freed up horizontal space for the task-type icon + name, priority badge, status badge, and date columns to breathe.
+
+## Why the monospace font?
+
+The body font is set to a monospace stack: `"JetBrains Mono", "Fira Code", "Cascadia Code", "Consolas", ui-monospace, monospace`. This gives the app a "developer tool" aesthetic that feels native to a Code Apps demo targeting technical audiences. It also improves table column alignment since all characters are the same width.
+
 ## What ports does local dev use?
 
 Vite runs on port 3001 (`npm run dev`). The Power Platform proxy (`pac code run`) runs on its own port — use the URL it prints, not the Vite URL directly.

@@ -11,11 +11,14 @@ import {
   House,
   LayoutDashboard,
   Lightbulb,
+  Moon,
   Search,
+  Sun,
   Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQuickCreateStore } from "@/stores/quick-create-store";
+import { useTheme } from "@/components/theme-provider";
 import type { QuickCreateTarget } from "@/stores/quick-create-store";
 
 interface AppLayoutProps {
@@ -86,7 +89,7 @@ const QUICK_CREATE_BUTTONS: QuickCreateButton[] = [
     label: "work",
     icon: Briefcase,
     color: "text-red-500 border-red-200",
-    bg: "bg-red-50 hover:bg-red-100",
+    bg: "bg-red-50 hover:bg-red-100 dark:bg-red-950/60 dark:hover:bg-red-900/60",
     payload: { taskType: 468510001 },
   },
   {
@@ -95,7 +98,7 @@ const QUICK_CREATE_BUTTONS: QuickCreateButton[] = [
     label: "personal",
     icon: House,
     color: "text-blue-500 border-blue-200",
-    bg: "bg-blue-50 hover:bg-blue-100",
+    bg: "bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900/60",
     payload: { taskType: 468510000 },
   },
   {
@@ -104,7 +107,7 @@ const QUICK_CREATE_BUTTONS: QuickCreateButton[] = [
     label: "learning",
     icon: BookOpen,
     color: "text-fuchsia-500 border-fuchsia-200",
-    bg: "bg-fuchsia-50 hover:bg-fuchsia-100",
+    bg: "bg-fuchsia-50 hover:bg-fuchsia-100 dark:bg-fuchsia-950/60 dark:hover:bg-fuchsia-900/60",
     payload: { taskType: 468510002 },
   },
   {
@@ -113,7 +116,7 @@ const QUICK_CREATE_BUTTONS: QuickCreateButton[] = [
     label: "idea",
     icon: Lightbulb,
     color: "text-emerald-600 border-emerald-200",
-    bg: "bg-emerald-50 hover:bg-emerald-100",
+    bg: "bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60",
   },
   {
     target: "meeting-summaries",
@@ -121,7 +124,7 @@ const QUICK_CREATE_BUTTONS: QuickCreateButton[] = [
     label: "meeting",
     icon: FileText,
     color: "text-pink-500 border-pink-200",
-    bg: "bg-pink-50 hover:bg-pink-100",
+    bg: "bg-pink-50 hover:bg-pink-100 dark:bg-pink-950/60 dark:hover:bg-pink-900/60",
   },
   {
     target: "projects",
@@ -129,7 +132,7 @@ const QUICK_CREATE_BUTTONS: QuickCreateButton[] = [
     label: "project",
     icon: FolderKanban,
     color: "text-violet-600 border-violet-200",
-    bg: "bg-violet-50 hover:bg-violet-100",
+    bg: "bg-violet-50 hover:bg-violet-100 dark:bg-violet-950/60 dark:hover:bg-violet-900/60",
   },
   {
     target: "accounts",
@@ -137,7 +140,7 @@ const QUICK_CREATE_BUTTONS: QuickCreateButton[] = [
     label: "account",
     icon: Building2,
     color: "text-teal-600 border-teal-200",
-    bg: "bg-teal-50 hover:bg-teal-100",
+    bg: "bg-teal-50 hover:bg-teal-100 dark:bg-teal-950/60 dark:hover:bg-teal-900/60",
   },
   {
     target: "contacts",
@@ -145,7 +148,7 @@ const QUICK_CREATE_BUTTONS: QuickCreateButton[] = [
     label: "contact",
     icon: Users,
     color: "text-sky-500 border-sky-200",
-    bg: "bg-sky-50 hover:bg-sky-100",
+    bg: "bg-sky-50 hover:bg-sky-100 dark:bg-sky-950/60 dark:hover:bg-sky-900/60",
   },
 ];
 
@@ -155,6 +158,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const openQuickCreate = useQuickCreateStore((s) => s.open);
+  const { theme, toggleTheme } = useTheme();
 
   function handleQuickCreate(btn: QuickCreateButton) {
     openQuickCreate(btn.target, btn.payload);
@@ -166,7 +170,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   return (
     <div className="flex h-screen overflow-hidden">
       {/* ── Left sidebar ────────────────────────────────────── */}
-      <aside className="flex w-52 shrink-0 flex-col border-r border-border bg-white">
+      <aside className="flex w-52 shrink-0 flex-col border-r border-border bg-white dark:bg-card">
         {/* Logo / brand */}
         <div className="flex h-14 items-center gap-2.5 px-5">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#0078D4] to-[#50E6FF] shadow-sm">
@@ -223,6 +227,13 @@ export function AppLayout({ children }: AppLayoutProps) {
               Ctrl+K
             </kbd>
           </button>
+          <button
+            onClick={toggleTheme}
+            className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground/60 transition-colors hover:bg-muted hover:text-foreground"
+          >
+            {theme === "dark" ? <Sun className="h-3 w-3" /> : <Moon className="h-3 w-3" />}
+            {theme === "dark" ? "Light mode" : "Dark mode"}
+          </button>
           <span className="block text-[10px] text-muted-foreground/50">
             Power Platform
           </span>
@@ -232,7 +243,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       {/* ── Main column ─────────────────────────────────────── */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Quick create bar */}
-        <div className="flex shrink-0 items-center gap-2 border-b border-border bg-white px-6 py-2">
+        <div className="flex shrink-0 items-center gap-2 border-b border-border bg-white dark:bg-card px-6 py-2">
           <span className="mr-1 text-xs font-semibold tracking-wide text-muted-foreground/50 uppercase">
             quick create
           </span>
