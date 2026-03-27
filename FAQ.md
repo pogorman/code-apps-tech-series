@@ -66,7 +66,7 @@ On the Meeting Summaries page, click the sparkle icon on any meeting summary row
 
 ## How does the Command Palette (Ctrl+K) work?
 
-Press Ctrl+K (or Cmd+K on Mac) to open a global search dialog. It searches across all entities (accounts, contacts, action items, meeting summaries, ideas) using the TanStack Query cache — no extra Dataverse API calls. Results are grouped by entity type with matching text highlighted. Select a result to navigate to that entity's list page.
+Press Ctrl+K (or Cmd+K on Mac) to open a global search dialog. It searches across all entities (accounts, contacts, action items, meeting summaries, ideas, projects) using the TanStack Query cache — no extra Dataverse API calls. Results are grouped by entity type with matching text highlighted. Select a result to navigate to that entity's list page.
 
 ## Why did the app show a white screen after adding the Command Palette?
 
@@ -74,11 +74,11 @@ Press Ctrl+K (or Cmd+K on Mac) to open a global search dialog. It searches acros
 
 ## How does the table/card view toggle work?
 
-Each entity list (Accounts, Contacts, Action Items, Meeting Summaries, Ideas) has a toggle in the toolbar between the search bar and the "New" button. Click the list icon for table view or the grid icon for card view. Card view shows a responsive 3-column grid of shadcn `Card` components with the same click-to-view, edit, and delete actions. Your preference is saved per entity in `localStorage` via the `useViewPreference()` hook, so it persists across sessions.
+Each entity list (Accounts, Contacts, Action Items, Meeting Summaries, Ideas, Projects) has a toggle in the toolbar between the search bar and the "New" button. Click the list icon for table view or the grid icon for card view. Card view shows a responsive 3-column grid of shadcn `Card` components with the same click-to-view, edit, and delete actions. Your preference is saved per entity in `localStorage` via the `useViewPreference()` hook, so it persists across sessions.
 
 ## What is the Board view?
 
-The Board (`/#/board`) is a Kanban-style dashboard with four vertical columns pulling from multiple entities. **Parking lot** shows action items with status "Recognized" (not yet started). **Work** shows action items in active statuses (In Progress, Pending Comms, On Hold, Wrapping Up). **Projects** shows all accounts. **Ideas** shows all ideas. Each column has a colored accent bar (red, blue, purple, amber) and a scrollable card list with relevant badges.
+The Board (`/#/board`) is a Kanban-style dashboard with four vertical columns pulling from multiple entities. **Parking lot** (green accent, Car icon) shows items pinned via `tdvsp_pinned` from any entity (action items, projects, ideas, meeting summaries). **Work** (blue accent, Briefcase icon) shows active action items (excludes Recognized and Complete statuses) with task type filter pills (All/Work/Personal/Learning). **Projects** (purple accent, FolderKanban icon) shows all `tdvsp_project` records. **Ideas** (amber accent, Lightbulb icon) shows all ideas. Each column has a vertical accent bar on the left side and a scrollable card list. Cards show a floating toolbar on hover with drag grip, priority color dots, edit pencil, and pin toggle.
 
 ## How do the color dots on card views work?
 
@@ -86,15 +86,23 @@ Hover over any card in card view to reveal a row of 5 colored dots (clear, blue,
 
 ## How does drag-and-drop work on the Board?
 
-Board cards are drag-and-drop sortable within their column using `@dnd-kit`. Grab a card and drag it up or down to reorder. The sort order is persisted in localStorage per column, so it survives page refreshes. Drag-and-drop does NOT move cards between columns — it only reorders within a single column.
+The Board uses a single `@dnd-kit` `DndContext` with `useDroppable` on each column. **Within-column drag** reorders cards via `SortableContext` + `arrayMove`; order persists in localStorage per column. **Cross-column drag** pins and unpins items: dragging a card from work/projects/ideas into parking lot sets `tdvsp_pinned = true` in Dataverse; dragging a parking lot card to any other column sets `tdvsp_pinned = false`. Cross-column drag does not change status or move records between entity types.
 
 ## Why does the Projects column show `tdvsp_project` records instead of accounts?
 
 The Board was updated to show actual project records from the `tdvsp_project` Dataverse table instead of accounts. Projects have name, description, priority, and an account lookup — they represent discrete workstreams better than raw account records for Kanban tracking.
 
-## Why are there only 3 columns on the Board now?
+## How does the floating card toolbar work on the Board?
 
-The parking lot column was removed. The Board now has 3 columns: **Work** (Work-type action items), **Projects** (`tdvsp_project` records), and **Ideas**. This keeps the board focused on actionable workstreams.
+Hovering over any card on the Board reveals a floating `CardToolbar` popover positioned above the card. The toolbar contains (left to right): a GripVertical drag handle, a vertical separator, 5 priority color dots, a separator, a Pencil edit button, and a Pin button. The pin button is green when the item is pinned to parking lot. Click the pencil to open the entity's edit form dialog. Click the pin to toggle the `tdvsp_pinned` field in Dataverse. The toolbar uses `opacity-0 group-hover:opacity-100` for show/hide transitions.
+
+## How does the Work column task type filter work?
+
+The Work column header shows filter pills: All, Work, Personal, and Learning. Click a pill to filter the work column to only show action items of that task type. "All" shows all active action items regardless of type. Each action item card also has a per-card task type selector that appears on hover, letting you change the task type directly from the board.
+
+## What is the `tdvsp_pinned` field?
+
+`tdvsp_pinned` is a boolean (Yes/No) field on Dataverse entities used to pin items to the parking lot column on the Board. It is not yet in the generated TypeScript types, so it is accessed via casting: `(item as Record<string, unknown>).tdvsp_pinned`. The `isItemPinned()` helper in `board-dashboard.tsx` handles both `true` and `1` values.
 
 ## Why do I only see active records?
 

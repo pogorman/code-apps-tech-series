@@ -58,7 +58,7 @@ src/
     meeting-summaries/# Meeting Summary CRUD components
     ideas/            # Idea CRUD components
     projects/         # Project CRUD components
-    dashboard/        # Analytics dashboard + Kanban board view (drag-and-drop sortable)
+    dashboard/        # Analytics dashboard + Kanban board view (4-column drag-and-drop with cross-column pin/unpin)
     layout/           # App shell (left sidebar + quick create bar)
     command-palette.tsx # Global Ctrl+K search
   stores/             # Zustand stores (quick create)

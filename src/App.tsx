@@ -7,6 +7,7 @@ import { ContactList } from "@/components/contacts";
 import { ActionItemList } from "@/components/action-items";
 import { MeetingSummaryList } from "@/components/meeting-summaries";
 import { IdeaList } from "@/components/ideas";
+import { ProjectList } from "@/components/projects";
 import { Dashboard, BoardDashboard } from "@/components/dashboard";
 import { CommandPalette } from "@/components/command-palette";
 
@@ -32,6 +33,7 @@ export function App() {
             <Route path="/action-items" element={<ActionItemList />} />
             <Route path="/meeting-summaries" element={<MeetingSummaryList />} />
             <Route path="/ideas" element={<IdeaList />} />
+            <Route path="/projects" element={<ProjectList />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </AppLayout>

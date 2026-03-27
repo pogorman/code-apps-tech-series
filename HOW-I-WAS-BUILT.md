@@ -271,14 +271,31 @@ All changes in `src/components/layout/app-layout.tsx`.
 
 **What happened:**
 
-1. Created `src/components/dashboard/board-dashboard.tsx` — a Kanban-style board with 4 vertical columns pulling from 3 data sources (action items, accounts, ideas)
-2. **Parking lot** column: Action items with status "Recognized" (not yet started). Shows name, date, customer, priority badge, task type badge. Red accent bar
-3. **Work** column: Action items in active statuses (In Progress, Pending Comms, On Hold, Wrapping Up — excludes Recognized and Complete). Shows name, date, customer, status badge. Blue accent bar
-4. **Projects** column: All accounts. Shows account name and customer type. Purple accent bar
-5. **Ideas** column: All ideas. Shows idea name and category badge. Amber accent bar
-6. Each column is a scrollable container with header (icon + title + count) and colored bottom accent bar
-7. Added `/board` route in `App.tsx` and "Board" nav item with `Columns3` icon in sidebar alongside Dashboard
-8. Kept the existing analytics dashboard intact at `/` — no changes to that view
+1. Created `src/components/dashboard/board-dashboard.tsx` — a Kanban-style board with 4 vertical columns pulling from 4 data sources (action items, projects, ideas, meeting summaries)
+2. **Parking lot** column (green accent, Car icon): Items pinned via `tdvsp_pinned` from any entity. Shows name + entity type badge. Minimal toolbar (grip + X to unpin)
+3. **Work** column (blue accent, Briefcase icon): Active action items (excludes Recognized and Complete). Shows name, date, customer, status/priority badges. Task type filter pills in header (All/Work/Personal/Learning). Per-card task type selector on hover
+4. **Projects** column (purple accent, FolderKanban icon): All `tdvsp_project` records. Shows project name and priority badge
+5. **Ideas** column (amber accent, Lightbulb icon): All ideas. Shows idea name and category badge
+6. Column accent bars run vertically on the left side (not bottom). Each column is a scrollable container with header (icon + title + count)
+7. Single `DndContext` wraps all columns with `useDroppable` per column. Within-column reorder via `SortableContext` + `arrayMove`. Cross-column: drag to parking lot pins, drag from parking lot unpins
+8. Floating `CardToolbar` on hover: GripVertical (drag), priority color dots, Pencil (edit), Pin toggle. Edit pencil works for all entity types (action items, projects, ideas, meeting summaries)
+9. `tdvsp_pinned` is a boolean field not yet in generated types — accessed via casting to `Record<string, unknown>`
+10. Added `/board` route in `App.tsx` and "Board" nav item with `Columns3` icon in sidebar alongside Dashboard
+11. Kept the existing analytics dashboard intact at `/` — no changes to that view
+
+## Phase 15 — Projects CRUD
+
+**Prompt:** Add full CRUD for the `tdvsp_project` table with list view, form dialog, detail dialog, and delete dialog.
+
+**What happened:**
+
+1. Ran `pac code add-data-source -a dataverse -t tdvsp_project` to generate model + service
+2. Created `src/hooks/use-projects.ts` — TanStack Query hooks for CRUD with cache invalidation
+3. Created `src/components/projects/labels.ts` — priority labels + badge variant helpers (same numeric keys as action items)
+4. Created `src/components/projects/` — list (table/card toggle), form dialog (name, account, priority, description), detail dialog, delete dialog, barrel export. FolderKanban icon
+5. Account lookup via `tdvsp_Account@odata.bind` → `/accounts(guid)` for writes, `_tdvsp_account_value` for reads
+6. Added `/projects` route in `App.tsx`, "Projects" nav item in sidebar (capture section), and violet quick create pill in the top bar
+7. Updated Board to show `tdvsp_project` records in the Projects column instead of accounts
 
 ## Presentation Materials — Slide Outline & Live Demo Script
 

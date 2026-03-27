@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A Power Platform Code App demo for a tech series. React + TypeScript SPA deployed to Power Platform via `pac code push`. Full CRUD on Dataverse `account`, `contact`, `tdvsp_actionitem`, `tdvsp_meetingsummary`, and `tdvsp_idea` tables with account-contact relationships, customer-linked action items, and cross-entity lookups. Navigation is a left vertical sidebar with grouped sections; a top quick create bar provides fast record creation via colored pill buttons.
+A Power Platform Code App demo for a tech series. React + TypeScript SPA deployed to Power Platform via `pac code push`. Full CRUD on Dataverse `account`, `contact`, `tdvsp_actionitem`, `tdvsp_meetingsummary`, `tdvsp_idea`, and `tdvsp_project` tables with account-contact relationships, customer-linked action items, and cross-entity lookups. Navigation is a left vertical sidebar with grouped sections; a top quick create bar provides fast record creation via colored pill buttons.
 
 ## Key Facts
 
@@ -48,11 +48,35 @@ The generated types declare `parentcustomerid` (write field) but Dataverse OData
 
 ## Board (Kanban Dashboard)
 
-The Board view (`/#/board`) is a 4-column Kanban board in `src/components/dashboard/board-dashboard.tsx`. Columns: parking lot (Recognized action items), work (active action items), projects (accounts), ideas. Uses `useActionItems()`, `useAccounts()`, and `useIdeas()` hooks. Sidebar nav item "Board" with `Columns3` icon sits alongside "Dashboard".
+The Board view (`/#/board`) is a 4-column Kanban board in `src/components/dashboard/board-dashboard.tsx`. Columns: parking lot (pinned items from any entity, green accent + Car icon), work (active action items, blue accent), projects (`tdvsp_project` records, purple accent), ideas (amber accent). Uses `useActionItems()`, `useProjects()`, `useIdeas()`, and `useMeetingSummaries()` hooks. Sidebar nav item "Board" with `Columns3` icon sits alongside "Dashboard".
+
+### Parking Lot (Pinned Items)
+
+The parking lot column shows items pinned via `tdvsp_pinned` (boolean) from any entity: action items, projects, ideas, meeting summaries. Items are identified by prefixed sort IDs (`ai-`, `proj-`, `idea-`, `ms-`). Each parking lot card shows a minimal toolbar (grip + X to unpin). `tdvsp_pinned` is not yet in generated types — accessed via `(item as Record<string, unknown>).tdvsp_pinned`. The `isItemPinned()` helper handles both `true` and `1` values.
+
+### Cross-Column Drag-and-Drop
+
+A single `DndContext` wraps all 4 columns. Each column uses `useDroppable` (id: `col-<key>`) so it accepts drops. Within-column reorder uses `SortableContext` + `arrayMove`. Cross-column: dragging to parking lot sets `tdvsp_pinned = true`; dragging from parking lot to another column sets `tdvsp_pinned = false`. The `getColumnForId()` helper resolves which column owns a card ID.
+
+### Floating CardToolbar
+
+Every board card renders a `CardToolbar` component that appears on hover (`opacity-0 group-hover:opacity-100`). Contains: GripVertical drag handle (spreads `dragHandle.attributes` + `dragHandle.listeners`), priority color dots (`TileColorDots`), Pencil edit button, and Pin toggle. The pin button is green when pinned. All pointer events are stopped to prevent card click-through.
+
+### Work Column Task Type Filter
+
+The work column header renders filter pills: All (default, `workFilter === null`), Work, Personal, Learning. Clicking a pill sets `workFilter` state which filters the column's action items by `tdvsp_tasktype`. Each action item card also has a per-card task type selector (3 small pill buttons: Work/Personal/Learning) that appears on hover and calls `onTaskTypeChange` to PATCH `tdvsp_tasktype` in Dataverse.
+
+### Board Edit Pencil
+
+The pencil button in `CardToolbar` opens the correct entity form dialog (ActionItemFormDialog, ProjectFormDialog, IdeaFormDialog, or MeetingSummaryFormDialog) based on `editTarget.kind`. All entity types are supported.
 
 ## Tracked Notes
 
 Research and decision notes live in `docs/tracked/`. Use `/track` to append, `/tracknew` to start a new version. First-cut build notes are in `docs/tracked/phase-1-first-steps/`. Phase 3 (relationships) notes are in `docs/tracked/phase-3-relationships/`. Phase 4 (UI theme) notes are in `docs/tracked/phase-4-ui-enhance/`. Phase 5 (action items) notes are in `docs/tracked/phase-5-action-items/`. Phase 6 (navigation rework) notes are in `docs/tracked/phase-6-ui-enhance/`. Phase 7 (HVA, meeting summary, idea CRUD) notes are in `docs/tracked/phase-7-idea-meet-hva-crud/`. Phase 8 (dashboard CSS rewrite, sidebar/quick-create, minor UI tweaks, dashboard tooltips/drilldown) notes are in `docs/tracked/phase-8-ui-enhance/`. Phase 9 (AI + command palette) notes are in `docs/tracked/phase-9-ai-command-palette/`. Phase 10 (table/card view toggle, CommandPalette HashRouter fix) notes are in `docs/tracked/phase-10-view-toggle/`. Phase 11 (board/Kanban dashboard) notes are in `docs/tracked/phase-11-dashboard-updates/`. Presentation materials (slide outline, live demo script) are in `docs/`.
+
+## Projects Entity
+
+Full CRUD in `src/components/projects/` — `project-list.tsx` (table/card toggle), `project-form-dialog.tsx`, `project-detail-dialog.tsx`, `project-delete-dialog.tsx`, `labels.ts` (priority labels + badge variants), `index.ts` (barrel export). Route: `/projects`. Sidebar nav: capture section, FolderKanban icon. Quick create: violet pill. Hook: `src/hooks/use-projects.ts` wrapping `Tdvsp_projectsService`. Account lookup via `tdvsp_Account@odata.bind` → `/accounts(guid)`; read GUID from `_tdvsp_account_value`. Priority choice field uses same numeric keys as action items.
 
 ## Dataverse Customer Lookup on Action Items (Gotcha)
 

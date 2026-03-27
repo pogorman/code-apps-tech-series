@@ -5,6 +5,7 @@ import {
   Users,
   ClipboardList,
   Briefcase,
+  FolderKanban,
   LayoutDashboard,
   Columns3,
   FileText,
@@ -52,6 +53,7 @@ const NAV_SECTIONS: NavSection[] = [
     items: [
       { to: "/meeting-summaries", label: "Meetings", icon: FileText },
       { to: "/ideas", label: "Ideas", icon: Lightbulb },
+      { to: "/projects", label: "Projects", icon: FolderKanban },
     ],
   },
 ];
@@ -107,6 +109,14 @@ const QUICK_CREATE_BUTTONS: QuickCreateButton[] = [
     icon: Lightbulb,
     color: "text-emerald-600 border-emerald-200",
     bg: "bg-emerald-50 hover:bg-emerald-100",
+  },
+  {
+    target: "projects",
+    route: "/projects",
+    label: "project",
+    icon: FolderKanban,
+    color: "text-violet-600 border-violet-200",
+    bg: "bg-violet-50 hover:bg-violet-100",
   },
 ];
 

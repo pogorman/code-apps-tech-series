@@ -6,6 +6,7 @@ export type QuickCreateTarget =
   | "action-items"
   | "meeting-summaries"
   | "ideas"
+  | "projects"
   | null;
 
 interface QuickCreateState {

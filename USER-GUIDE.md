@@ -4,9 +4,9 @@
 
 This Code App provides a "My Work" interface for managing accounts, contacts, action items, meeting summaries, ideas, and projects stored in Dataverse. All views show active records only. The app uses a Microsoft Fluent Design-inspired theme with a left vertical sidebar for navigation and a top quick create bar for fast record creation.
 
-**Left Sidebar** — Briefcase icon + "My Work" brand at the top. Grouped navigation (core: Accounts/Contacts, activity: Action Items, capture: Meetings/Ideas). Active page is highlighted with a cyan left border. Dashboard and Board are the top-level views.
+**Left Sidebar** — Briefcase icon + "My Work" brand at the top. Grouped navigation (core: Accounts/Contacts, activity: Action Items, capture: Meetings/Ideas/Projects). Active page is highlighted with a cyan left border. Dashboard and Board are the top-level views.
 
-**Quick Create Bar** — Colored pill buttons across the top of the content area, ordered to match the sidebar nav. Click any button to navigate to that entity's list and immediately open a new record form. Buttons (left to right): account, contact, task (action item), summary (meeting), idea.
+**Quick Create Bar** — Colored pill buttons across the top of the content area, ordered to match the sidebar nav. Click any button to navigate to that entity's list and immediately open a new record form. Buttons (left to right): account, contact, task (action item), summary (meeting), idea, project (violet).
 
 ## Dashboard
 
@@ -26,21 +26,28 @@ Clicking any dashboard element opens a dialog with a filtered table of action it
 
 ## Board (Kanban View)
 
-Click **Board** in the sidebar to open a Kanban-style view with three drag-and-drop sortable columns:
+Click **Board** in the sidebar to open a Kanban-style view with four columns:
 
-- **Work** (blue accent) — Action items with type "Work". Cards show name, date, customer, and status badge.
-- **Projects** (purple accent) — All `tdvsp_project` records. Cards show the project name and account.
-- **Ideas** (amber accent) — All ideas. Cards show the idea name and category badge.
+- **Parking Lot** (green accent, Car icon) — Items pinned from any entity. Cards show name and entity type badge. Hover to reveal a grip handle and an X button to unpin.
+- **Work** (blue accent, Briefcase icon) — Active action items (excludes Recognized and Complete). Cards show name, date, customer, status/priority badges, and a per-card task type selector on hover. The column header has filter pills: All, Work, Personal, Learning.
+- **Projects** (purple accent, FolderKanban icon) — All `tdvsp_project` records. Cards show project name and priority badge.
+- **Ideas** (amber accent, Lightbulb icon) — All ideas. Cards show idea name and category badge.
 
-Each column header displays an item count. Columns scroll independently when content overflows.
+Each column has a vertical accent bar on the left side. Column headers display an item count. Columns scroll independently when content overflows.
 
-### Drag-and-Drop Sorting
+### Floating Card Toolbar
 
-Grab any card and drag it up or down to reorder within its column. The sort order is saved in localStorage and persists across sessions. Drag-and-drop reorders within a column only — it does not move cards between columns.
+Hover over any card to reveal a floating toolbar above the card. The toolbar contains: a drag grip handle (GripVertical), priority color dots (5 colors), an edit pencil button, and a pin button. Click the pencil to open the entity's edit form. Click the pin to toggle the item in/out of parking lot. The pin button is green when pinned.
+
+### Drag-and-Drop
+
+**Within-column:** Grab any card and drag it up or down to reorder. The sort order is saved in localStorage and persists across sessions.
+
+**Cross-column:** Drag a card from work, projects, or ideas into the parking lot to pin it. Drag a parking lot card to any other column to unpin it. Cross-column drag does not change record status or move items between entity types.
 
 ## View Toggle (Table / Card)
 
-All entity lists include a view toggle in the toolbar (between the search bar and the "New" button). Two modes are available:
+All entity lists (including Projects) include a view toggle in the toolbar (between the search bar and the "New" button). Two modes are available:
 
 - **Table view** (list icon) — Traditional data table with column headers. Default view.
 - **Card view** (grid icon) — Responsive card grid (up to 3 columns). Each card shows key fields, edit/delete buttons, and is clickable to open the detail dialog.
@@ -152,9 +159,31 @@ On the Meetings list, click the sparkle (AI) icon on any row to extract action i
 
 Use the pencil (edit) and trash (delete) icons in the Actions column, or click **Edit** from the detail card.
 
+## Projects
+
+### Viewing Projects
+
+The Projects page shows a page header with a FolderKanban icon, a search bar, a view toggle, and a data table. Columns: Name, Account, Priority (as a color-coded badge), and Actions. Click any row to open the detail card. In card view, each card shows name, account, and priority badge.
+
+### Project Detail Card
+
+Shows project info with account name, priority, and description. Click **Edit** to modify.
+
+### Creating a Project
+
+Click **New Project** to open the form. Fields:
+- **Name** (required) — the project title
+- **Account** — select an account from the dropdown
+- **Priority** — Eh, Low, High, or Top Priority
+- **Description** — free-text notes
+
+### Editing / Deleting
+
+Use the pencil (edit) and trash (delete) icons in the Actions column, or click **Edit** from the detail card.
+
 ## Command Palette (Ctrl+K)
 
-Press **Ctrl+K** (or **Cmd+K** on Mac) anywhere in the app to open a global search dialog. Type to search across all records — accounts, contacts, action items, meeting summaries, and ideas. Results are grouped by entity type with matching text highlighted in purple. Click a result to navigate to that entity's page. Press **Esc** to close. A "Ctrl+K to search" hint appears in the sidebar footer.
+Press **Ctrl+K** (or **Cmd+K** on Mac) anywhere in the app to open a global search dialog. Type to search across all records — accounts, contacts, action items, meeting summaries, ideas, and projects. Results are grouped by entity type with matching text highlighted in purple. Click a result to navigate to that entity's page. Press **Esc** to close. A "Ctrl+K to search" hint appears in the sidebar footer.
 
 ## Ideas
 
