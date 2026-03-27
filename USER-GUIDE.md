@@ -202,6 +202,17 @@ Use the pencil (edit) and trash (delete) icons in the Actions column, or click *
 
 Press **Ctrl+K** (or **Cmd+K** on Mac) anywhere in the app to open a global search dialog. Type to search across all records — accounts, contacts, action items, meeting summaries, ideas, and projects. Results are grouped by entity type with matching text highlighted in purple. Click a result to navigate to that entity's page. Press **Esc** to close. A "Ctrl+K to search" hint appears in the sidebar footer.
 
+## Copilot Studio Agent
+
+A floating **blue chat button** appears in the bottom-right corner of every page. Click it to open a chat panel with the Copilot Studio agent. The agent can query your Dataverse data — ask it questions about your accounts, contacts, action items, and more.
+
+- **Open:** Click the blue gradient circle (chat bubble icon) in the bottom-right
+- **Close:** Click the **X** in the chat panel header
+- **Restart conversation:** Click the **refresh** icon (circular arrow) in the panel header
+- **Dark mode:** The panel matches your current theme
+
+The agent authenticates automatically using your Power Platform session — no sign-in needed.
+
 ## Ideas
 
 ### Viewing Ideas

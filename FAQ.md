@@ -148,6 +148,14 @@ The Customer column added visual clutter without providing much value in a compa
 
 The body font is set to a monospace stack: `"JetBrains Mono", "Fira Code", "Cascadia Code", "Consolas", ui-monospace, monospace`. This gives the app a "developer tool" aesthetic that feels native to a Code Apps demo targeting technical audiences. It also improves table column alignment since all characters are the same width.
 
+## How does the Copilot Studio agent integration work?
+
+A floating blue gradient button (bottom-right corner, `MessageCircle` icon) opens a 400x600 chat panel containing the Copilot Studio agent. The agent is embedded as an iframe from the same Power Platform environment. Because the Code App runs inside the Power Platform host (which already has an authenticated session), the iframe inherits SSO natively — no Direct Line secrets, MSAL, or token exchange middleware needed. The agent uses federated credentials via an app registration for Dataverse access, so it can query your data. Click the refresh button (top-right of the panel header) to restart the conversation. The panel respects dark/light mode.
+
+## Why use an iframe instead of botframework-webchat for the agent?
+
+The Code App's `@microsoft/power-apps` SDK authenticates via custom `paauth`/`dynamicauth` token schemes — not standard OAuth Bearer tokens. There's no public API to extract a Bearer token for Direct Line's SSO token exchange flow. The iframe embed sidesteps this entirely because Copilot Studio's hosted webchat handles its own auth within the Power Platform context.
+
 ## What ports does local dev use?
 
 Vite runs on port 3001 (`npm run dev`). The Power Platform proxy (`pac code run`) runs on its own port — use the URL it prints, not the Vite URL directly.

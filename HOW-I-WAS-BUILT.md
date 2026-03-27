@@ -398,6 +398,22 @@ All changes in `src/components/layout/app-layout.tsx`.
 
 **Files changed:** `theme-provider.tsx` (new), `index.css`, `App.tsx`, `app-layout.tsx`, `board-dashboard.tsx`, `action-item-list.tsx`, `action-items/labels.ts`
 
+## Phase 18 — Copilot Studio Agent Integration
+
+**Prompt:** Add a Copilot Studio agent to the Code App, reusing the same agent from the `dv-front-end` repo.
+
+**What happened:**
+
+1. Investigated the `dv-front-end` repo's approach: `botframework-webchat` + Direct Line + MSAL SSO token exchange. That pattern requires MSAL for Bearer tokens, which the Code App doesn't have — its `@microsoft/power-apps` SDK uses custom `paauth`/`dynamicauth` tokens with no public API to extract a standard OAuth token
+2. Pivoted to the **iframe embed** approach: Copilot Studio provides a hosted webchat URL that handles SSO natively within the Power Platform context. Since both the Code App and the agent are in the same environment (`0582014c-9a6d-e35b-8705-5168c385f413`), the authenticated session flows through
+3. Created `src/components/copilot-chat.tsx` — floating blue gradient button (bottom-right, `MessageCircle` icon) that opens a 400x600 chat panel with the Copilot Studio iframe. Header has refresh (remount iframe) and close buttons. Dark mode aware via `useTheme()`
+4. Added `<CopilotChat />` to `App.tsx` alongside `<CommandPalette />` (outside `AppLayout`, inside `HashRouter`)
+5. No new dependencies — zero packages added
+
+**Key decision:** Iframe over Direct Line because the Power Platform host's custom auth tokens aren't compatible with Direct Line's SSO token exchange. The iframe embed is simpler, dependency-free, and handles auth natively.
+
+**Tracked notes:** `docs/tracked/phase-12-adding-agent/1-adding-my-copilot-studio-agent.md`
+
 ## Presentation Materials — Slide Outline & Live Demo Script
 
 **Prompt:** Create a slide outline and live demo script for the Code Apps tech series presentation targeting SLED customers.
