@@ -30,6 +30,7 @@ interface ActionItemFormDialogProps {
   onOpenChange: (open: boolean) => void;
   mode: "create" | "edit";
   actionItem?: ActionItem;
+  defaultTaskType?: number;
 }
 
 interface FormData {
@@ -72,6 +73,7 @@ export function ActionItemFormDialog({
   onOpenChange,
   mode,
   actionItem,
+  defaultTaskType,
 }: ActionItemFormDialogProps) {
   const [form, setForm] = useState<FormData>(EMPTY_FORM);
   const createMutation = useCreateActionItem();
@@ -81,9 +83,16 @@ export function ActionItemFormDialog({
 
   useEffect(() => {
     if (open) {
-      setForm(mode === "edit" && actionItem ? actionItemToForm(actionItem) : EMPTY_FORM);
+      if (mode === "edit" && actionItem) {
+        setForm(actionItemToForm(actionItem));
+      } else {
+        setForm({
+          ...EMPTY_FORM,
+          ...(defaultTaskType != null ? { tdvsp_tasktype: String(defaultTaskType) } : {}),
+        });
+      }
     }
-  }, [open, mode, actionItem]);
+  }, [open, mode, actionItem, defaultTaskType]);
 
   function updateField(field: keyof FormData, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));

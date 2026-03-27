@@ -38,18 +38,22 @@ type ActionItem = Tdvsp_actionitemsModel.Tdvsp_actionitems;
 
 export function ActionItemList() {
   const quickTarget = useQuickCreateStore((s) => s.target);
+  const quickPayload = useQuickCreateStore((s) => s.payload);
   const clearQuickCreate = useQuickCreateStore((s) => s.clear);
 
   const [viewMode, setViewMode] = useViewPreference("action-items");
   const [search, setSearch] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
+  const [createTaskType, setCreateTaskType] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     if (quickTarget === "action-items") {
+      const taskType = quickPayload?.taskType as number | undefined;
+      setCreateTaskType(taskType);
       setCreateOpen(true);
       clearQuickCreate();
     }
-  }, [quickTarget, clearQuickCreate]);
+  }, [quickTarget, quickPayload, clearQuickCreate]);
   const [editItem, setEditItem] = useState<ActionItem | null>(null);
   const [viewItem, setViewItem] = useState<ActionItem | null>(null);
   const [deleteItem, setDeleteItem] = useState<ActionItem | null>(null);
@@ -287,8 +291,9 @@ export function ActionItemList() {
 
       <ActionItemFormDialog
         open={createOpen}
-        onOpenChange={setCreateOpen}
+        onOpenChange={(o) => { setCreateOpen(o); if (!o) setCreateTaskType(undefined); }}
         mode="create"
+        defaultTaskType={createTaskType}
       />
 
       <ActionItemFormDialog

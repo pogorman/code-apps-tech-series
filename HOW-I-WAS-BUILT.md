@@ -297,6 +297,56 @@ All changes in `src/components/layout/app-layout.tsx`.
 6. Added `/projects` route in `App.tsx`, "Projects" nav item in sidebar (capture section), and violet quick create pill in the top bar
 7. Updated Board to show `tdvsp_project` records in the Projects column instead of accounts
 
+## Phase 16 — Board Visual Polish, Dynamic Work Column, Quick Create Presets & Nav Reorg
+
+**Prompt:** Polish the board cards, make the work column dynamic, add task-type presets to quick create, and reorganize the left nav.
+
+**What happened:**
+
+1. **Board card visual polish** (`board-dashboard.tsx`, `tile-colors.ts`):
+   - Cards have hover lift (`-translate-y-0.5`), graduated shadows (sm to md to xl for drag)
+   - Drag state: `scale-[1.03]`, `rotate-[1.5deg]`, `ring-2 ring-primary/40`
+   - Entity-type icons (h-3 w-3) inline with card titles: Briefcase (action items), FolderKanban (projects), Lightbulb (ideas), FileText (meeting summaries)
+   - 1-line description snippets below titles when available
+   - Subtle priority-tinted gradient backgrounds via `tileGradient()` in `tile-colors.ts`
+   - Glass-morphism sticky column headers (`backdrop-blur-md`, `bg-background/60`) with overlapping accent-colored count badges
+   - Improved empty state with large faded icon
+   - Card titles use `text-xs` for compact display
+
+2. **Outline-style priority/status pills** (`action-items/labels.ts`, `ideas/labels.ts`):
+   - New `priorityPillClass()` and `statusPillClass()` in action-items labels
+   - New `categoryPillClass()` in ideas labels
+   - Pills are absolute positioned: priority bottom-left, status bottom-right
+   - `rounded-sm border` style with semantic colors (red, blue, amber, etc.)
+   - Removed Badge component from board (raw spans now)
+
+3. **Dynamic work column** (`board-dashboard.tsx`):
+   - Column accent color, icon, and title change based on active filter via `workFilterConfig()` helper
+   - All: gray/LayoutGrid/"all", Work: red/Briefcase/"work", Personal: blue/House/"personal", Learning: magenta/BookOpen/"learning"
+   - Filter pills are tiny h-5 w-5 circles with single letters (A/W/P/L) pushed to the right
+   - Removed per-card hover task-type selector icons
+
+4. **Quick create reorder + task-type presets** (`quick-create-store.ts`, `app-layout.tsx`, `action-item-form-dialog.tsx`, `action-item-list.tsx`):
+   - Quick create store gained `payload` field (`QuickCreatePayload` type)
+   - `ActionItemFormDialog` gained `defaultTaskType` prop
+   - Quick create order: work, personal, learning, idea, meeting, project, account, contact
+   - Work/personal/learning each pre-set the task type on the action item form
+   - "summary" renamed to "meeting"
+   - Added project quick create (violet, FolderKanban)
+
+5. **Left nav reorganization** (`app-layout.tsx`):
+   - Section order: insights (Dashboard, My Board), activity, capture, core
+   - "Board" renamed to "My Board" everywhere
+   - Capture order: Ideas, Meetings, Projects
+   - Nav icons colored to match quick creates (red, emerald, pink, violet, teal, sky)
+   - `NavItem` interface gained optional `color` field
+
+6. **Parking lot cards** (`board-dashboard.tsx`):
+   - Removed type label badge and divider
+   - Entity icon identifies the type instead
+
+**Files changed:** `board-dashboard.tsx` (major), `tile-colors.ts`, `action-items/labels.ts`, `ideas/labels.ts`, `action-item-form-dialog.tsx`, `action-item-list.tsx`, `app-layout.tsx`, `quick-create-store.ts`
+
 ## Presentation Materials — Slide Outline & Live Demo Script
 
 **Prompt:** Create a slide outline and live demo script for the Code Apps tech series presentation targeting SLED customers.

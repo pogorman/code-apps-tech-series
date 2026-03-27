@@ -9,14 +9,18 @@ export type QuickCreateTarget =
   | "projects"
   | null;
 
+export type QuickCreatePayload = Record<string, unknown> | null;
+
 interface QuickCreateState {
   target: QuickCreateTarget;
-  open: (target: NonNullable<QuickCreateTarget>) => void;
+  payload: QuickCreatePayload;
+  open: (target: NonNullable<QuickCreateTarget>, payload?: Record<string, unknown>) => void;
   clear: () => void;
 }
 
 export const useQuickCreateStore = create<QuickCreateState>((set) => ({
   target: null,
-  open: (target) => set({ target }),
-  clear: () => set({ target: null }),
+  payload: null,
+  open: (target, payload) => set({ target, payload: payload ?? null }),
+  clear: () => set({ target: null, payload: null }),
 }));

@@ -58,12 +58,12 @@ src/
     meeting-summaries/# Meeting Summary CRUD components
     ideas/            # Idea CRUD components
     projects/         # Project CRUD components
-    dashboard/        # Analytics dashboard + Kanban board view (4-column drag-and-drop with cross-column pin/unpin)
-    layout/           # App shell (left sidebar + quick create bar)
+    dashboard/        # Analytics dashboard + Kanban board view (4-column drag-and-drop, card hover lift, glass-morphism headers, priority gradient backgrounds)
+    layout/           # App shell (left sidebar with colored nav icons + quick create bar with task-type presets)
     command-palette.tsx # Global Ctrl+K search
   stores/             # Zustand stores (quick create)
   hooks/              # TanStack Query hooks wrapping Dataverse services + view preference
-  lib/                # Utilities (cn helper, Dataverse field helpers, Azure OpenAI service, tile color helpers)
+  lib/                # Utilities (cn helper, Dataverse field helpers, Azure OpenAI service, tile color helpers incl. tileGradient())
 docs/                 # Tracked notes, research, slide outline, demo script
 .power/               # Power Platform schemas (auto-generated)
 power.config.json     # Code App configuration

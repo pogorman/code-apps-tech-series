@@ -37,3 +37,29 @@ export function statusVariant(s: TaskStatus): "default" | "secondary" | "destruc
   if (s === 468510001) return "secondary";
   return "outline";
 }
+
+/* ── Semantic pill colors (outline style for board cards) ──────── */
+
+const PRIORITY_PILL: Record<Priority, string> = {
+  468510002: "border-red-400 text-red-400",        // Top Priority
+  468510003: "border-orange-400 text-orange-400",   // High
+  468510001: "border-zinc-400 text-zinc-400",       // Eh
+  468510000: "border-blue-400 text-blue-400",       // Low
+};
+
+const STATUS_PILL: Record<TaskStatus, string> = {
+  468510000: "border-zinc-400 text-zinc-400",       // Recognized
+  468510001: "border-blue-400 text-blue-400",       // In Progress
+  468510002: "border-amber-400 text-amber-400",     // Pending Comms
+  468510003: "border-zinc-400 text-zinc-400",       // On Hold
+  468510004: "border-emerald-400 text-emerald-400", // Wrapping Up
+  468510005: "border-green-400 text-green-400",     // Complete
+};
+
+export function priorityPillClass(p: number): string {
+  return PRIORITY_PILL[p as Priority] ?? "border-zinc-400 text-zinc-400";
+}
+
+export function statusPillClass(s: number): string {
+  return STATUS_PILL[s as TaskStatus] ?? "border-zinc-400 text-zinc-400";
+}

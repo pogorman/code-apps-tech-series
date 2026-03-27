@@ -48,11 +48,11 @@ The generated types declare `parentcustomerid` (write field) but Dataverse OData
 
 ## Board (Kanban Dashboard)
 
-The Board view (`/#/board`) is a 4-column Kanban board in `src/components/dashboard/board-dashboard.tsx`. Columns: parking lot (pinned items from any entity, green accent + Car icon), work (active action items, blue accent), projects (`tdvsp_project` records, purple accent), ideas (amber accent). Uses `useActionItems()`, `useProjects()`, `useIdeas()`, and `useMeetingSummaries()` hooks. Sidebar nav item "Board" with `Columns3` icon sits alongside "Dashboard".
+The Board view (`/#/board`) is a 4-column Kanban board in `src/components/dashboard/board-dashboard.tsx`. Columns: parking lot (pinned items from any entity, green accent + Car icon), work (dynamic accent/icon/title per active filter), projects (`tdvsp_project` records, purple accent), ideas (amber accent). Uses `useActionItems()`, `useProjects()`, `useIdeas()`, and `useMeetingSummaries()` hooks. Sidebar nav item "My Board" with `Columns3` icon sits in the insights section alongside "Dashboard".
 
 ### Parking Lot (Pinned Items)
 
-The parking lot column shows items pinned via `tdvsp_pinned` (boolean) from any entity: action items, projects, ideas, meeting summaries. Items are identified by prefixed sort IDs (`ai-`, `proj-`, `idea-`, `ms-`). Each parking lot card shows a minimal toolbar (grip + X to unpin). `tdvsp_pinned` is not yet in generated types — accessed via `(item as Record<string, unknown>).tdvsp_pinned`. The `isItemPinned()` helper handles both `true` and `1` values.
+The parking lot column shows items pinned via `tdvsp_pinned` (boolean) from any entity: action items, projects, ideas, meeting summaries. Items are identified by prefixed sort IDs (`ai-`, `proj-`, `idea-`, `ms-`). Each parking lot card shows an entity-type icon (Briefcase, FolderKanban, Lightbulb, FileText) inline with the title instead of a text type badge. `tdvsp_pinned` is not yet in generated types — accessed via `(item as Record<string, unknown>).tdvsp_pinned`. The `isItemPinned()` helper handles both `true` and `1` values.
 
 ### Cross-Column Drag-and-Drop
 
@@ -62,13 +62,29 @@ A single `DndContext` wraps all 4 columns. Each column uses `useDroppable` (id: 
 
 Every board card renders a `CardToolbar` component that appears on hover (`opacity-0 group-hover:opacity-100`). Contains: GripVertical drag handle (spreads `dragHandle.attributes` + `dragHandle.listeners`), priority color dots (`TileColorDots`), Pencil edit button, and Pin toggle. The pin button is green when pinned. All pointer events are stopped to prevent card click-through.
 
-### Work Column Task Type Filter
+### Dynamic Work Column
 
-The work column header renders filter pills: All (default, `workFilter === null`), Work, Personal, Learning. Clicking a pill sets `workFilter` state which filters the column's action items by `tdvsp_tasktype`. Each action item card also has a per-card task type selector (3 small pill buttons: Work/Personal/Learning) that appears on hover and calls `onTaskTypeChange` to PATCH `tdvsp_tasktype` in Dataverse.
+The work column accent color, icon, and title change based on the active task-type filter via `workFilterConfig()` helper: All (gray, LayoutGrid, "all"), Work (red/#ef4444, Briefcase, "work"), Personal (blue/#3b82f6, House, "personal"), Learning (magenta/#d946ef, BookOpen, "learning"). Filter pills are tiny h-5 w-5 circles with single letters (A/W/P/L) pushed to the right of the header. Clicking a pill sets `workFilter` state which filters the column's action items by `tdvsp_tasktype`. Per-card hover task-type selector icons have been removed.
 
 ### Board Edit Pencil
 
 The pencil button in `CardToolbar` opens the correct entity form dialog (ActionItemFormDialog, ProjectFormDialog, IdeaFormDialog, or MeetingSummaryFormDialog) based on `editTarget.kind`. All entity types are supported.
+
+### Board Card Visual Polish
+
+Cards have hover lift (`-translate-y-0.5`), graduated shadows (sm → md → xl for drag). Drag state: `scale-[1.03]`, `rotate-[1.5deg]`, `ring-2 ring-primary/40`. Entity-type icons (h-3 w-3) inline with card titles: Briefcase (action items), FolderKanban (projects), Lightbulb (ideas), FileText (meeting summaries). 1-line description snippets below titles when available. Subtle priority-tinted gradient backgrounds via `tileGradient()` in `src/lib/tile-colors.ts`. Glass-morphism sticky column headers (`backdrop-blur-md`, `bg-background/60`) with overlapping accent-colored count badges. Improved empty state with large faded icon. Card titles use `text-xs` for compact display.
+
+### Outline-Style Priority/Status/Category Pills
+
+Board cards use outline-style pills instead of solid Badge components. `priorityPillClass()` and `statusPillClass()` in `src/components/action-items/labels.ts`. `categoryPillClass()` in `src/components/ideas/labels.ts`. Pills are absolute positioned: priority bottom-left, status bottom-right. `rounded-sm border` style with semantic colors (red for top priority, blue for in progress, amber for pending, etc.).
+
+## Quick Create Payload
+
+The quick create Zustand store (`src/stores/quick-create-store.ts`) has a `payload` field typed as `QuickCreatePayload`. Work/personal/learning quick create pills pass `{ defaultTaskType: <value> }` as payload. `ActionItemFormDialog` accepts a `defaultTaskType` prop. `action-item-list.tsx` reads the payload from the store and passes it through. Quick create order: work, personal, learning, idea, meeting, project, account, contact. "summary" was renamed to "meeting".
+
+## Left Nav Organization
+
+Section order: insights (Dashboard, My Board), activity (Action Items), capture (Ideas, Meetings, Projects), core (Accounts, Contacts). "Board" is renamed to "My Board". Nav icons are colored to match quick creates via an optional `color` field on the `NavItem` interface: red (action items), emerald (ideas), pink (meetings), violet (projects), teal (accounts), sky (contacts).
 
 ## Tracked Notes
 

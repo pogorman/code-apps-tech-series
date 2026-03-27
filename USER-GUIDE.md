@@ -4,9 +4,9 @@
 
 This Code App provides a "My Work" interface for managing accounts, contacts, action items, meeting summaries, ideas, and projects stored in Dataverse. All views show active records only. The app uses a Microsoft Fluent Design-inspired theme with a left vertical sidebar for navigation and a top quick create bar for fast record creation.
 
-**Left Sidebar** — Briefcase icon + "My Work" brand at the top. Grouped navigation (core: Accounts/Contacts, activity: Action Items, capture: Meetings/Ideas/Projects). Active page is highlighted with a cyan left border. Dashboard and Board are the top-level views.
+**Left Sidebar** — Briefcase icon + "My Work" brand at the top. Grouped navigation sections: insights (Dashboard, My Board), activity (Action Items), capture (Ideas, Meetings, Projects), core (Accounts, Contacts). Nav icons are colored to match their quick create counterparts. Active page is highlighted with a cyan left border.
 
-**Quick Create Bar** — Colored pill buttons across the top of the content area, ordered to match the sidebar nav. Click any button to navigate to that entity's list and immediately open a new record form. Buttons (left to right): account, contact, task (action item), summary (meeting), idea, project (violet).
+**Quick Create Bar** — Colored pill buttons across the top of the content area. Buttons (left to right): work, personal, learning (these three open the action item form with the task type pre-selected), idea, meeting, project (violet), account, contact. Click any button to navigate to that entity's list and immediately open a new record form.
 
 ## Dashboard
 
@@ -26,14 +26,14 @@ Clicking any dashboard element opens a dialog with a filtered table of action it
 
 ## Board (Kanban View)
 
-Click **Board** in the sidebar to open a Kanban-style view with four columns:
+Click **My Board** in the sidebar to open a Kanban-style view with four columns:
 
-- **Parking Lot** (green accent, Car icon) — Items pinned from any entity. Cards show name and entity type badge. Hover to reveal a grip handle and an X button to unpin.
-- **Work** (blue accent, Briefcase icon) — Active action items (excludes Recognized and Complete). Cards show name, date, customer, status/priority badges, and a per-card task type selector on hover. The column header has filter pills: All, Work, Personal, Learning.
-- **Projects** (purple accent, FolderKanban icon) — All `tdvsp_project` records. Cards show project name and priority badge.
-- **Ideas** (amber accent, Lightbulb icon) — All ideas. Cards show idea name and category badge.
+- **Parking Lot** (green accent, Car icon) — Items pinned from any entity. Cards show an entity-type icon (Briefcase, FolderKanban, Lightbulb, or FileText) inline with the title instead of a text badge.
+- **Work** (dynamic accent) — Active action items (excludes Recognized and Complete). Cards show name, 1-line description snippet, and outline-style priority/status pills. The column header has tiny circle filter pills (A/W/P/L). The column's accent color, icon, and title change based on the active filter: All (gray), Work (red), Personal (blue), Learning (magenta).
+- **Projects** (purple accent, FolderKanban icon) — All project records. Cards show project name and priority pill.
+- **Ideas** (amber accent, Lightbulb icon) — All ideas. Cards show idea name and category pill.
 
-Each column has a vertical accent bar on the left side. Column headers display an item count. Columns scroll independently when content overflows.
+Columns have glass-morphism sticky headers (frosted blur effect) with an overlapping accent-colored count badge. Empty columns show a large faded icon. Cards have subtle priority-tinted gradient backgrounds, hover lift animation, and compact `text-xs` titles.
 
 ### Floating Card Toolbar
 

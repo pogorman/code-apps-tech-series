@@ -61,6 +61,22 @@ export function tileBgClass(colorIndex: number): string {
   return BG_CLASSES[colorIndex] ?? "";
 }
 
+/* ── Gradient backgrounds for board cards ──────────────────────────── */
+
+const GRADIENT_STYLES: Record<number, string> = {
+  0: "linear-gradient(to bottom, hsl(0 0% 100% / 0.7), hsl(0 0% 98% / 0.4))",
+  1: "linear-gradient(to bottom, hsl(213 97% 87% / 0.35), hsl(213 97% 87% / 0.08))",
+  2: "linear-gradient(to bottom, hsl(27 98% 72% / 0.3), hsl(27 98% 72% / 0.06))",
+  3: "linear-gradient(to bottom, hsl(0 94% 82% / 0.3), hsl(0 94% 82% / 0.06))",
+  4: "linear-gradient(to bottom, hsl(0 73% 41% / 0.2), hsl(0 73% 41% / 0.05))",
+};
+
+const DEFAULT_GRADIENT = "linear-gradient(to bottom, hsl(0 0% 100% / 0.7), hsl(0 0% 98% / 0.4))";
+
+export function tileGradient(colorIndex: number): string {
+  return GRADIENT_STYLES[colorIndex] ?? DEFAULT_GRADIENT;
+}
+
 /* ── localStorage helpers for entities without priority ──────────── */
 
 const STORAGE_PREFIX = "tile-color-";

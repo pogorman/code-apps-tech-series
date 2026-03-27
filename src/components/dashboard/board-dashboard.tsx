@@ -30,6 +30,7 @@ import { TileColorDots } from "@/components/ui/tile-color-dots";
 import {
   priorityToColorIndex,
   tileBgClass,
+  tileGradient,
   COLOR_TO_PRIORITY,
 } from "@/lib/tile-colors";
 import { cn } from "@/lib/utils";
@@ -37,18 +38,22 @@ import {
   PRIORITY_LABELS,
   STATUS_LABELS,
   TASK_TYPE_LABELS,
-  priorityVariant,
-  statusVariant,
+  priorityPillClass,
+  statusPillClass,
 } from "@/components/action-items/labels";
-import { CATEGORY_LABELS, categoryVariant } from "@/components/ideas/labels";
-import { Badge } from "@/components/ui/badge";
+import { CATEGORY_LABELS, categoryPillClass } from "@/components/ideas/labels";
+
 import { Skeleton } from "@/components/ui/skeleton";
 import {
+  BookOpen,
   Briefcase,
   Car,
   Columns3,
+  FileText,
   FolderKanban,
   GripVertical,
+  House,
+  LayoutGrid,
   Lightbulb,
   Pencil,
   Pin,
@@ -80,16 +85,27 @@ const TASK_TYPE_WORK = 468510001;
 const TASK_TYPE_LEARNING = 468510002;
 
 const WORK_FILTERS = [
-  { key: TASK_TYPE_WORK, label: "Work" },
-  { key: TASK_TYPE_PERSONAL, label: "Personal" },
-  { key: TASK_TYPE_LEARNING, label: "Learning" },
+  { key: TASK_TYPE_WORK, letter: "W", label: "Work", accent: "#ef4444", icon: Briefcase },
+  { key: TASK_TYPE_PERSONAL, letter: "P", label: "Personal", accent: "#3b82f6", icon: House },
+  { key: TASK_TYPE_LEARNING, letter: "L", label: "Learning", accent: "#d946ef", icon: BookOpen },
 ] as const;
+
+const WORK_ALL_ACCENT = "#6b7280";
+const WORK_ALL_ICON = LayoutGrid;
+
+function workFilterConfig(filter: number | null) {
+  const match = WORK_FILTERS.find((f) => f.key === filter);
+  return {
+    accent: match?.accent ?? WORK_ALL_ACCENT,
+    icon: match?.icon ?? WORK_ALL_ICON,
+    title: match?.label.toLowerCase() ?? "all",
+  };
+}
 
 /* ── column accent colours ────────────────────────────────────── */
 
 const ACCENT = {
   parkingLot: "#22c55e",
-  work: "#378ADD",
   projects: "#8b5cf6",
   ideas: "#EF9F27",
 } as const;
@@ -161,7 +177,12 @@ function SortableCard({
     <div
       ref={setNodeRef}
       style={style}
-      className={cn("group", isDragging && "z-50 opacity-80")}
+      className={cn(
+        "group transition-all duration-200",
+        isDragging
+          ? "z-50 opacity-90 scale-[1.03] rotate-[1.5deg] ring-2 ring-primary/40 rounded-lg shadow-xl"
+          : "hover:-translate-y-0.5",
+      )}
     >
       {children({ attributes, listeners })}
     </div>
@@ -262,7 +283,6 @@ function ActionItemCard({
   showStatus,
   onPriorityChange,
   onPinToggle,
-  onTaskTypeChange,
   onEdit,
   dragHandle,
 }: {
@@ -270,7 +290,6 @@ function ActionItemCard({
   showStatus: boolean;
   onPriorityChange: (id: string, priority: number | null) => void;
   onPinToggle: (id: string) => void;
-  onTaskTypeChange: (id: string, taskType: number) => void;
   onEdit: (item: ActionItem) => void;
   dragHandle: DragHandleProps;
 }) {
@@ -289,8 +308,17 @@ function ActionItemCard({
   const colorIdx = priorityToColorIndex(item.tdvsp_priority);
   const pinned = isItemPinned(item);
 
+  const description = item.tdvsp_description;
+
   return (
-    <div className={cn("relative rounded-lg border border-border/60 bg-card px-3.5 py-3 shadow-sm hover:shadow-md transition-shadow", tileBgClass(colorIdx))}>
+    <div
+      className={cn(
+        "relative rounded-lg border border-border/60 bg-card px-3.5 pt-3 pb-7",
+        "shadow-sm hover:shadow-md transition-all duration-200",
+        tileBgClass(colorIdx),
+      )}
+      style={{ backgroundImage: tileGradient(colorIdx) }}
+    >
       <CardToolbar
         colorIdx={colorIdx}
         onPriorityChange={(idx) => onPriorityChange(item.tdvsp_actionitemid, COLOR_TO_PRIORITY[idx] ?? null)}
@@ -299,55 +327,34 @@ function ActionItemCard({
         onEdit={() => onEdit(item)}
         dragHandle={dragHandle}
       />
-      <p className="text-sm font-medium leading-snug line-clamp-2">
-        {item.tdvsp_name}
-      </p>
+      <div className="flex items-start gap-1.5">
+        <Briefcase className="h-3 w-3 mt-0.5 shrink-0 text-muted-foreground/50" />
+        <p className="text-xs font-medium leading-snug line-clamp-2">
+          {item.tdvsp_name}
+        </p>
+      </div>
+      {description && (
+        <p className="mt-1 text-xs text-muted-foreground/80 line-clamp-1 pl-[1.125rem]">
+          {description}
+        </p>
+      )}
       {(date || customer) && (
-        <div className="mt-1.5 flex items-center gap-2 text-[11px] text-muted-foreground">
+        <div className="mt-1.5 flex items-center gap-2 text-[11px] text-muted-foreground pl-[1.125rem]">
           {date && <span>{date}</span>}
           {date && customer && <span>·</span>}
           {customer && <span className="truncate">{customer}</span>}
         </div>
       )}
-      <div className="mt-2 flex flex-wrap gap-1.5">
-        {showStatus && status && (
-          <Badge variant={statusVariant(item.tdvsp_taskstatus!)}>
-            {status}
-          </Badge>
-        )}
-        {priority && (
-          <Badge variant={priorityVariant(item.tdvsp_priority!)}>
-            {priority}
-          </Badge>
-        )}
-      </div>
-      {/* task type selector */}
-      <div
-        className="mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
-        onClick={(e) => e.stopPropagation()}
-        onPointerDown={(e) => e.stopPropagation()}
-      >
-        {WORK_FILTERS.map((f) => (
-          <button
-            key={f.key}
-            type="button"
-            className={cn(
-              "px-2 py-0.5 rounded-full text-[10px] font-medium border transition-colors",
-              item.tdvsp_tasktype === f.key
-                ? "bg-primary text-primary-foreground border-primary"
-                : "bg-transparent text-muted-foreground border-border hover:border-foreground/40 hover:text-foreground",
-            )}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (item.tdvsp_tasktype !== f.key) {
-                onTaskTypeChange(item.tdvsp_actionitemid, f.key);
-              }
-            }}
-          >
-            {f.label}
-          </button>
-        ))}
-      </div>
+      {priority && (
+        <span className={cn("absolute bottom-1.5 left-2 inline-flex items-center rounded-sm border px-1.5 py-px text-[10px] font-semibold", priorityPillClass(item.tdvsp_priority!))}>
+          {priority}
+        </span>
+      )}
+      {showStatus && status && (
+        <span className={cn("absolute bottom-1.5 right-2 inline-flex items-center rounded-sm border px-1.5 py-px text-[10px] font-semibold", statusPillClass(item.tdvsp_taskstatus!))}>
+          {status}
+        </span>
+      )}
     </div>
   );
 }
@@ -374,8 +381,17 @@ function ProjectCard({
       : null;
   const pinned = isItemPinned(project);
 
+  const description = project.tdvsp_description;
+
   return (
-    <div className={cn("relative rounded-lg border border-border/60 bg-card px-3.5 py-3 shadow-sm hover:shadow-md transition-shadow", tileBgClass(colorIdx))}>
+    <div
+      className={cn(
+        "relative rounded-lg border border-border/60 bg-card px-3.5 pt-3 pb-7",
+        "shadow-sm hover:shadow-md transition-all duration-200",
+        tileBgClass(colorIdx),
+      )}
+      style={{ backgroundImage: tileGradient(colorIdx) }}
+    >
       <CardToolbar
         colorIdx={colorIdx}
         onPriorityChange={(idx) => onPriorityChange(project.tdvsp_projectid, COLOR_TO_PRIORITY[idx] ?? null)}
@@ -384,15 +400,21 @@ function ProjectCard({
         onEdit={() => onEdit(project)}
         dragHandle={dragHandle}
       />
-      <p className="text-sm font-medium leading-snug line-clamp-2">
-        {project.tdvsp_name}
-      </p>
+      <div className="flex items-start gap-1.5">
+        <FolderKanban className="h-3 w-3 mt-0.5 shrink-0 text-muted-foreground/50" />
+        <p className="text-xs font-medium leading-snug line-clamp-2">
+          {project.tdvsp_name}
+        </p>
+      </div>
+      {description && (
+        <p className="mt-1 text-xs text-muted-foreground/80 line-clamp-1 pl-[1.125rem]">
+          {description}
+        </p>
+      )}
       {priority && (
-        <div className="mt-2">
-          <Badge variant={priorityVariant(project.tdvsp_priority! as keyof typeof PRIORITY_LABELS)}>
-            {priority}
-          </Badge>
-        </div>
+        <span className={cn("absolute bottom-1.5 left-2 inline-flex items-center rounded-sm border px-1.5 py-px text-[10px] font-semibold", priorityPillClass(project.tdvsp_priority!))}>
+          {priority}
+        </span>
       )}
     </div>
   );
@@ -421,8 +443,17 @@ function IdeaCard({
   const colorIdx = priorityToColorIndex(priority);
   const pinned = isItemPinned(idea);
 
+  const description = idea.tdvsp_description;
+
   return (
-    <div className={cn("relative rounded-lg border border-border/60 bg-card px-3.5 py-3 shadow-sm hover:shadow-md transition-shadow", tileBgClass(colorIdx))}>
+    <div
+      className={cn(
+        "relative rounded-lg border border-border/60 bg-card px-3.5 pt-3 pb-7",
+        "shadow-sm hover:shadow-md transition-all duration-200",
+        tileBgClass(colorIdx),
+      )}
+      style={{ backgroundImage: tileGradient(colorIdx) }}
+    >
       <CardToolbar
         colorIdx={colorIdx}
         onPriorityChange={(idx) => onPriorityChange(idea.tdvsp_ideaid, COLOR_TO_PRIORITY[idx] ?? null)}
@@ -431,15 +462,21 @@ function IdeaCard({
         onEdit={() => onEdit(idea)}
         dragHandle={dragHandle}
       />
-      <p className="text-sm font-medium leading-snug line-clamp-2">
-        {idea.tdvsp_name}
-      </p>
+      <div className="flex items-start gap-1.5">
+        <Lightbulb className="h-3 w-3 mt-0.5 shrink-0 text-muted-foreground/50" />
+        <p className="text-xs font-medium leading-snug line-clamp-2">
+          {idea.tdvsp_name}
+        </p>
+      </div>
+      {description && (
+        <p className="mt-1 text-xs text-muted-foreground/80 line-clamp-1 pl-[1.125rem]">
+          {description}
+        </p>
+      )}
       {category && (
-        <div className="mt-2">
-          <Badge variant={categoryVariant(idea.tdvsp_category!)}>
-            {category}
-          </Badge>
-        </div>
+        <span className={cn("absolute bottom-1.5 left-2 inline-flex items-center rounded-sm border px-1.5 py-px text-[10px] font-semibold", categoryPillClass(idea.tdvsp_category!))}>
+          {category}
+        </span>
       )}
     </div>
   );
@@ -457,16 +494,25 @@ type ParkingLotEntry = {
   onUnpin: () => void;
 };
 
-const KIND_VARIANT: Record<ParkingLotEntry["kind"], "default" | "secondary" | "outline"> = {
-  "action-item": "secondary",
-  project: "secondary",
-  idea: "secondary",
-  "meeting-summary": "secondary",
+const KIND_ICON: Record<ParkingLotEntry["kind"], typeof Briefcase> = {
+  "action-item": Briefcase,
+  project: FolderKanban,
+  idea: Lightbulb,
+  "meeting-summary": FileText,
 };
 
 function ParkingLotCard({ entry, dragHandle }: { entry: ParkingLotEntry; dragHandle: DragHandleProps }) {
+  const KindIcon = KIND_ICON[entry.kind];
+
   return (
-    <div className={cn("relative rounded-lg border border-border/60 bg-card px-3.5 py-3 shadow-sm hover:shadow-md transition-shadow", tileBgClass(entry.colorIdx))}>
+    <div
+      className={cn(
+        "relative rounded-lg border border-border/60 bg-card px-3.5 py-3",
+        "shadow-sm hover:shadow-md transition-all duration-200",
+        tileBgClass(entry.colorIdx),
+      )}
+      style={{ backgroundImage: tileGradient(entry.colorIdx) }}
+    >
       {/* minimal toolbar: grip + unpin */}
       <div
         className="absolute -top-3 right-1 z-10 flex items-center gap-2 rounded-lg border border-border bg-popover px-2 py-1 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
@@ -494,11 +540,11 @@ function ParkingLotCard({ entry, dragHandle }: { entry: ParkingLotEntry; dragHan
           <X className="h-3.5 w-3.5" />
         </button>
       </div>
-      <p className="text-sm font-medium leading-snug line-clamp-2">
-        {entry.name}
-      </p>
-      <div className="mt-2">
-        <Badge variant={KIND_VARIANT[entry.kind]}>{entry.label}</Badge>
+      <div className="flex items-start gap-1.5">
+        <KindIcon className="h-3 w-3 mt-0.5 shrink-0 text-muted-foreground/50" />
+        <p className="text-xs font-medium leading-snug line-clamp-2">
+          {entry.name}
+        </p>
       </div>
     </div>
   );
@@ -512,44 +558,51 @@ function SortableColumn({
   icon: Icon,
   accent,
   ids,
-  headerExtra,
+  headerInline,
   children,
 }: {
   columnKey: string;
-  title: string;
+  title?: string;
   icon: typeof Briefcase;
   accent: string;
   ids: string[];
-  headerExtra?: React.ReactNode;
+  headerInline?: React.ReactNode;
   children: React.ReactNode;
 }) {
   /* Make the card list a drop target so items can be dropped here even when empty */
   const { setNodeRef } = useDroppable({ id: `col-${columnKey}` });
 
   return (
-    <div className="flex min-w-0 rounded-xl border border-border/50 bg-muted/30">
+    <div className="flex min-w-0 rounded-xl border border-border/50 bg-muted/30 backdrop-blur-sm">
       {/* accent left bar */}
-      <div className="w-[3px] shrink-0 rounded-l-xl" style={{ background: accent }} />
+      <div className="w-[3px] shrink-0 rounded-l-xl transition-colors duration-200" style={{ background: accent }} />
       <div className="flex flex-col min-w-0 flex-1">
-        {/* header */}
-        <div className="px-4 py-3 space-y-2">
+        {/* glass-morphism header */}
+        <div className="sticky top-0 z-[5] px-4 py-3 bg-background/60 backdrop-blur-md border-b border-border/30 rounded-tr-xl">
           <div className="flex items-center gap-2">
-            <Icon className="h-4 w-4 shrink-0" style={{ color: accent }} />
-            <h2 className="text-sm font-semibold truncate">{title}</h2>
-            <span className="ml-auto text-xs text-muted-foreground tabular-nums">
-              {ids.length}
-            </span>
+            {/* icon + overlapping count badge */}
+            <div className="relative shrink-0 mr-1">
+              <Icon className="h-5 w-5 transition-colors duration-200" style={{ color: accent }} />
+              <span
+                className="absolute -bottom-1.5 -right-2 inline-flex items-center justify-center min-w-[1rem] h-4 px-1 rounded-full text-[9px] font-bold tabular-nums border border-background transition-colors duration-200"
+                style={{ background: accent, color: "#fff" }}
+              >
+                {ids.length}
+              </span>
+            </div>
+            {title && <h2 className="text-sm font-semibold truncate">{title}</h2>}
+            {headerInline}
           </div>
-          {headerExtra}
         </div>
         {/* sortable card list — pt-4 gives room for toolbar overflow above first card */}
         <SortableContext items={ids} strategy={verticalListSortingStrategy}>
           <div ref={setNodeRef} className="flex-1 overflow-y-auto overflow-x-visible px-3 pt-4 pb-3 space-y-2.5">
             {children}
             {ids.length === 0 && (
-              <p className="text-xs text-muted-foreground text-center py-6">
-                No items
-              </p>
+              <div className="flex flex-col items-center py-8 text-muted-foreground/50">
+                <Icon className="h-8 w-8 mb-2" />
+                <p className="text-xs">No items</p>
+              </div>
             )}
           </div>
         </SortableContext>
@@ -615,10 +668,7 @@ export function BoardDashboard() {
     updateIdea.mutate({ id, fields: { tdvsp_priority: priority } as never });
   };
 
-  /* task type handler */
-  const handleTaskTypeChange = (id: string, taskType: number) => {
-    updateActionItem.mutate({ id, fields: { tdvsp_tasktype: taskType } as never });
-  };
+
 
   /* pin/unpin handlers */
   const handleActionItemPin = (id: string) => {
@@ -820,7 +870,7 @@ export function BoardDashboard() {
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
             <Columns3 className="h-5 w-5 text-primary" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">Board</h1>
+          <h1 className="text-2xl font-bold tracking-tight">My Board</h1>
         </div>
         <div className="grid grid-cols-4 gap-4 h-[calc(100vh-12rem)]">
           {Array.from({ length: 4 }).map((_, i) => (
@@ -846,7 +896,7 @@ export function BoardDashboard() {
           <Columns3 className="h-5 w-5 text-primary" />
         </div>
         <div>
-          <h1 className="text-lg font-medium">Board</h1>
+          <h1 className="text-lg font-medium">My Board</h1>
           <p className="text-xs text-muted-foreground">
             Kanban view across action items, projects &amp; ideas
           </p>
@@ -875,41 +925,43 @@ export function BoardDashboard() {
           ))}
         </SortableColumn>
 
-        {/* Work */}
+        {/* Work — accent + icon shift with active filter */}
         <SortableColumn
           columnKey="work"
-          title="work"
-          icon={Briefcase}
-          accent={ACCENT.work}
+          title={workFilterConfig(workFilter).title}
+          icon={workFilterConfig(workFilter).icon}
+          accent={workFilterConfig(workFilter).accent}
           ids={workIds}
-
-          headerExtra={
-            <div className="flex items-center gap-1">
+          headerInline={
+            <div className="ml-auto flex items-center gap-0.5">
               <button
                 type="button"
+                title="All"
                 className={cn(
-                  "px-2 py-0.5 rounded-full text-[10px] font-medium border transition-colors",
+                  "h-5 w-5 rounded-full text-[9px] font-bold leading-none transition-colors",
                   workFilter === null
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-transparent text-muted-foreground border-border hover:border-foreground/40",
+                    ? "bg-foreground text-background"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted",
                 )}
                 onClick={() => setWorkFilter(null)}
               >
-                All
+                A
               </button>
               {WORK_FILTERS.map((f) => (
                 <button
                   key={f.key}
                   type="button"
+                  title={f.label}
                   className={cn(
-                    "px-2 py-0.5 rounded-full text-[10px] font-medium border transition-colors",
+                    "h-5 w-5 rounded-full text-[9px] font-bold leading-none transition-colors",
                     workFilter === f.key
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-transparent text-muted-foreground border-border hover:border-foreground/40",
+                      ? "text-white"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted",
                   )}
+                  style={workFilter === f.key ? { background: f.accent } : undefined}
                   onClick={() => setWorkFilter(f.key)}
                 >
-                  {f.label}
+                  {f.letter}
                 </button>
               ))}
             </div>
@@ -923,7 +975,6 @@ export function BoardDashboard() {
                   showStatus={true}
                   onPriorityChange={handleActionItemPriority}
                   onPinToggle={handleActionItemPin}
-                  onTaskTypeChange={handleTaskTypeChange}
                   onEdit={(ai) => setEditTarget({ kind: "action-item", item: ai })}
                   dragHandle={handle}
                 />

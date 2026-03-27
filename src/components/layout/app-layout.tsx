@@ -1,16 +1,18 @@
 import type { ReactNode } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import {
-  Building2,
-  Users,
-  ClipboardList,
+  BookOpen,
   Briefcase,
-  FolderKanban,
-  LayoutDashboard,
+  Building2,
+  ClipboardList,
   Columns3,
   FileText,
+  FolderKanban,
+  House,
+  LayoutDashboard,
   Lightbulb,
   Search,
+  Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQuickCreateStore } from "@/stores/quick-create-store";
@@ -22,38 +24,45 @@ interface AppLayoutProps {
 
 /* ── Left sidebar navigation ────────────────────────────────── */
 
+interface NavItem {
+  to: string;
+  label: string;
+  icon: typeof LayoutDashboard;
+  color?: string;
+}
+
 interface NavSection {
   label: string;
-  items: { to: string; label: string; icon: typeof LayoutDashboard }[];
+  items: NavItem[];
 }
 
 const NAV_SECTIONS: NavSection[] = [
   {
-    label: "",
+    label: "insights",
     items: [
       { to: "/", label: "Dashboard", icon: LayoutDashboard },
-      { to: "/board", label: "Board", icon: Columns3 },
-    ],
-  },
-  {
-    label: "core",
-    items: [
-      { to: "/accounts", label: "Accounts", icon: Building2 },
-      { to: "/contacts", label: "Contacts", icon: Users },
+      { to: "/board", label: "My Board", icon: Columns3 },
     ],
   },
   {
     label: "activity",
     items: [
-      { to: "/action-items", label: "Action Items", icon: ClipboardList },
+      { to: "/action-items", label: "Action Items", icon: ClipboardList, color: "#ef4444" },
     ],
   },
   {
     label: "capture",
     items: [
-      { to: "/meeting-summaries", label: "Meetings", icon: FileText },
-      { to: "/ideas", label: "Ideas", icon: Lightbulb },
-      { to: "/projects", label: "Projects", icon: FolderKanban },
+      { to: "/ideas", label: "Ideas", icon: Lightbulb, color: "#059669" },
+      { to: "/meeting-summaries", label: "Meetings", icon: FileText, color: "#ec4899" },
+      { to: "/projects", label: "Projects", icon: FolderKanban, color: "#7c3aed" },
+    ],
+  },
+  {
+    label: "core",
+    items: [
+      { to: "/accounts", label: "Accounts", icon: Building2, color: "#0d9488" },
+      { to: "/contacts", label: "Contacts", icon: Users, color: "#0ea5e9" },
     ],
   },
 ];
@@ -67,9 +76,61 @@ interface QuickCreateButton {
   icon: typeof LayoutDashboard;
   color: string; // text & border color
   bg: string; // pastel background
+  payload?: Record<string, unknown>;
 }
 
 const QUICK_CREATE_BUTTONS: QuickCreateButton[] = [
+  {
+    target: "action-items",
+    route: "/action-items",
+    label: "work",
+    icon: Briefcase,
+    color: "text-red-500 border-red-200",
+    bg: "bg-red-50 hover:bg-red-100",
+    payload: { taskType: 468510001 },
+  },
+  {
+    target: "action-items",
+    route: "/action-items",
+    label: "personal",
+    icon: House,
+    color: "text-blue-500 border-blue-200",
+    bg: "bg-blue-50 hover:bg-blue-100",
+    payload: { taskType: 468510000 },
+  },
+  {
+    target: "action-items",
+    route: "/action-items",
+    label: "learning",
+    icon: BookOpen,
+    color: "text-fuchsia-500 border-fuchsia-200",
+    bg: "bg-fuchsia-50 hover:bg-fuchsia-100",
+    payload: { taskType: 468510002 },
+  },
+  {
+    target: "ideas",
+    route: "/ideas",
+    label: "idea",
+    icon: Lightbulb,
+    color: "text-emerald-600 border-emerald-200",
+    bg: "bg-emerald-50 hover:bg-emerald-100",
+  },
+  {
+    target: "meeting-summaries",
+    route: "/meeting-summaries",
+    label: "meeting",
+    icon: FileText,
+    color: "text-pink-500 border-pink-200",
+    bg: "bg-pink-50 hover:bg-pink-100",
+  },
+  {
+    target: "projects",
+    route: "/projects",
+    label: "project",
+    icon: FolderKanban,
+    color: "text-violet-600 border-violet-200",
+    bg: "bg-violet-50 hover:bg-violet-100",
+  },
   {
     target: "accounts",
     route: "/accounts",
@@ -83,40 +144,8 @@ const QUICK_CREATE_BUTTONS: QuickCreateButton[] = [
     route: "/contacts",
     label: "contact",
     icon: Users,
-    color: "text-blue-500 border-blue-200",
-    bg: "bg-blue-50 hover:bg-blue-100",
-  },
-  {
-    target: "action-items",
-    route: "/action-items",
-    label: "task",
-    icon: ClipboardList,
-    color: "text-red-500 border-red-200",
-    bg: "bg-red-50 hover:bg-red-100",
-  },
-  {
-    target: "meeting-summaries",
-    route: "/meeting-summaries",
-    label: "summary",
-    icon: FileText,
-    color: "text-pink-500 border-pink-200",
-    bg: "bg-pink-50 hover:bg-pink-100",
-  },
-  {
-    target: "ideas",
-    route: "/ideas",
-    label: "idea",
-    icon: Lightbulb,
-    color: "text-emerald-600 border-emerald-200",
-    bg: "bg-emerald-50 hover:bg-emerald-100",
-  },
-  {
-    target: "projects",
-    route: "/projects",
-    label: "project",
-    icon: FolderKanban,
-    color: "text-violet-600 border-violet-200",
-    bg: "bg-violet-50 hover:bg-violet-100",
+    color: "text-sky-500 border-sky-200",
+    bg: "bg-sky-50 hover:bg-sky-100",
   },
 ];
 
@@ -128,13 +157,8 @@ export function AppLayout({ children }: AppLayoutProps) {
   const openQuickCreate = useQuickCreateStore((s) => s.open);
 
   function handleQuickCreate(btn: QuickCreateButton) {
-    const currentPath = location.pathname;
-    if (currentPath === btn.route) {
-      // Already on the right page — just open the dialog
-      openQuickCreate(btn.target);
-    } else {
-      // Navigate first, then open after a tick so the component mounts
-      openQuickCreate(btn.target);
+    openQuickCreate(btn.target, btn.payload);
+    if (location.pathname !== btn.route) {
       navigate(btn.route);
     }
   }
@@ -176,7 +200,10 @@ export function AppLayout({ children }: AppLayoutProps) {
                     )
                   }
                 >
-                  <item.icon className="h-4 w-4 shrink-0" />
+                  <item.icon
+                    className="h-4 w-4 shrink-0"
+                    style={item.color ? { color: item.color } : undefined}
+                  />
                   {item.label}
                 </NavLink>
               ))}
@@ -211,7 +238,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           </span>
           {QUICK_CREATE_BUTTONS.map((btn) => (
             <button
-              key={btn.target}
+              key={`${btn.target}-${btn.label}`}
               onClick={() => handleQuickCreate(btn)}
               className={cn(
                 "flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors",

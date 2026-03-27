@@ -21,6 +21,13 @@ export function categoryVariant(c: Category): "default" | "secondary" | "destruc
   return "outline";
 }
 
+export function categoryPillClass(c: number): string {
+  if (c === 468510005) return "border-blue-400 text-blue-400";       // Azure
+  if (c === 468510000) return "border-violet-400 text-violet-400";   // Copilot Studio
+  if (c === 468510006) return "border-red-400 text-red-400";         // AI General
+  return "border-zinc-400 text-zinc-400";
+}
+
 /* ── Priority (same global choice list as action items) ──────────── */
 
 export const IDEA_PRIORITY_LABELS: Record<number, string> = {

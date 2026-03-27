@@ -78,7 +78,7 @@ Each entity list (Accounts, Contacts, Action Items, Meeting Summaries, Ideas, Pr
 
 ## What is the Board view?
 
-The Board (`/#/board`) is a Kanban-style dashboard with four vertical columns pulling from multiple entities. **Parking lot** (green accent, Car icon) shows items pinned via `tdvsp_pinned` from any entity (action items, projects, ideas, meeting summaries). **Work** (blue accent, Briefcase icon) shows active action items (excludes Recognized and Complete statuses) with task type filter pills (All/Work/Personal/Learning). **Projects** (purple accent, FolderKanban icon) shows all `tdvsp_project` records. **Ideas** (amber accent, Lightbulb icon) shows all ideas. Each column has a vertical accent bar on the left side and a scrollable card list. Cards show a floating toolbar on hover with drag grip, priority color dots, edit pencil, and pin toggle.
+The Board (`/#/board`, labeled "My Board" in the sidebar) is a Kanban-style dashboard with four vertical columns pulling from multiple entities. **Parking lot** (green accent, Car icon) shows items pinned via `tdvsp_pinned` from any entity — identified by entity-type icons instead of text badges. **Work** has a dynamic accent color, icon, and title that change based on the active task-type filter (All=gray/LayoutGrid, Work=red/Briefcase, Personal=blue/House, Learning=magenta/BookOpen). **Projects** (purple accent, FolderKanban icon) shows all `tdvsp_project` records. **Ideas** (amber accent, Lightbulb icon) shows all ideas. Columns have glass-morphism sticky headers (`backdrop-blur-md`, `bg-background/60`) with overlapping accent-colored count badges and large faded icons for empty states. Cards show entity-type icons inline with titles (h-3 w-3), 1-line description snippets, priority-tinted gradient backgrounds via `tileGradient()`, hover lift (`-translate-y-0.5`), and graduated shadows (sm to md to xl for drag). Drag state adds `scale-[1.03]`, `rotate-[1.5deg]`, `ring-2 ring-primary/40`. Outline-style pills (priority bottom-left, status bottom-right) replace Badge components. Floating toolbar on hover: drag grip, priority color dots, edit pencil, pin toggle.
 
 ## How do the color dots on card views work?
 
@@ -98,7 +98,7 @@ Hovering over any card on the Board reveals a floating `CardToolbar` popover pos
 
 ## How does the Work column task type filter work?
 
-The Work column header shows filter pills: All, Work, Personal, and Learning. Click a pill to filter the work column to only show action items of that task type. "All" shows all active action items regardless of type. Each action item card also has a per-card task type selector that appears on hover, letting you change the task type directly from the board.
+The Work column header shows tiny h-5 w-5 circle filter pills with single letters (A/W/P/L) pushed to the right. Click a pill to filter the work column to only show action items of that task type. "A" (All) shows all active action items regardless of type. The column dynamically changes its accent color, icon, and title based on the active filter: All = gray/LayoutGrid/"all", Work = red/Briefcase/"work", Personal = blue/House/"personal", Learning = magenta/BookOpen/"learning". The `workFilterConfig()` helper returns the accent/icon/title for each filter state.
 
 ## What is the `tdvsp_pinned` field?
 
@@ -111,6 +111,18 @@ All entity hooks filter by `statecode eq 0`, which returns only active records f
 ## How does the project lookup work on Ideas and Meeting Summaries?
 
 Ideas and meeting summaries gained a `tdvsp_Project@odata.bind` field. Writes use `/tdvsp_projects(guid)` format. Reads return the GUID as `_tdvsp_project_value`. The form shows a project dropdown populated from `useProjects()`. Same OData bind pattern as the account and contact lookups.
+
+## How do the quick create task-type presets work?
+
+The quick create bar has three separate pills for action items: **work**, **personal**, and **learning**. Each opens the action item form with the task type pre-selected via the `QuickCreatePayload` type in the Zustand store (`src/stores/quick-create-store.ts`). The `ActionItemFormDialog` accepts a `defaultTaskType` prop that the list component passes through when the quick create store has a payload. The full quick create order is: work, personal, learning, idea, meeting, project, account, contact.
+
+## What are the outline-style pills on board cards?
+
+Board cards use outline-style pills instead of solid Badge components. `priorityPillClass()` and `statusPillClass()` in `src/components/action-items/labels.ts` return `rounded-sm border` classes with semantic colors (red for top priority, blue for in progress, amber for pending, etc.). `categoryPillClass()` in `src/components/ideas/labels.ts` does the same for idea categories. Pills are absolutely positioned: priority bottom-left, status bottom-right.
+
+## How is the left sidebar organized?
+
+The sidebar groups nav items into four sections: **insights** (Dashboard, My Board), **activity** (Action Items), **capture** (Ideas, Meetings, Projects), and **core** (Accounts, Contacts). Nav icons are colored to match their quick create counterparts (e.g., red for work action items, emerald for ideas, violet for projects). The `NavItem` interface has an optional `color` field for this.
 
 ## What ports does local dev use?
 
