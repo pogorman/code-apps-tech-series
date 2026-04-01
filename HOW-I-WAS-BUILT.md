@@ -273,7 +273,7 @@ All changes in `src/components/layout/app-layout.tsx`.
 
 1. Created `src/components/dashboard/board-dashboard.tsx` — a Kanban-style board with 4 vertical columns pulling from 4 data sources (action items, projects, ideas, meeting summaries)
 2. **Parking lot** column (green accent, Car icon): Items pinned via `tdvsp_pinned` from any entity. Shows name + entity type badge. Minimal toolbar (grip + X to unpin)
-3. **Work** column (blue accent, Briefcase icon): Active action items (excludes Recognized and Complete). Shows name, date, customer, status/priority badges. Task type filter pills in header (All/Work/Personal/Learning). Per-card task type selector on hover
+3. **Work** column (blue accent, Briefcase icon): All non-complete action items (excludes Complete only). Shows name, date, customer, status/priority badges. Task type filter pills in header (All/Work/Personal/Learning). Per-card task type selector on hover
 4. **Projects** column (purple accent, FolderKanban icon): All `tdvsp_project` records. Shows project name and priority badge
 5. **Ideas** column (amber accent, Lightbulb icon): All ideas. Shows idea name and category badge
 6. Column accent bars run vertically on the left side (not bottom). Each column is a scrollable container with header (icon + title + count)
@@ -452,6 +452,17 @@ All changes in `src/components/layout/app-layout.tsx`.
 4. **Padding reduction** — Main content `p-8` → `p-4`, quick create bar `px-6 py-2` → `px-4 py-1.5`. Reclaims ~32px per side
 
 **Tracked notes:** `docs/tracked/phase-13-ui-facelift/1-dashboard-board-layout-facelift.md`
+
+## Phase 21 — Board Work Column Status Filter Fix
+
+**Fix:** The work column was filtering out action items with status "Recognized" (Dataverse choice key `468510000`). Since Recognized is the default status when a new action item is created, this meant freshly created items were invisible on the board until their status was manually changed. The filter now excludes only "Complete" — all other statuses (Recognized, In Progress, Pending Comms, On Hold, Wrapping Up) are shown.
+
+**What happened:**
+
+1. Removed the `RECOGNIZED` status exclusion from the work column filter in `src/components/dashboard/board-dashboard.tsx`
+2. Work column now shows all active action items except Complete
+
+**Files changed:** `board-dashboard.tsx`
 
 ## Presentation Materials — Slide Outline & Live Demo Script
 

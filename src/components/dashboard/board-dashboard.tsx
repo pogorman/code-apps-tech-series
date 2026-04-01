@@ -80,7 +80,6 @@ function isItemPinned(item: unknown): boolean {
 
 /* ── status keys ──────────────────────────────────────────────── */
 
-const RECOGNIZED = 468510000;
 const COMPLETE = 468510005;
 const TASK_TYPE_PERSONAL = 468510000;
 const TASK_TYPE_WORK = 468510001;
@@ -810,7 +809,6 @@ export function BoardDashboard() {
   const work = applyOrder(
     actionItems?.filter(
       (i) =>
-        i.tdvsp_taskstatus !== RECOGNIZED &&
         i.tdvsp_taskstatus !== COMPLETE &&
         (workFilter === null || i.tdvsp_tasktype === workFilter)
     ) ?? [],

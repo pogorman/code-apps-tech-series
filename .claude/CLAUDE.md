@@ -72,7 +72,7 @@ Every board card renders a `CardToolbar` component positioned `-top-2.5 -right-2
 
 ### Dynamic Work Column
 
-The work column accent color, icon, and title change based on the active task-type filter via `workFilterConfig()` helper: All (gray, LayoutGrid, "all"), Work (red/#ef4444, Briefcase, "work"), Personal (blue/#3b82f6, House, "personal"), Learning (magenta/#d946ef, BookOpen, "learning"). Filter pills are tiny h-5 w-5 circles with single letters (A/W/P/L) pushed to the right of the header. Clicking a pill sets `workFilter` state which filters the column's action items by `tdvsp_tasktype`. Per-card hover task-type selector icons have been removed.
+The work column shows all action items except Complete (`468510005`) — Recognized and all other statuses are included. Accent color, icon, and title change based on the active task-type filter via `workFilterConfig()` helper: All (gray, LayoutGrid, "all"), Work (red/#ef4444, Briefcase, "work"), Personal (blue/#3b82f6, House, "personal"), Learning (magenta/#d946ef, BookOpen, "learning"). Filter pills are tiny h-5 w-5 circles with single letters (A/W/P/L) pushed to the right of the header. Clicking a pill sets `workFilter` state which filters the column's action items by `tdvsp_tasktype`. Per-card hover task-type selector icons have been removed.
 
 ### Board Edit Pencil
 

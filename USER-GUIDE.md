@@ -35,7 +35,7 @@ Clicking any dashboard element opens a dialog with a filtered table of action it
 Click **My Board** in the sidebar to open a Kanban-style view with four columns:
 
 - **Parking Lot** (green accent, Car icon) — Items pinned from any entity. Cards show an entity-type icon (Briefcase, FolderKanban, Lightbulb, or FileText) inline with the title instead of a text badge.
-- **Work** (dynamic accent) — Active action items (excludes Recognized and Complete). Cards show name, 1-line description snippet, and outline-style priority/status pills. The column header has tiny circle filter pills (A/W/P/L). The column's accent color, icon, and title change based on the active filter: All (gray), Work (red), Personal (blue), Learning (magenta).
+- **Work** (dynamic accent) — All non-complete action items (excludes Complete only; Recognized and all other statuses are shown). Cards show name, 1-line description snippet, and outline-style priority/status pills. The column header has tiny circle filter pills (A/W/P/L). The column's accent color, icon, and title change based on the active filter: All (gray), Work (red), Personal (blue), Learning (magenta).
 - **Projects** (purple accent, FolderKanban icon) — All project records. Cards show project name and priority pill.
 - **Ideas** (amber accent, Lightbulb icon) — All ideas. Cards show idea name and category pill.
 
