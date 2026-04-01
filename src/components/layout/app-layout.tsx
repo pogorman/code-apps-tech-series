@@ -1,9 +1,11 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import {
   BookOpen,
   Briefcase,
   Building2,
+  ChevronsLeft,
+  ChevronsRight,
   ClipboardList,
   Columns3,
   FileText,
@@ -152,6 +154,26 @@ const QUICK_CREATE_BUTTONS: QuickCreateButton[] = [
   },
 ];
 
+/* ── Sidebar collapsed state ──────────────────────────────────── */
+
+const STORAGE_KEY = "sidebar-collapsed";
+
+function readCollapsed(): boolean {
+  try {
+    return localStorage.getItem(STORAGE_KEY) === "true";
+  } catch {
+    return false;
+  }
+}
+
+function writeCollapsed(v: boolean): void {
+  try {
+    localStorage.setItem(STORAGE_KEY, String(v));
+  } catch {
+    // localStorage unavailable
+  }
+}
+
 /* ── Layout component ───────────────────────────────────────── */
 
 export function AppLayout({ children }: AppLayoutProps) {
@@ -159,6 +181,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   const location = useLocation();
   const openQuickCreate = useQuickCreateStore((s) => s.open);
   const { theme, toggleTheme } = useTheme();
+  const [collapsed, setCollapsed] = useState(readCollapsed);
 
   function handleQuickCreate(btn: QuickCreateButton) {
     openQuickCreate(btn.target, btn.payload);
@@ -167,29 +190,70 @@ export function AppLayout({ children }: AppLayoutProps) {
     }
   }
 
+  function toggleCollapsed() {
+    setCollapsed((prev) => {
+      const next = !prev;
+      writeCollapsed(next);
+      return next;
+    });
+  }
+
   return (
     <div className="flex h-screen overflow-hidden">
       {/* ── Left sidebar ────────────────────────────────────── */}
-      <aside className="flex w-52 shrink-0 flex-col border-r border-border bg-white dark:bg-card">
+      <aside
+        className={cn(
+          "relative flex shrink-0 flex-col border-r border-border bg-white dark:bg-card transition-all duration-300 ease-in-out",
+          collapsed ? "w-14" : "w-52",
+        )}
+      >
+        {/* Collapse toggle — floats on the sidebar edge */}
+        <button
+          onClick={toggleCollapsed}
+          className="absolute -right-3 top-7 z-20 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-sm hover:bg-muted hover:text-foreground transition-colors"
+          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          {collapsed ? (
+            <ChevronsRight className="h-3 w-3" />
+          ) : (
+            <ChevronsLeft className="h-3 w-3" />
+          )}
+        </button>
+
         {/* Logo / brand */}
-        <div className="flex h-14 items-center gap-2.5 px-5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#0078D4] to-[#50E6FF] shadow-sm">
+        <div
+          className={cn(
+            "flex h-14 items-center shrink-0",
+            collapsed ? "justify-center" : "gap-2.5 px-5",
+          )}
+        >
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#0078D4] to-[#50E6FF] shadow-sm">
             <Briefcase className="h-4 w-4 text-white" />
           </div>
-          <span className="text-base font-bold tracking-tight text-[var(--sidebar-from)]">
-            My Work
-          </span>
+          {!collapsed && (
+            <span className="text-base font-bold tracking-tight text-[var(--sidebar-from)]">
+              My Work
+            </span>
+          )}
         </div>
 
         {/* Navigation sections */}
-        <nav className="flex-1 overflow-y-auto px-3 pb-4">
+        <nav
+          className={cn(
+            "flex-1 overflow-y-auto pb-4",
+            collapsed ? "px-1.5" : "px-3",
+          )}
+        >
           {NAV_SECTIONS.map((section) => (
             <div key={section.label || "__root"} className="mt-4 first:mt-0">
-              {section.label && (
-                <span className="mb-1 block px-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
-                  {section.label}
-                </span>
-              )}
+              {section.label &&
+                (collapsed ? (
+                  <div className="mx-2 my-1.5 h-px bg-border/30" />
+                ) : (
+                  <span className="mb-1 block px-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+                    {section.label}
+                  </span>
+                ))}
               {section.items.map((item) => (
                 <NavLink
                   key={item.to}
@@ -197,10 +261,20 @@ export function AppLayout({ children }: AppLayoutProps) {
                   end={item.to === "/"}
                   className={({ isActive }) =>
                     cn(
-                      "group flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-medium transition-colors",
-                      isActive
-                        ? "border-l-[3px] border-l-[#00BCF2] bg-[#00BCF2]/8 pl-[7px] text-[#0078D4]"
-                        : "border-l-[3px] border-l-transparent pl-[7px] text-foreground/60 hover:bg-muted hover:text-foreground"
+                      "group relative flex items-center rounded-md text-sm font-medium transition-colors",
+                      collapsed
+                        ? cn(
+                            "justify-center py-2.5 mx-0.5",
+                            isActive
+                              ? "bg-[#00BCF2]/10 text-[#0078D4]"
+                              : "text-foreground/60 hover:bg-muted hover:text-foreground",
+                          )
+                        : cn(
+                            "gap-2.5 px-2.5 py-2",
+                            isActive
+                              ? "border-l-[3px] border-l-[#00BCF2] bg-[#00BCF2]/8 pl-[7px] text-[#0078D4]"
+                              : "border-l-[3px] border-l-transparent pl-[7px] text-foreground/60 hover:bg-muted hover:text-foreground",
+                          ),
                     )
                   }
                 >
@@ -208,7 +282,13 @@ export function AppLayout({ children }: AppLayoutProps) {
                     className="h-4 w-4 shrink-0"
                     style={item.color ? { color: item.color } : undefined}
                   />
-                  {item.label}
+                  {!collapsed && item.label}
+                  {/* Tooltip for collapsed state */}
+                  {collapsed && (
+                    <span className="absolute left-full ml-2.5 rounded-md bg-popover border border-border/50 px-2.5 py-1.5 text-xs font-medium shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap z-50">
+                      {item.label}
+                    </span>
+                  )}
                 </NavLink>
               ))}
             </div>
@@ -216,34 +296,68 @@ export function AppLayout({ children }: AppLayoutProps) {
         </nav>
 
         {/* Footer */}
-        <div className="border-t border-border px-4 py-3 space-y-1.5">
+        <div
+          className={cn(
+            "border-t border-border space-y-1.5",
+            collapsed ? "px-1.5 py-3" : "px-4 py-3",
+          )}
+        >
           <button
-            onClick={() => window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", ctrlKey: true }))}
-            className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground/60 transition-colors hover:bg-muted hover:text-foreground"
+            onClick={() =>
+              window.dispatchEvent(
+                new KeyboardEvent("keydown", { key: "k", ctrlKey: true }),
+              )
+            }
+            className={cn(
+              "flex w-full items-center rounded-md text-xs text-muted-foreground/60 transition-colors hover:bg-muted hover:text-foreground",
+              collapsed ? "justify-center py-2" : "gap-2 px-2 py-1.5",
+            )}
+            title={collapsed ? "Search (Ctrl+K)" : undefined}
           >
-            <Search className="h-3 w-3" />
-            Search
-            <kbd className="ml-auto rounded border bg-muted px-1 py-0.5 font-mono text-[10px]">
-              Ctrl+K
-            </kbd>
+            <Search className="h-3 w-3 shrink-0" />
+            {!collapsed && (
+              <>
+                Search
+                <kbd className="ml-auto rounded border bg-muted px-1 py-0.5 font-mono text-[10px]">
+                  Ctrl+K
+                </kbd>
+              </>
+            )}
           </button>
           <button
             onClick={toggleTheme}
-            className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground/60 transition-colors hover:bg-muted hover:text-foreground"
+            className={cn(
+              "flex w-full items-center rounded-md text-xs text-muted-foreground/60 transition-colors hover:bg-muted hover:text-foreground",
+              collapsed ? "justify-center py-2" : "gap-2 px-2 py-1.5",
+            )}
+            title={
+              collapsed
+                ? theme === "dark"
+                  ? "Light mode"
+                  : "Dark mode"
+                : undefined
+            }
           >
-            {theme === "dark" ? <Sun className="h-3 w-3" /> : <Moon className="h-3 w-3" />}
-            {theme === "dark" ? "Light mode" : "Dark mode"}
+            {theme === "dark" ? (
+              <Sun className="h-3 w-3 shrink-0" />
+            ) : (
+              <Moon className="h-3 w-3 shrink-0" />
+            )}
+            {!collapsed &&
+              (theme === "dark" ? "Light mode" : "Dark mode")}
           </button>
-          <span className="block text-[10px] text-muted-foreground/50">
-            Power Platform
-          </span>
+          {!collapsed && (
+            <span className="block text-[10px] text-muted-foreground/50">
+              Power Platform
+            </span>
+          )}
         </div>
       </aside>
 
       {/* ── Main column ─────────────────────────────────────── */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Quick create bar */}
-        <div className="flex shrink-0 items-center gap-2 border-b border-border bg-white dark:bg-card px-6 py-2">
+        <div className="flex shrink-0 items-center gap-2 border-b border-border bg-white dark:bg-card px-4 py-1.5">
           <span className="mr-1 text-xs font-semibold tracking-wide text-muted-foreground/50 uppercase">
             quick create
           </span>
@@ -254,7 +368,7 @@ export function AppLayout({ children }: AppLayoutProps) {
               className={cn(
                 "flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors",
                 btn.bg,
-                btn.color
+                btn.color,
               )}
             >
               <btn.icon className="h-3.5 w-3.5" />
@@ -264,7 +378,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         </div>
 
         {/* Scrollable content */}
-        <main className="flex-1 overflow-auto p-8">{children}</main>
+        <main className="flex-1 overflow-auto p-4">{children}</main>
       </div>
     </div>
   );

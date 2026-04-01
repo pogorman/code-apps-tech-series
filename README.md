@@ -59,8 +59,8 @@ src/
     meeting-summaries/# Meeting Summary CRUD components
     ideas/            # Idea CRUD components
     projects/         # Project CRUD components
-    dashboard/        # Analytics dashboard + Kanban board view (4-column drag-and-drop, clickable cards, custom collision detection, column drop highlights)
-    layout/           # App shell (left sidebar with colored nav icons + quick create bar with task-type presets + dark mode toggle)
+    dashboard/        # Analytics dashboard (staggered animations, accent-bordered KPI cards, SVG donut, gradient chart panels) + Kanban board view (4-column drag-and-drop, staggered column entry, clickable cards, custom collision detection, accent-glow drop highlights)
+    layout/           # App shell (collapsible left sidebar with colored nav icons + quick create bar with task-type presets + dark mode toggle)
     command-palette.tsx # Global Ctrl+K search
     copilot-chat.tsx    # Copilot Studio agent (floating button → popup window)
   stores/             # Zustand stores (quick create)
@@ -87,6 +87,10 @@ power.config.json     # Code App configuration
 
 - **Target:** og-dv (`https://og-dv.crm.dynamics.com/`)
 - **Auth:** `admin@M365x06150305.onmicrosoft.com`
+
+## Collapsible Sidebar
+
+The left sidebar collapses to an icon-only rail (56px) via the floating chevron button on its right edge. When collapsed, nav items show centered icons with hover tooltips; section labels become thin dividers. State persists to `localStorage`.
 
 ## Dark Mode
 

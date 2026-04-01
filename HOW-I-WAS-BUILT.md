@@ -440,6 +440,19 @@ All changes in `src/components/layout/app-layout.tsx`.
 
 **Key detail:** No manual PowerPoint editing. The entire deck — including layout, fonts, colors, and content — is generated programmatically from the Python script, keeping it version-controllable and reproducible.
 
+## Phase 20 — UI Facelift: Dashboard, Board & Collapsible Sidebar
+
+**Prompt:** "build a more enhanced dashboard with better looking tiles", "let's give the my board a face lift too", "make the left nav bar collapsible and reduce padding"
+
+**What happened:**
+
+1. **Dashboard redesign** (`dashboard.tsx`) — "Precision Terminal" aesthetic. KPI cards got left accent borders, radial accent glows, icons in tinted badges, hover lift + shadow expansion. New `ChartCard` wrapper with top gradient accent line and vertical bar section indicator. SVG donut enlarged (144px, 18px stroke) with background track ring. Bars became pill-shaped with gradient fills. Task Types section gained a segmented overview bar and per-type icons (Briefcase/House/BookOpen). Tooltips upgraded to frosted glass (`backdrop-blur-xl`). All elements stagger in with `dashRise` animation. Fixed stale `Eh` → `Med` in `PRIORITY_COLORS`. Added `TYPE_COLORS` and `TYPE_ICONS` maps
+2. **Board redesign** (`board-dashboard.tsx`) — Matching visual style. Columns stagger in with `dashRise` animation (60/135/210/285ms delays). Column headers gained vertical accent bar indicator, upgraded to `backdrop-blur-xl`, uppercase tracking titles. Drop target glow doubled (`24px + 48px`). CardToolbar upgraded to `backdrop-blur-xl` with better shadow. Drag state softened (1deg rotation, 1.02 scale). Empty states enlarged with accent-tinted icons
+3. **Collapsible sidebar** (`app-layout.tsx`) — Floating chevron toggle button on sidebar edge. Collapses from 208px to 56px with 300ms transition. Collapsed: icon-only with hover tooltips, section dividers, footer icons only. State persists in `localStorage` (`sidebar-collapsed`)
+4. **Padding reduction** — Main content `p-8` → `p-4`, quick create bar `px-6 py-2` → `px-4 py-1.5`. Reclaims ~32px per side
+
+**Tracked notes:** `docs/tracked/phase-13-ui-facelift/1-dashboard-board-layout-facelift.md`
+
 ## Presentation Materials — Slide Outline & Live Demo Script
 
 **Prompt:** Create a slide outline and live demo script for the Code Apps tech series presentation targeting SLED customers.

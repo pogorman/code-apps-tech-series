@@ -114,6 +114,22 @@ The quick create Zustand store (`src/stores/quick-create-store.ts`) has a `paylo
 
 Section order: insights (Dashboard, My Board), activity (Action Items), capture (Ideas, Meetings, Projects), core (Accounts, Contacts). "Board" is renamed to "My Board". Nav icons are colored to match quick creates via an optional `color` field on the `NavItem` interface: red (action items), emerald (ideas), pink (meetings), violet (projects), teal (accounts), sky (contacts).
 
+## Collapsible Sidebar
+
+The sidebar collapses from `w-52` (208px) to `w-14` (56px) via a floating chevron button on its right edge (`absolute -right-3 top-7`). State persists in `localStorage` key `sidebar-collapsed`. When collapsed: nav items are icon-only and centered with hover tooltips to the right (absolute positioned, `left-full ml-2.5`, `z-50`), section labels become thin `h-px` dividers, footer buttons show icons only with `title` attributes, "Power Platform" text hidden. Active nav uses background tint (`bg-[#00BCF2]/10`) instead of left border. Width transition is 300ms ease-in-out.
+
+## Content Padding
+
+Main content area uses `p-4` (16px). Quick create bar uses `px-4 py-1.5`.
+
+## Dashboard Visual Design
+
+The dashboard (`dashboard.tsx`) uses a "Precision Terminal" aesthetic with staggered `dashRise` animation (CSS keyframe: fade up + scale, injected via `<style>` tag). KPI cards have left accent borders (3px inline style), subtle radial accent glows (blurred div), icons in tinted rounded badges (`group-hover/kpi:scale-110`). Chart cards use a `ChartCard` wrapper with top gradient accent line (`linear-gradient(90deg, ${accent}, transparent)`), vertical bar indicator before titles, and full-width separator. SVG donut is 144px with 18px stroke and background track ring. Bars are pill-shaped (rounded-full) with gradient fills. Task Types section has a segmented overview bar + per-type icons (`TYPE_ICONS` map: Briefcase/House/BookOpen) and colors (`TYPE_COLORS` map: red/blue/fuchsia). Tooltips use `backdrop-blur-xl` frosted glass. `PRIORITY_COLORS` uses `Med` (not `Eh`).
+
+## Board Visual Design
+
+The board (`board-dashboard.tsx`) matches the dashboard aesthetic. Columns stagger in with `dashRise` animation via a `delay` prop on `SortableColumn`. Column headers have a vertical accent bar indicator, `backdrop-blur-xl`, uppercase `tracking-[0.15em]` titles. Drop target glow is double-layered (`0 0 24px ${accent}30, 0 0 48px ${accent}15`). `CardToolbar` uses `backdrop-blur-xl`, `rounded-lg`, `shadow-lg`. Drag state: `scale-[1.02]`, `rotate-[1deg]`, `ring-primary/30`, `shadow-2xl`. Empty states show larger accent-tinted icons with uppercase tracking text.
+
 ## Copilot Studio Agent
 
 A floating button (`src/components/copilot-chat.tsx`) opens the Copilot Studio agent in a popup window via `window.open()`. The agent URL is `https://copilotstudio.microsoft.com/environments/0582014c-9a6d-e35b-8705-5168c385f413/bots/auto_agent_s82bp/webchat?__version__=2`. No iframe, no Direct Line, no MSAL, no `botframework-webchat` — the popup handles its own auth natively. The component renders alongside `CommandPalette` in `App.tsx` (outside `AppLayout`, inside `HashRouter`). Blue gradient floating button (bottom-right, `MessageCircle` icon). Clicking opens a popup; clicking again focuses the existing popup or opens a new one if closed. This is the same agent used in the `dv-front-end` repo. The evolution was: Direct Line + MSAL (failed — Code App's `paauth`/`dynamicauth` tokens incompatible with SSO token exchange) -> iframe embed (worked but had friction) -> popup window (simplest, zero dependencies).
@@ -124,7 +140,7 @@ The `demo-materials/` folder contains a companion presentation for the tech seri
 
 ## Tracked Notes
 
-Research and decision notes live in `docs/tracked/`. Use `/track` to append, `/tracknew` to start a new version. First-cut build notes are in `docs/tracked/phase-1-first-steps/`. Phase 3 (relationships) notes are in `docs/tracked/phase-3-relationships/`. Phase 4 (UI theme) notes are in `docs/tracked/phase-4-ui-enhance/`. Phase 5 (action items) notes are in `docs/tracked/phase-5-action-items/`. Phase 6 (navigation rework) notes are in `docs/tracked/phase-6-ui-enhance/`. Phase 7 (HVA, meeting summary, idea CRUD) notes are in `docs/tracked/phase-7-idea-meet-hva-crud/`. Phase 8 (dashboard CSS rewrite, sidebar/quick-create, minor UI tweaks, dashboard tooltips/drilldown) notes are in `docs/tracked/phase-8-ui-enhance/`. Phase 9 (AI + command palette) notes are in `docs/tracked/phase-9-ai-command-palette/`. Phase 10 (table/card view toggle, CommandPalette HashRouter fix) notes are in `docs/tracked/phase-10-view-toggle/`. Phase 11 (board/Kanban dashboard) notes are in `docs/tracked/phase-11-dashboard-updates/`. Presentation materials (slide outline, live demo script) are in `docs/`.
+Research and decision notes live in `docs/tracked/`. Use `/track` to append, `/tracknew` to start a new version. First-cut build notes are in `docs/tracked/phase-1-first-steps/`. Phase 3 (relationships) notes are in `docs/tracked/phase-3-relationships/`. Phase 4 (UI theme) notes are in `docs/tracked/phase-4-ui-enhance/`. Phase 5 (action items) notes are in `docs/tracked/phase-5-action-items/`. Phase 6 (navigation rework) notes are in `docs/tracked/phase-6-ui-enhance/`. Phase 7 (HVA, meeting summary, idea CRUD) notes are in `docs/tracked/phase-7-idea-meet-hva-crud/`. Phase 8 (dashboard CSS rewrite, sidebar/quick-create, minor UI tweaks, dashboard tooltips/drilldown) notes are in `docs/tracked/phase-8-ui-enhance/`. Phase 9 (AI + command palette) notes are in `docs/tracked/phase-9-ai-command-palette/`. Phase 10 (table/card view toggle, CommandPalette HashRouter fix) notes are in `docs/tracked/phase-10-view-toggle/`. Phase 11 (board/Kanban dashboard) notes are in `docs/tracked/phase-11-dashboard-updates/`. Phase 13 (dashboard/board visual facelift, collapsible sidebar, padding reduction) notes are in `docs/tracked/phase-13-ui-facelift/`. Presentation materials (slide outline, live demo script) are in `docs/`.
 
 ## Projects Entity
 

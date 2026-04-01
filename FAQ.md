@@ -156,6 +156,14 @@ A floating blue gradient button (bottom-right corner, `MessageCircle` icon) open
 
 The Code App's `@microsoft/power-apps` SDK authenticates via custom `paauth`/`dynamicauth` token schemes — not standard OAuth Bearer tokens. There's no public API to extract a Bearer token for Direct Line's SSO token exchange flow. An iframe embed was tried but had CSP and auth friction. A popup window (`window.open`) sidesteps both problems entirely because Copilot Studio's hosted webchat handles its own auth in its own browsing context. This also eliminated the `@azure/msal-browser` and `botframework-webchat` dependencies.
 
+## How do I collapse the sidebar?
+
+Click the small chevron button floating on the sidebar's right edge. The sidebar collapses from 208px to a 56px icon-only rail. Hover any icon to see a tooltip with the page name. Click the chevrons again to expand. Your preference persists in `localStorage` under the key `sidebar-collapsed`.
+
+## Why do dashboard tiles animate on load?
+
+The dashboard uses a `dashRise` CSS keyframe animation (fade up + subtle scale) with staggered delays — KPI cards animate first, then chart panels cascade in. The board columns use the same animation with their own stagger. This creates a polished "data loading" feel for enterprise demos without requiring a motion library.
+
 ## What ports does local dev use?
 
 Vite runs on port 3001 (`npm run dev`). The Power Platform proxy (`pac code run`) runs on its own port — use the URL it prints, not the Vite URL directly.

@@ -112,6 +112,15 @@ const ACCENT = {
   ideas: "#EF9F27",
 } as const;
 
+/* ── animation keyframes ──────────────────────────────────────── */
+
+const BOARD_ANIM_CSS = `
+@keyframes dashRise {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+`;
+
 /* ── localStorage sort order helpers ─────────────────────────── */
 
 const ORDER_PREFIX = "board-order-";
@@ -183,7 +192,7 @@ function SortableCard({
       className={cn(
         "group transition-all duration-200",
         isDragging
-          ? "opacity-90 scale-[1.03] rotate-[1.5deg] ring-2 ring-primary/40 rounded-lg shadow-xl"
+          ? "opacity-95 scale-[1.02] rotate-[1deg] ring-2 ring-primary/30 rounded-lg shadow-2xl"
           : "hover:-translate-y-0.5",
       )}
     >
@@ -213,15 +222,15 @@ function CardToolbar({
     <div
       className={cn(
         "absolute -top-2.5 -right-2.5 z-10 flex items-center gap-1.5",
-        "rounded-md border border-border bg-popover/95 backdrop-blur-sm px-1.5 py-0.5",
-        "shadow-md opacity-0 group-hover:opacity-100 transition-opacity",
+        "rounded-lg border border-border/50 bg-popover/90 backdrop-blur-xl px-2 py-1",
+        "shadow-lg shadow-black/8 dark:shadow-black/25 opacity-0 group-hover:opacity-100 transition-all duration-200",
       )}
       onClick={(e) => e.stopPropagation()}
       onPointerDown={(e) => e.stopPropagation()}
     >
       {/* drag grip */}
       <div
-        className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground"
+        className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground transition-colors"
         {...dragHandle.attributes}
         {...dragHandle.listeners}
       >
@@ -236,7 +245,7 @@ function CardToolbar({
       />
 
       {/* separator */}
-      <div className="h-4 w-px bg-border shrink-0" />
+      <div className="h-4 w-px bg-border/50 shrink-0" />
 
       {/* edit */}
       {onEdit && (
@@ -313,8 +322,8 @@ function ActionItemCard({
   return (
     <div
       className={cn(
-        "relative rounded-lg border border-border/60 bg-card px-3.5 pt-3 pb-7 cursor-pointer",
-        "shadow-sm hover:shadow-md transition-all duration-200",
+        "relative rounded-lg border border-border/40 dark:border-border/25 bg-card px-3.5 pt-3 pb-7 cursor-pointer",
+        "shadow-sm hover:shadow-md transition-all duration-300",
         tileBgClass(colorIdx),
       )}
       style={{ backgroundImage: tileGradient(colorIdx) }}
@@ -329,18 +338,18 @@ function ActionItemCard({
         dragHandle={dragHandle}
       />
       <div className="flex items-start gap-1.5">
-        <Briefcase className="h-3 w-3 mt-0.5 shrink-0 text-muted-foreground/50" />
+        <Briefcase className="h-3 w-3 mt-0.5 shrink-0 text-muted-foreground/40" />
         <p className="text-xs font-medium leading-snug line-clamp-2">
           {item.tdvsp_name}
         </p>
       </div>
       {description && (
-        <p className="mt-1 text-xs text-muted-foreground/80 line-clamp-1 pl-[1.125rem]">
+        <p className="mt-1 text-xs text-muted-foreground/70 line-clamp-1 pl-[1.125rem]">
           {description}
         </p>
       )}
       {(date || customer) && (
-        <div className="mt-1.5 flex items-center gap-2 text-xs text-muted-foreground pl-[1.125rem]">
+        <div className="mt-1.5 flex items-center gap-2 text-[11px] text-muted-foreground/60 pl-[1.125rem]">
           {date && <span>{date}</span>}
           {date && customer && <span>·</span>}
           {customer && <span className="truncate">{customer}</span>}
@@ -387,8 +396,8 @@ function ProjectCard({
   return (
     <div
       className={cn(
-        "relative rounded-lg border border-border/60 bg-card px-3.5 pt-3 pb-7 cursor-pointer",
-        "shadow-sm hover:shadow-md transition-all duration-200",
+        "relative rounded-lg border border-border/40 dark:border-border/25 bg-card px-3.5 pt-3 pb-7 cursor-pointer",
+        "shadow-sm hover:shadow-md transition-all duration-300",
         tileBgClass(colorIdx),
       )}
       style={{ backgroundImage: tileGradient(colorIdx) }}
@@ -403,13 +412,13 @@ function ProjectCard({
         dragHandle={dragHandle}
       />
       <div className="flex items-start gap-1.5">
-        <FolderKanban className="h-3 w-3 mt-0.5 shrink-0 text-muted-foreground/50" />
+        <FolderKanban className="h-3 w-3 mt-0.5 shrink-0 text-muted-foreground/40" />
         <p className="text-xs font-medium leading-snug line-clamp-2">
           {project.tdvsp_name}
         </p>
       </div>
       {description && (
-        <p className="mt-1 text-xs text-muted-foreground/80 line-clamp-1 pl-[1.125rem]">
+        <p className="mt-1 text-xs text-muted-foreground/70 line-clamp-1 pl-[1.125rem]">
           {description}
         </p>
       )}
@@ -450,8 +459,8 @@ function IdeaCard({
   return (
     <div
       className={cn(
-        "relative rounded-lg border border-border/60 bg-card px-3.5 pt-3 pb-7 cursor-pointer",
-        "shadow-sm hover:shadow-md transition-all duration-200",
+        "relative rounded-lg border border-border/40 dark:border-border/25 bg-card px-3.5 pt-3 pb-7 cursor-pointer",
+        "shadow-sm hover:shadow-md transition-all duration-300",
         tileBgClass(colorIdx),
       )}
       style={{ backgroundImage: tileGradient(colorIdx) }}
@@ -466,13 +475,13 @@ function IdeaCard({
         dragHandle={dragHandle}
       />
       <div className="flex items-start gap-1.5">
-        <Lightbulb className="h-3 w-3 mt-0.5 shrink-0 text-muted-foreground/50" />
+        <Lightbulb className="h-3 w-3 mt-0.5 shrink-0 text-muted-foreground/40" />
         <p className="text-xs font-medium leading-snug line-clamp-2">
           {idea.tdvsp_name}
         </p>
       </div>
       {description && (
-        <p className="mt-1 text-xs text-muted-foreground/80 line-clamp-1 pl-[1.125rem]">
+        <p className="mt-1 text-xs text-muted-foreground/70 line-clamp-1 pl-[1.125rem]">
           {description}
         </p>
       )}
@@ -511,8 +520,8 @@ function ParkingLotCard({ entry, dragHandle }: { entry: ParkingLotEntry; dragHan
   return (
     <div
       className={cn(
-        "relative rounded-lg border border-border/60 bg-card px-3.5 py-3 cursor-pointer",
-        "shadow-sm hover:shadow-md transition-all duration-200",
+        "relative rounded-lg border border-border/40 dark:border-border/25 bg-card px-3.5 py-3 cursor-pointer",
+        "shadow-sm hover:shadow-md transition-all duration-300",
         tileBgClass(entry.colorIdx),
       )}
       style={{ backgroundImage: tileGradient(entry.colorIdx) }}
@@ -522,20 +531,20 @@ function ParkingLotCard({ entry, dragHandle }: { entry: ParkingLotEntry; dragHan
       <div
         className={cn(
           "absolute -top-2.5 -right-2.5 z-10 flex items-center gap-1.5",
-          "rounded-md border border-border bg-popover/95 backdrop-blur-sm px-1.5 py-0.5",
-          "shadow-md opacity-0 group-hover:opacity-100 transition-opacity",
+          "rounded-lg border border-border/50 bg-popover/90 backdrop-blur-xl px-2 py-1",
+          "shadow-lg shadow-black/8 dark:shadow-black/25 opacity-0 group-hover:opacity-100 transition-all duration-200",
         )}
         onClick={(e) => e.stopPropagation()}
         onPointerDown={(e) => e.stopPropagation()}
       >
         <div
-          className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground"
+          className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground transition-colors"
           {...dragHandle.attributes}
           {...dragHandle.listeners}
         >
           <GripVertical className="h-4 w-4" />
         </div>
-        <div className="h-4 w-px bg-border shrink-0" />
+        <div className="h-4 w-px bg-border/50 shrink-0" />
         <button
           type="button"
           title="Remove from parking lot"
@@ -550,7 +559,7 @@ function ParkingLotCard({ entry, dragHandle }: { entry: ParkingLotEntry; dragHan
         </button>
       </div>
       <div className="flex items-start gap-1.5">
-        <KindIcon className="h-3 w-3 mt-0.5 shrink-0 text-muted-foreground/50" />
+        <KindIcon className="h-3 w-3 mt-0.5 shrink-0 text-muted-foreground/40" />
         <p className="text-xs font-medium leading-snug line-clamp-2">
           {entry.name}
         </p>
@@ -569,6 +578,7 @@ function SortableColumn({
   ids,
   headerInline,
   isDropTarget,
+  delay,
   children,
 }: {
   columnKey: string;
@@ -578,6 +588,7 @@ function SortableColumn({
   ids: string[];
   headerInline?: React.ReactNode;
   isDropTarget?: boolean;
+  delay?: number;
   children: React.ReactNode;
 }) {
   /* Make the card list a drop target so items can be dropped here even when empty */
@@ -586,19 +597,24 @@ function SortableColumn({
   return (
     <div
       className={cn(
-        "flex min-w-0 rounded-xl border bg-muted/30 backdrop-blur-sm transition-all duration-200",
+        "flex min-w-0 rounded-xl border bg-muted/20 dark:bg-muted/10 backdrop-blur-sm transition-all duration-300",
         isDropTarget
-          ? "border-2 ring-2 ring-offset-1 scale-[1.01] shadow-lg"
-          : "border-border/50",
+          ? "border-2 ring-2 ring-offset-1 scale-[1.01] shadow-xl"
+          : "border-border/40 dark:border-border/25",
       )}
-      style={isDropTarget ? { borderColor: accent, boxShadow: `0 0 16px ${accent}40` } : undefined}
+      style={{
+        ...(isDropTarget ? { borderColor: accent, boxShadow: `0 0 24px ${accent}30, 0 0 48px ${accent}15` } : {}),
+        ...(delay != null ? { animation: `dashRise 0.55s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms both` } : {}),
+      }}
     >
       {/* accent left bar */}
-      <div className="w-[3px] shrink-0 rounded-l-xl transition-colors duration-200" style={{ background: accent }} />
+      <div className="w-[3px] shrink-0 rounded-l-xl transition-colors duration-300" style={{ background: accent }} />
       <div className="flex flex-col min-w-0 flex-1">
         {/* glass-morphism header */}
-        <div className="sticky top-0 z-[5] px-4 py-3 bg-background/60 backdrop-blur-md border-b border-border/30 rounded-tr-xl">
+        <div className="sticky top-0 z-[5] px-4 py-3 bg-background/70 backdrop-blur-xl border-b border-border/20 dark:border-border/15 rounded-tr-xl">
           <div className="flex items-center gap-2">
+            {/* accent vertical bar indicator */}
+            <div className="w-1 h-5 rounded-full shrink-0" style={{ background: accent }} />
             {/* icon + overlapping count badge */}
             <div className="relative shrink-0 mr-1">
               <Icon className="h-5 w-5 transition-colors duration-200" style={{ color: accent }} />
@@ -609,7 +625,11 @@ function SortableColumn({
                 {ids.length}
               </span>
             </div>
-            {title && <h2 className="text-sm font-semibold truncate">{title}</h2>}
+            {title && (
+              <h2 className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground truncate">
+                {title}
+              </h2>
+            )}
             {headerInline}
           </div>
         </div>
@@ -618,9 +638,11 @@ function SortableColumn({
           <div ref={setNodeRef} className="flex-1 overflow-y-auto px-3 pt-2 pb-3 space-y-2.5">
             {children}
             {ids.length === 0 && (
-              <div className="flex flex-col items-center py-8 text-muted-foreground/50">
-                <Icon className="h-8 w-8 mb-2" />
-                <p className="text-xs">No items</p>
+              <div className="flex flex-col items-center py-10 text-muted-foreground/30">
+                <Icon className="h-10 w-10 mb-3 opacity-40" style={{ color: accent }} />
+                <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/40">
+                  No items
+                </p>
               </div>
             )}
           </div>
@@ -907,7 +929,7 @@ export function BoardDashboard() {
 
   if (itemsError) {
     return (
-      <div className="rounded-md border border-destructive/50 bg-destructive/10 p-4 text-destructive">
+      <div className="rounded-xl border border-destructive/40 bg-destructive/5 dark:bg-destructive/10 p-5 text-destructive">
         Failed to load board data: {itemsError.message}
       </div>
     );
@@ -915,17 +937,21 @@ export function BoardDashboard() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-5">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 dark:bg-primary/15">
             <Columns3 className="h-5 w-5 text-primary" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">My Board</h1>
+          <div>
+            <Skeleton className="h-5 w-28 mb-1.5" />
+            <Skeleton className="h-3 w-52" />
+          </div>
         </div>
         <div className="grid grid-cols-[1fr_2fr_1fr_1fr] gap-3 h-[calc(100vh-12rem)]">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="rounded-xl border border-border/50 bg-muted/30 p-4">
-              <Skeleton className="h-5 w-24 mb-4" />
+            <div key={i} className="rounded-xl border border-border/40 dark:border-border/25 bg-muted/20 dark:bg-muted/10 p-4">
+              <Skeleton className="h-4 w-20 mb-1" />
+              <div className="h-px bg-border/30 mb-4" />
               <div className="space-y-3">
                 {Array.from({ length: 3 }).map((_, j) => (
                   <Skeleton key={j} className="h-20 w-full rounded-lg" />
@@ -939,179 +965,189 @@ export function BoardDashboard() {
   }
 
   return (
-    <div className="space-y-5 h-full flex flex-col">
-      {/* Header */}
-      <div className="flex items-center gap-3 shrink-0">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-          <Columns3 className="h-5 w-5 text-primary" />
-        </div>
-        <div>
-          <h1 className="text-lg font-medium">My Board</h1>
-          <p className="text-xs text-muted-foreground">
-            Kanban view across action items, projects &amp; ideas
-          </p>
-        </div>
-      </div>
-
-      {/* 4-column board — single DndContext for cross-column drag */}
-      <DndContext
-        sensors={sensors}
-        collisionDetection={collisionDetection}
-        onDragOver={handleBoardDragOver}
-        onDragEnd={handleBoardDragEnd}
-        onDragCancel={() => setOverColumn(null)}
-      >
-      <div className="grid grid-cols-[1fr_2fr_1fr_1fr] gap-3 flex-1 min-h-0">
-        {/* Parking Lot */}
-        <SortableColumn
-          columnKey="parkingLot"
-          title="parking lot"
-          icon={Car}
-          accent={ACCENT.parkingLot}
-          ids={parkingLotIds}
-          isDropTarget={overColumn === "parkingLot"}
+    <>
+      <style>{BOARD_ANIM_CSS}</style>
+      <div className="space-y-5 h-full flex flex-col">
+        {/* Header */}
+        <div
+          className="flex items-center gap-3 shrink-0"
+          style={{ animation: "dashRise 0.55s cubic-bezier(0.16, 1, 0.3, 1) both" }}
         >
-          {sortedParkingLot.map((entry) => (
-            <SortableCard key={entry.sortId} id={entry.sortId}>
-              {(handle) => <ParkingLotCard entry={entry} dragHandle={handle} />}
-            </SortableCard>
-          ))}
-        </SortableColumn>
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 dark:bg-primary/15">
+            <Columns3 className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-lg font-semibold tracking-tight">My Board</h1>
+            <p className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground/50">
+              Kanban view across action items, projects &amp; ideas
+            </p>
+          </div>
+        </div>
 
-        {/* Work — accent + icon shift with active filter */}
-        <SortableColumn
-          columnKey="work"
-          title={workFilterConfig(workFilter).title}
-          icon={workFilterConfig(workFilter).icon}
-          accent={workFilterConfig(workFilter).accent}
-          ids={workIds}
-          isDropTarget={overColumn === "work"}
-          headerInline={
-            <div className="ml-auto flex items-center gap-0.5">
-              <button
-                type="button"
-                title="All"
-                className={cn(
-                  "h-5 w-5 rounded-full text-[9px] font-bold leading-none transition-colors",
-                  workFilter === null
-                    ? "bg-foreground text-background"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted",
-                )}
-                onClick={() => setWorkFilter(null)}
-              >
-                A
-              </button>
-              {WORK_FILTERS.map((f) => (
+        {/* 4-column board — single DndContext for cross-column drag */}
+        <DndContext
+          sensors={sensors}
+          collisionDetection={collisionDetection}
+          onDragOver={handleBoardDragOver}
+          onDragEnd={handleBoardDragEnd}
+          onDragCancel={() => setOverColumn(null)}
+        >
+        <div className="grid grid-cols-[1fr_2fr_1fr_1fr] gap-3 flex-1 min-h-0">
+          {/* Parking Lot */}
+          <SortableColumn
+            columnKey="parkingLot"
+            title="parking lot"
+            icon={Car}
+            accent={ACCENT.parkingLot}
+            ids={parkingLotIds}
+            isDropTarget={overColumn === "parkingLot"}
+            delay={60}
+          >
+            {sortedParkingLot.map((entry) => (
+              <SortableCard key={entry.sortId} id={entry.sortId}>
+                {(handle) => <ParkingLotCard entry={entry} dragHandle={handle} />}
+              </SortableCard>
+            ))}
+          </SortableColumn>
+
+          {/* Work — accent + icon shift with active filter */}
+          <SortableColumn
+            columnKey="work"
+            title={workFilterConfig(workFilter).title}
+            icon={workFilterConfig(workFilter).icon}
+            accent={workFilterConfig(workFilter).accent}
+            ids={workIds}
+            isDropTarget={overColumn === "work"}
+            delay={135}
+            headerInline={
+              <div className="ml-auto flex items-center gap-0.5">
                 <button
-                  key={f.key}
                   type="button"
-                  title={f.label}
+                  title="All"
                   className={cn(
-                    "h-5 w-5 rounded-full text-[9px] font-bold leading-none transition-colors",
-                    workFilter === f.key
-                      ? "text-white"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted",
+                    "h-5 w-5 rounded-full text-[9px] font-bold leading-none transition-all duration-200",
+                    workFilter === null
+                      ? "bg-foreground text-background shadow-sm"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/60",
                   )}
-                  style={workFilter === f.key ? { background: f.accent } : undefined}
-                  onClick={() => setWorkFilter(f.key)}
+                  onClick={() => setWorkFilter(null)}
                 >
-                  {f.letter}
+                  A
                 </button>
-              ))}
-            </div>
-          }
-        >
-          {work.map((item) => (
-            <SortableCard key={item.tdvsp_actionitemid} id={item.tdvsp_actionitemid}>
-              {(handle) => (
-                <ActionItemCard
-                  item={item}
-                  showStatus={true}
-                  onPriorityChange={handleActionItemPriority}
-                  onPinToggle={handleActionItemPin}
-                  onEdit={(ai) => setEditTarget({ kind: "action-item", item: ai })}
-                  dragHandle={handle}
-                />
-              )}
-            </SortableCard>
-          ))}
-        </SortableColumn>
+                {WORK_FILTERS.map((f) => (
+                  <button
+                    key={f.key}
+                    type="button"
+                    title={f.label}
+                    className={cn(
+                      "h-5 w-5 rounded-full text-[9px] font-bold leading-none transition-all duration-200",
+                      workFilter === f.key
+                        ? "text-white shadow-sm"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/60",
+                    )}
+                    style={workFilter === f.key ? { background: f.accent } : undefined}
+                    onClick={() => setWorkFilter(f.key)}
+                  >
+                    {f.letter}
+                  </button>
+                ))}
+              </div>
+            }
+          >
+            {work.map((item) => (
+              <SortableCard key={item.tdvsp_actionitemid} id={item.tdvsp_actionitemid}>
+                {(handle) => (
+                  <ActionItemCard
+                    item={item}
+                    showStatus={true}
+                    onPriorityChange={handleActionItemPriority}
+                    onPinToggle={handleActionItemPin}
+                    onEdit={(ai) => setEditTarget({ kind: "action-item", item: ai })}
+                    dragHandle={handle}
+                  />
+                )}
+              </SortableCard>
+            ))}
+          </SortableColumn>
 
-        {/* Projects */}
-        <SortableColumn
-          columnKey="projects"
-          title="projects"
-          icon={FolderKanban}
-          accent={ACCENT.projects}
-          ids={projectIds}
-          isDropTarget={overColumn === "projects"}
-        >
-          {projectList.map((project) => (
-            <SortableCard key={project.tdvsp_projectid} id={project.tdvsp_projectid}>
-              {(handle) => (
-                <ProjectCard
-                  project={project}
-                  onPriorityChange={handleProjectPriority}
-                  onPinToggle={handleProjectPin}
-                  onEdit={(p) => setEditTarget({ kind: "project", item: p })}
-                  dragHandle={handle}
-                />
-              )}
-            </SortableCard>
-          ))}
-        </SortableColumn>
+          {/* Projects */}
+          <SortableColumn
+            columnKey="projects"
+            title="projects"
+            icon={FolderKanban}
+            accent={ACCENT.projects}
+            ids={projectIds}
+            isDropTarget={overColumn === "projects"}
+            delay={210}
+          >
+            {projectList.map((project) => (
+              <SortableCard key={project.tdvsp_projectid} id={project.tdvsp_projectid}>
+                {(handle) => (
+                  <ProjectCard
+                    project={project}
+                    onPriorityChange={handleProjectPriority}
+                    onPinToggle={handleProjectPin}
+                    onEdit={(p) => setEditTarget({ kind: "project", item: p })}
+                    dragHandle={handle}
+                  />
+                )}
+              </SortableCard>
+            ))}
+          </SortableColumn>
 
-        {/* Ideas */}
-        <SortableColumn
-          columnKey="ideas"
-          title="ideas"
-          icon={Lightbulb}
-          accent={ACCENT.ideas}
-          ids={ideaIds}
-          isDropTarget={overColumn === "ideas"}
-        >
-          {ideaList.map((idea) => (
-            <SortableCard key={idea.tdvsp_ideaid} id={idea.tdvsp_ideaid}>
-              {(handle) => (
-                <IdeaCard
-                  idea={idea}
-                  onPriorityChange={handleIdeaPriority}
-                  onPinToggle={handleIdeaPin}
-                  onEdit={(i) => setEditTarget({ kind: "idea", item: i })}
-                  dragHandle={handle}
-                />
-              )}
-            </SortableCard>
-          ))}
-        </SortableColumn>
+          {/* Ideas */}
+          <SortableColumn
+            columnKey="ideas"
+            title="ideas"
+            icon={Lightbulb}
+            accent={ACCENT.ideas}
+            ids={ideaIds}
+            isDropTarget={overColumn === "ideas"}
+            delay={285}
+          >
+            {ideaList.map((idea) => (
+              <SortableCard key={idea.tdvsp_ideaid} id={idea.tdvsp_ideaid}>
+                {(handle) => (
+                  <IdeaCard
+                    idea={idea}
+                    onPriorityChange={handleIdeaPriority}
+                    onPinToggle={handleIdeaPin}
+                    onEdit={(i) => setEditTarget({ kind: "idea", item: i })}
+                    dragHandle={handle}
+                  />
+                )}
+              </SortableCard>
+            ))}
+          </SortableColumn>
+        </div>
+        </DndContext>
+
+        {/* ── edit dialogs ─────────────────────────────────────── */}
+        <ActionItemFormDialog
+          open={editTarget?.kind === "action-item"}
+          onOpenChange={(open) => { if (!open) setEditTarget(null); }}
+          mode="edit"
+          actionItem={editTarget?.kind === "action-item" ? editTarget.item : undefined}
+        />
+        <IdeaFormDialog
+          open={editTarget?.kind === "idea"}
+          onOpenChange={(open) => { if (!open) setEditTarget(null); }}
+          mode="edit"
+          idea={editTarget?.kind === "idea" ? editTarget.item : undefined}
+        />
+        <ProjectFormDialog
+          open={editTarget?.kind === "project"}
+          onOpenChange={(open) => { if (!open) setEditTarget(null); }}
+          mode="edit"
+          project={editTarget?.kind === "project" ? editTarget.item : undefined}
+        />
+        <MeetingSummaryFormDialog
+          open={editTarget?.kind === "meeting-summary"}
+          onOpenChange={(open) => { if (!open) setEditTarget(null); }}
+          mode="edit"
+          meetingSummary={editTarget?.kind === "meeting-summary" ? editTarget.item : undefined}
+        />
       </div>
-      </DndContext>
-
-      {/* ── edit dialogs ─────────────────────────────────────── */}
-      <ActionItemFormDialog
-        open={editTarget?.kind === "action-item"}
-        onOpenChange={(open) => { if (!open) setEditTarget(null); }}
-        mode="edit"
-        actionItem={editTarget?.kind === "action-item" ? editTarget.item : undefined}
-      />
-      <IdeaFormDialog
-        open={editTarget?.kind === "idea"}
-        onOpenChange={(open) => { if (!open) setEditTarget(null); }}
-        mode="edit"
-        idea={editTarget?.kind === "idea" ? editTarget.item : undefined}
-      />
-      <ProjectFormDialog
-        open={editTarget?.kind === "project"}
-        onOpenChange={(open) => { if (!open) setEditTarget(null); }}
-        mode="edit"
-        project={editTarget?.kind === "project" ? editTarget.item : undefined}
-      />
-      <MeetingSummaryFormDialog
-        open={editTarget?.kind === "meeting-summary"}
-        onOpenChange={(open) => { if (!open) setEditTarget(null); }}
-        mode="edit"
-        meetingSummary={editTarget?.kind === "meeting-summary" ? editTarget.item : undefined}
-      />
-    </div>
+    </>
   );
 }

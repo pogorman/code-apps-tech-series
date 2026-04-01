@@ -4,7 +4,7 @@
 
 This Code App provides a "My Work" interface for managing accounts, contacts, action items, meeting summaries, ideas, and projects stored in Dataverse. All views show active records only. The app uses a Microsoft Fluent Design-inspired theme with a left vertical sidebar for navigation and a top quick create bar for fast record creation.
 
-**Left Sidebar** — Briefcase icon + "My Work" brand at the top. Grouped navigation sections: insights (Dashboard, My Board), activity (Action Items), capture (Ideas, Meetings, Projects), core (Accounts, Contacts). Nav icons are colored to match their quick create counterparts. Active page is highlighted with a cyan left border. At the bottom of the sidebar: a dark/light mode toggle (Moon/Sun icon) and a Ctrl+K search hint.
+**Left Sidebar** — Collapsible. Briefcase icon + "My Work" brand at the top. Grouped navigation sections: insights (Dashboard, My Board), activity (Action Items), capture (Ideas, Meetings, Projects), core (Accounts, Contacts). Nav icons are colored to match their quick create counterparts. Active page is highlighted with a cyan left border. At the bottom of the sidebar: a dark/light mode toggle (Moon/Sun icon) and a Ctrl+K search hint. Click the small **chevron button** on the sidebar's right edge to collapse it to an icon-only rail. Hover any icon when collapsed to see the page name in a tooltip. Click the chevrons again to expand. Your preference is remembered across sessions.
 
 **Quick Create Bar** — Colored pill buttons across the top of the content area. Buttons (left to right): work, personal, learning (these three open the action item form with the task type pre-selected), idea, meeting, project (violet), account, contact. Click any button to navigate to that entity's list and immediately open a new record form.
 
@@ -20,11 +20,11 @@ The Dashboard is the home view, showing action item analytics.
 
 ### KPI Cards (top row)
 
-Four summary cards: Total Items, Completion Rate, In Progress, and High/Top Priority. Hover any card to see a tooltip with item count and first 4 item names. Click to open a drilldown table showing all matching action items.
+Four summary cards: Total Items, Completion Rate, In Progress, and High/Top Priority. Each card has a colored left accent border, a subtle glow, and an icon in a tinted badge. Cards animate in on page load with a staggered fade-up effect. Hover any card to see a frosted-glass tooltip with item count and first 4 item names. Click to open a drilldown table showing all matching action items.
 
 ### Charts (bottom row)
 
-Four visualizations: Status Breakdown (donut), Priority Distribution (horizontal bars), Work vs Personal (progress bars), and Items by Account (horizontal bars). Each sub-element (individual status row, priority bar, type row, account row) is independently hoverable and clickable. Hover for a tooltip preview; click for a full drilldown table.
+Four chart panels: Status Breakdown (SVG donut with background track ring), Priority Distribution (pill-shaped gradient bars), Task Types (segmented overview bar + per-type icons and progress bars), and Items by Account (progress bars). Each panel has a colored accent line at the top and a vertical bar indicator next to the section title. Each sub-element is independently hoverable and clickable. Hover for a frosted-glass tooltip preview; click for a full drilldown table.
 
 ### Drilldown Dialog
 
