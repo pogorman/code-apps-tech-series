@@ -220,15 +220,31 @@ This overwrites `code-apps-under-the-hood.pptx` and `code-apps-under-the-hood-ta
 
 Press **Ctrl+K** (or **Cmd+K** on Mac) anywhere in the app to open a global search dialog. Type to search across all records — accounts, contacts, action items, meeting summaries, ideas, and projects. Results are grouped by entity type with matching text highlighted in purple. Click a result to navigate to that entity's page. Press **Esc** to close. A "Ctrl+K to search" hint appears in the sidebar footer.
 
-## Copilot Studio Agent
+## Copilot Studio Agents
 
-A floating **blue chat button** appears in the bottom-right corner of every page. Click it to open the Copilot Studio agent in a popup window. The agent can query your Dataverse data — ask it questions about your accounts, contacts, action items, and more.
+Two floating agent buttons appear in the bottom-right corner of every page, side by side. They are two separate Copilot Studio agents wired up with two different integration patterns — the demo shows both.
 
-- **Open:** Click the blue gradient circle (chat bubble icon) in the bottom-right — this opens a popup window with the agent
+### Agent #1 — Popup Window (blue chat bubble button)
+
+The **blue gradient circle** (chat bubble icon) on the far right opens the first Copilot Studio agent in a popup window.
+
+- **Open:** Click the blue button — a popup window opens with the agent's hosted webchat
 - **Reopen / Focus:** Click the button again to focus the existing popup, or open a new one if you closed it
 - **Close:** Close the popup window directly
 
 The agent authenticates automatically in the popup — no sign-in needed.
+
+### Agent #2 — In-App Chat Panel (purple Sparkles button)
+
+The **purple/pink gradient circle** (Sparkles icon), positioned immediately to the left of the blue button, opens a second Copilot Studio agent as a chat panel inside the app.
+
+- **Open:** Click the purple button — a 384×560 chat panel slides in above the buttons
+- **Send a message:** Type in the input and press Enter (or click the send arrow)
+- **Multi-turn conversation:** The agent remembers context within a single session
+- **Reset:** Click the **Reset** button in the panel header (appears after the first message) to start a fresh conversation
+- **Close:** Click the **X** in the panel header, or click the purple button again
+
+This agent uses your current Microsoft sign-in automatically — the Power Platform host passes your Entra ID session straight through to the agent. No separate login.
 
 ## Ideas
 

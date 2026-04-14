@@ -130,9 +130,31 @@ The dashboard (`dashboard.tsx`) uses a "Precision Terminal" aesthetic with stagg
 
 The board (`board-dashboard.tsx`) matches the dashboard aesthetic. Columns stagger in with `dashRise` animation via a `delay` prop on `SortableColumn`. Column headers have a vertical accent bar indicator, `backdrop-blur-xl`, uppercase `tracking-[0.15em]` titles. Drop target glow is double-layered (`0 0 24px ${accent}30, 0 0 48px ${accent}15`). `CardToolbar` uses `backdrop-blur-xl`, `rounded-lg`, `shadow-lg`. Drag state: `scale-[1.02]`, `rotate-[1deg]`, `ring-primary/30`, `shadow-2xl`. Empty states show larger accent-tinted icons with uppercase tracking text.
 
-## Copilot Studio Agent
+## Copilot Studio Agents (Two of Them)
 
-A floating button (`src/components/copilot-chat.tsx`) opens the Copilot Studio agent in a popup window via `window.open()`. The agent URL is `https://copilotstudio.microsoft.com/environments/0582014c-9a6d-e35b-8705-5168c385f413/bots/auto_agent_s82bp/webchat?__version__=2`. No iframe, no Direct Line, no MSAL, no `botframework-webchat` — the popup handles its own auth natively. The component renders alongside `CommandPalette` in `App.tsx` (outside `AppLayout`, inside `HashRouter`). Blue gradient floating button (bottom-right, `MessageCircle` icon). Clicking opens a popup; clicking again focuses the existing popup or opens a new one if closed. This is the same agent used in the `dv-front-end` repo. The evolution was: Direct Line + MSAL (failed — Code App's `paauth`/`dynamicauth` tokens incompatible with SSO token exchange) -> iframe embed (worked but had friction) -> popup window (simplest, zero dependencies).
+The app ships two separate Copilot Studio agents wired up side-by-side in the bottom-right corner — the tech series demo purposely shows both integration patterns.
+
+### Agent #1 — Popup Window (`src/components/copilot-chat.tsx`)
+
+A floating button opens the Copilot Studio hosted webchat in a popup window via `window.open()`. The agent URL is `https://copilotstudio.microsoft.com/environments/0582014c-9a6d-e35b-8705-5168c385f413/bots/auto_agent_s82bp/webchat?__version__=2`. No iframe, no Direct Line, no MSAL, no `botframework-webchat` — the popup handles its own auth natively. Blue gradient floating button at `fixed bottom-6 right-6`, `MessageCircle` icon. Clicking opens a popup; clicking again focuses the existing popup or opens a new one if closed. This is the same agent used in the `dv-front-end` repo. The evolution was: Direct Line + MSAL (failed — Code App's `paauth`/`dynamicauth` tokens incompatible with SSO token exchange) -> iframe embed (worked but had friction) -> popup window (simplest, zero dependencies).
+
+### Agent #2 — In-App Chat Panel via Connector (`src/components/copilot-chat-panel.tsx`)
+
+The second agent uses the native Code Apps pattern: `shared_microsoftcopilotstudio` added as a data source via `pac code add-data-source -a "shared_microsoftcopilotstudio" -c efff43666f44484dbadb0972da65d5cb`. That generated `src/generated/services/MicrosoftCopilotStudioService.ts` and `src/generated/models/MicrosoftCopilotStudioModel.ts`.
+
+The panel calls `MicrosoftCopilotStudioService.ExecuteCopilotAsyncV2(AGENT_SCHEMA_NAME, body, conversationId)` directly. **Auth is inherited from the Power Apps host's Entra ID session** — the connector endpoint path is `.../dataverse-backed/authenticated/bots/...`, and the Power Platform host attaches the user's session automatically. Zero token handling in React.
+
+**Key facts:**
+- Agent schema name hardcoded as `AGENT_SCHEMA_NAME = "cr6bd_agentDVkdZi"` at the top of the component (publisher-prefixed, case-sensitive — from Copilot Studio → Settings → Advanced → Metadata)
+- Request body shape: `{ notificationUrl: "https://notificationurlplaceholder", message: "user text" }` (not `text` — confirmed from `.power/schemas/microsoftcopilotstudio/microsoftcopilotstudio.Schema.json`)
+- Generated signature is **positional**, not a named-object: `ExecuteCopilotAsyncV2(Copilot, body, x_ms_conversation_id?, environmentId?)`
+- Response type is declared `IOperationResult<void>` but actually returns `{ lastResponse: string, responses: string[], conversationId: string }` per the schema's `x-ms-notification-content` block. The panel casts `result.data` and reads `lastResponse` first, falls back to joined `responses[]`, then `message`
+- Multi-turn is handled by persisting `conversationId` from the response in a `useRef` and passing it back on subsequent calls. Reset button clears the ref to start a new conversation
+- Purple/pink gradient button at `fixed bottom-6 right-[5.5rem]` with `Sparkles` icon — sits immediately to the left of agent #1's blue button
+- Panel is 384×560 at `bottom-24 right-6`, glass-morphism (`bg-background/95 backdrop-blur-xl`), chat bubbles, `Loader2` typing indicator, Enter-to-send
+- Rendered in `App.tsx` as `<CopilotChatPanel />` alongside `<CopilotChat />` and `<CommandPalette />` — all three must be inside `<HashRouter>`
+
+**Prerequisite for the agent to work:** In Copilot Studio → Settings → Security, the agent must be set to **Microsoft (Entra ID)** authentication. "No authentication" mode hits a different endpoint path and will fail with the connector integration.
 
 ## Demo Materials
 

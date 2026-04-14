@@ -150,11 +150,32 @@ The body font is set to a monospace stack: `"JetBrains Mono", "Fira Code", "Casc
 
 ## How does the Copilot Studio agent integration work?
 
-A floating blue gradient button (bottom-right corner, `MessageCircle` icon) opens the Copilot Studio agent in a popup window. Clicking the button calls `window.open` with the Copilot Studio webchat URL. The popup handles its own authentication natively within the Power Platform context — no Direct Line secrets, MSAL, iframe, or `botframework-webchat` dependency needed. The agent uses federated credentials via an app registration for Dataverse access, so it can query your data. Clicking the button again focuses the existing popup, or opens a new one if it was closed.
+The app has **two** Copilot Studio agents wired up side-by-side so the tech series demo can show both patterns:
 
-## Why use a popup window instead of botframework-webchat or an iframe for the agent?
+- **Agent #1 (blue `MessageCircle` button, bottom-right)** — opens the Copilot Studio hosted webchat in a popup window via `window.open`. The popup handles its own auth natively within the Power Platform context — no Direct Line, MSAL, iframe, or `botframework-webchat` dependency needed. Clicking the button again focuses the existing popup, or opens a new one if it was closed.
+- **Agent #2 (purple `Sparkles` button, immediately to the left of agent #1)** — opens an in-app chat panel that calls the Copilot Studio agent through the `shared_microsoftcopilotstudio` Power Platform connector. See the next FAQ entry for details.
 
-The Code App's `@microsoft/power-apps` SDK authenticates via custom `paauth`/`dynamicauth` token schemes — not standard OAuth Bearer tokens. There's no public API to extract a Bearer token for Direct Line's SSO token exchange flow. An iframe embed was tried but had CSP and auth friction. A popup window (`window.open`) sidesteps both problems entirely because Copilot Studio's hosted webchat handles its own auth in its own browsing context. This also eliminated the `@azure/msal-browser` and `botframework-webchat` dependencies.
+## How does the in-app chat panel (agent #2) work?
+
+The `shared_microsoftcopilotstudio` connector was added as a data source via `pac code add-data-source -a "shared_microsoftcopilotstudio" -c <connectionId>`. That auto-generated `src/generated/services/MicrosoftCopilotStudioService.ts` and `src/generated/models/MicrosoftCopilotStudioModel.ts` — the same pattern as any other Dataverse data source. The panel component (`src/components/copilot-chat-panel.tsx`) calls `MicrosoftCopilotStudioService.ExecuteCopilotAsyncV2(AGENT_SCHEMA_NAME, body, conversationId)` with `body = { notificationUrl, message }`, and the typed response is cast to read `lastResponse`, `responses[]`, and `conversationId` from `result.data`. The `conversationId` is persisted in a React ref and passed back on the next call for multi-turn support. A "Reset" button clears it to start a new conversation.
+
+Auth is inherited from the Power Apps host — the connector endpoint path is `.../copilotstudio/dataverse-backed/authenticated/bots/{agentName}/conversations`, and that `authenticated` segment means the connector expects the Power Platform host to attach the user's Entra ID session. **Zero token handling in React.** For this to work, the agent itself must be configured with Microsoft (Entra ID) auth in Copilot Studio → Settings → Security.
+
+## Why use the connector instead of a popup for the second agent?
+
+Two reasons. First, it lets us build a **native chat UI inside the app** — message bubbles, typing indicator, send-on-Enter, multi-turn conversation — instead of hopping out to a separate popup window. Second, it sidesteps the token-exchange problem entirely: Direct Line required extracting an OAuth Bearer from the Code App's `paauth`/`dynamicauth` tokens (not possible), and the connector route never needs a token at all because the Power Platform host authenticates the call on the user's behalf. This is the "right answer" for any Code App that wants a first-class agent experience without dependency sprawl.
+
+## Why is there a schema name hardcoded in the chat panel component?
+
+The `ExecuteCopilotAsyncV2` action needs to identify *which* agent to call, and the connector uses the agent's Dataverse **schema name** (not its display name) — case-sensitive, with the publisher prefix. You find it in Copilot Studio → Settings → Advanced → Metadata → Schema name. Currently hardcoded as `AGENT_SCHEMA_NAME = "cr6bd_agentDVkdZi"` at the top of `src/components/copilot-chat-panel.tsx`. Change that constant (or lift it to an env var) when pointing the panel at a different agent.
+
+## What shape does the Copilot Studio connector actually return?
+
+The generated TypeScript signature for `ExecuteCopilotAsyncV2` declares `IOperationResult<void>`, which is misleading — the connector does return a response body. Looking at `.power/schemas/microsoftcopilotstudio/microsoftcopilotstudio.Schema.json` at the `x-ms-notification-content` block, the actual shape is `{ lastResponse: string, responses: string[], conversationId: string }`. The chat panel casts `result.data` to a loose `CopilotResponseBody` interface and reads `lastResponse` first, falling back to joined `responses[]`, then the model's typed `message` field. If you see `(no response)` in the chat during testing, log `result.data` and check which field the runtime actually populates for your agent.
+
+## Why use a popup window for agent #1 when the connector route exists?
+
+Agent #1 predates the connector integration and was intentionally left alone — the popup pattern is still valid, requires zero dependencies, and showcases a different trade-off. The demo keeps both to contrast them. In a new app, pick the connector pattern unless you specifically want an out-of-band webchat experience. The Code App's `@microsoft/power-apps` SDK authenticates via custom `paauth`/`dynamicauth` token schemes — not standard OAuth Bearer tokens — so a popup sidesteps token problems that Direct Line would otherwise trip on.
 
 ## How do I collapse the sidebar?
 

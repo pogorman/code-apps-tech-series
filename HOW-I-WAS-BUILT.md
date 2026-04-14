@@ -464,6 +464,35 @@ All changes in `src/components/layout/app-layout.tsx`.
 
 **Files changed:** `board-dashboard.tsx`
 
+## Phase 22 — Second Copilot Studio Agent via Connector (In-App Chat Panel)
+
+**Prompt:** "i want to add a second agent to the code app. keep the existing one exactly as it is, but use Microsoft authentication per the instructions in `inbox/copilot-studio-integration.txt`. A little button right next to the existing one."
+
+**What happened:**
+
+1. **Read the integration notes** — The inbox file described the native Code Apps pattern: add `shared_microsoftcopilotstudio` as a Power Platform connector data source via `pac code add-data-source`, which generates `MicrosoftCopilotStudioService.ts`. Call `ExecuteCopilotAsyncV2` directly from React. Auth inherits from the Power Apps host's Entra ID session — zero token handling. Completely different from the popup approach in Phase 18b
+2. **Confirmed approach with the user** — Proposed building a real in-app chat panel rather than a second popup, since that's the whole point of the connector pattern. Asked for the agent schema name (from Copilot Studio → Settings → Advanced → Metadata) and the connection ID
+3. **User provided:** Schema name `cr6bd_agentDVkdZi`, connection ID `efff43666f44484dbadb0972da65d5cb`
+4. **Added the connector** — Switched `pac auth` to profile [2] (`og-dv`), then ran `pac code add-data-source -a "shared_microsoftcopilotstudio" -c efff43666f44484dbadb0972da65d5cb`. This generated `src/generated/services/MicrosoftCopilotStudioService.ts`, `src/generated/models/MicrosoftCopilotStudioModel.ts`, and `.power/schemas/microsoftcopilotstudio/microsoftcopilotstudio.Schema.json`
+5. **Cross-referenced the schema JSON** — The inbox note suggested a named-object call style (`{ message, notificationUrl, agentName, conversationId }`), but the actual generated service signature is positional: `ExecuteCopilotAsyncV2(Copilot, body, x_ms_conversation_id?, environmentId?)`. The connector schema's `x-ms-notification-content` block confirmed the request body is `{ notificationUrl, message }` (not `text`) and the response is `{ lastResponse, responses[], conversationId }`
+6. **Built `src/components/copilot-chat-panel.tsx`** — A new floating button + chat panel component:
+   - Purple/pink gradient `Sparkles` button at `fixed bottom-6 right-[5.5rem]` — immediately to the left of the existing `copilot-chat.tsx` button at `right-6`
+   - Click toggles a 384×560 glass-morphism panel anchored `bottom-24 right-6`
+   - Chat bubble UI: user messages right-aligned on a gradient background, agent messages left-aligned on `bg-muted`
+   - `Loader2` spinner while awaiting response, auto-scrolls to latest message
+   - Multi-turn via a `conversationIdRef` that persists the returned `conversationId` across calls
+   - Reset button clears messages and the stored conversation ID
+   - Enter-to-send, disabled send button when empty or loading
+   - Typed response is cast via a loose `CopilotResponseBody` interface: prefers `lastResponse`, falls back to joined `responses[]`, then `message`
+7. **Wired into `App.tsx`** — `<CopilotChatPanel />` renders alongside the existing `<CopilotChat />` inside `<HashRouter>`
+8. **Agent schema name hardcoded** as `AGENT_SCHEMA_NAME = "cr6bd_agentDVkdZi"` at the top of the component (publisher-prefixed, case-sensitive)
+
+**Verification:** `npm run build` completed cleanly with no TypeScript errors.
+
+**Key decision:** Connector over popup. The Copilot Studio connector pattern was invisible during Phase 18 because the research back then focused on Direct Line and iframe approaches. Once the inbox file surfaced the native Code Apps integration path, it became the obvious choice for any agent requiring Microsoft authentication and an in-app UX. The popup agent (#1) is intentionally preserved — the demo shows both patterns side by side so customers can see the trade-off.
+
+**Prerequisite the demo assumes:** The target agent must be configured in Copilot Studio → Settings → Security with **Microsoft (Entra ID)** authentication, not "No authentication." The connector expects the `authenticated` endpoint path, and unauthenticated agents will fail.
+
 ## Presentation Materials — Slide Outline & Live Demo Script
 
 **Prompt:** Create a slide outline and live demo script for the Code Apps tech series presentation targeting SLED customers.

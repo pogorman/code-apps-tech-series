@@ -44,7 +44,7 @@ Open the URL from `pac code run` (not Vite directly) — it wraps the app in the
 | Command Palette | cmdk |
 | Drag & Drop | @dnd-kit (core, sortable, utilities) |
 | AI | Azure OpenAI (optional — see `.env.example`) |
-| Agent | Copilot Studio (popup window) |
+| Agents | Copilot Studio — public webchat (popup) + in-app panel via `shared_microsoftcopilotstudio` connector |
 
 ## Project Structure
 
@@ -61,8 +61,9 @@ src/
     projects/         # Project CRUD components
     dashboard/        # Analytics dashboard (staggered animations, accent-bordered KPI cards, SVG donut, gradient chart panels) + Kanban board view (4-column drag-and-drop, staggered column entry, clickable cards, custom collision detection, accent-glow drop highlights)
     layout/           # App shell (collapsible left sidebar with colored nav icons + quick create bar with task-type presets + dark mode toggle)
-    command-palette.tsx # Global Ctrl+K search
-    copilot-chat.tsx    # Copilot Studio agent (floating button → popup window)
+    command-palette.tsx     # Global Ctrl+K search
+    copilot-chat.tsx        # Copilot Studio agent #1 (blue button → popup window)
+    copilot-chat-panel.tsx  # Copilot Studio agent #2 (purple button → in-app chat panel, Entra ID auth via connector)
   stores/             # Zustand stores (quick create)
   hooks/              # TanStack Query hooks wrapping Dataverse services + view preference
   lib/                # Utilities (cn helper, Dataverse field helpers, Azure OpenAI service, tile color helpers incl. tileGradient() with dark mode support)
@@ -100,9 +101,19 @@ Toggle via the Sun/Moon button in the sidebar footer. Preference persists in `lo
 
 The app uses a monospace font stack (JetBrains Mono > Fira Code > Cascadia Code > Consolas > system monospace) set on `<body>` for a developer-tooling aesthetic.
 
-## Copilot Studio Agent
+## Copilot Studio Agents
 
-A floating chat button (bottom-right) opens the Copilot Studio agent in a popup window. The popup handles its own auth natively — no Direct Line secrets, MSAL, iframe, or `botframework-webchat` dependency needed. Click the blue gradient chat bubble to open; click again to focus the existing popup or open a new one.
+The app ships with two separate Copilot Studio agent integrations side-by-side in the bottom-right corner — the demo purposely shows both patterns.
+
+### Agent #1 — Public Webchat Popup (blue `MessageCircle` button)
+
+Opens the Copilot Studio hosted webchat URL in a separate popup window via `window.open`. The popup handles its own auth natively. No Direct Line, no iframe, no MSAL, no `botframework-webchat` dependency. Click the blue gradient chat bubble to open; click again to focus the existing popup.
+
+### Agent #2 — In-App Chat Panel via Connector (purple `Sparkles` button)
+
+Uses the `shared_microsoftcopilotstudio` Power Platform connector as a data source, added via `pac code add-data-source`. Calls `MicrosoftCopilotStudioService.ExecuteCopilotAsyncV2()` directly from React, which routes through the Power Apps host and inherits the user's Microsoft Entra ID session — **zero token handling in the component**. The agent must be configured with Microsoft (Entra ID) authentication in Copilot Studio Settings → Security for the authenticated endpoint to work.
+
+The chat UI is built inside the app: a 384×560 floating panel anchored to the bottom-right, with message bubbles, a typing indicator, multi-turn support via a persisted `conversationId`, and Enter-to-send. Agent schema name is hardcoded in `copilot-chat-panel.tsx` (currently `cr6bd_agentDVkdZi`).
 
 ## Demo Materials
 
