@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { motion } from "framer-motion";
 import {
   DndContext,
   closestCenter,
@@ -111,14 +112,13 @@ const ACCENT = {
   ideas: "#EF9F27",
 } as const;
 
-/* ── animation keyframes ──────────────────────────────────────── */
+/* ── subtle entrance motion presets ───────────────────────────── */
 
-const BOARD_ANIM_CSS = `
-@keyframes dashRise {
-  from { opacity: 0; transform: translateY(20px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-`;
+const EASE_OUT = [0.16, 1, 0.3, 1] as const;
+const riseInitial = { opacity: 0, y: 14, scale: 0.98 };
+const riseAnimate = { opacity: 1, y: 0, scale: 1 };
+const cardInitial = { opacity: 0, y: 8 };
+const cardAnimate = { opacity: 1, y: 0 };
 
 /* ── localStorage sort order helpers ─────────────────────────── */
 
@@ -164,9 +164,11 @@ type DragHandleProps = {
 
 function SortableCard({
   id,
+  index,
   children,
 }: {
   id: string;
+  index: number;
   children: (handle: DragHandleProps) => React.ReactNode;
 }) {
   const {
@@ -195,7 +197,17 @@ function SortableCard({
           : "hover:-translate-y-0.5",
       )}
     >
-      {children({ attributes, listeners })}
+      <motion.div
+        initial={cardInitial}
+        animate={cardAnimate}
+        transition={{
+          duration: 0.35,
+          ease: EASE_OUT,
+          delay: Math.min(index, 10) * 0.04,
+        }}
+      >
+        {children({ attributes, listeners })}
+      </motion.div>
     </div>
   );
 }
@@ -321,7 +333,7 @@ function ActionItemCard({
   return (
     <div
       className={cn(
-        "relative rounded-lg border border-border/40 dark:border-border/25 bg-card px-3.5 pt-3 pb-7 cursor-pointer",
+        "relative rounded-lg border border-border/40 dark:border-border/25 bg-card/75 dark:bg-card/55 backdrop-blur-md px-3.5 pt-3 pb-7 cursor-pointer",
         "shadow-sm hover:shadow-md transition-all duration-300",
         tileBgClass(colorIdx),
       )}
@@ -395,7 +407,7 @@ function ProjectCard({
   return (
     <div
       className={cn(
-        "relative rounded-lg border border-border/40 dark:border-border/25 bg-card px-3.5 pt-3 pb-7 cursor-pointer",
+        "relative rounded-lg border border-border/40 dark:border-border/25 bg-card/75 dark:bg-card/55 backdrop-blur-md px-3.5 pt-3 pb-7 cursor-pointer",
         "shadow-sm hover:shadow-md transition-all duration-300",
         tileBgClass(colorIdx),
       )}
@@ -458,7 +470,7 @@ function IdeaCard({
   return (
     <div
       className={cn(
-        "relative rounded-lg border border-border/40 dark:border-border/25 bg-card px-3.5 pt-3 pb-7 cursor-pointer",
+        "relative rounded-lg border border-border/40 dark:border-border/25 bg-card/75 dark:bg-card/55 backdrop-blur-md px-3.5 pt-3 pb-7 cursor-pointer",
         "shadow-sm hover:shadow-md transition-all duration-300",
         tileBgClass(colorIdx),
       )}
@@ -519,7 +531,7 @@ function ParkingLotCard({ entry, dragHandle }: { entry: ParkingLotEntry; dragHan
   return (
     <div
       className={cn(
-        "relative rounded-lg border border-border/40 dark:border-border/25 bg-card px-3.5 py-3 cursor-pointer",
+        "relative rounded-lg border border-border/40 dark:border-border/25 bg-card/75 dark:bg-card/55 backdrop-blur-md px-3.5 py-3 cursor-pointer",
         "shadow-sm hover:shadow-md transition-all duration-300",
         tileBgClass(entry.colorIdx),
       )}
@@ -594,23 +606,31 @@ function SortableColumn({
   const { setNodeRef } = useDroppable({ id: `col-${columnKey}` });
 
   return (
-    <div
+    <motion.div
+      initial={riseInitial}
+      animate={riseAnimate}
+      transition={{
+        duration: 0.55,
+        ease: EASE_OUT,
+        delay: (delay ?? 0) / 1000,
+      }}
       className={cn(
-        "flex min-w-0 rounded-xl border bg-muted/20 dark:bg-muted/10 backdrop-blur-sm transition-all duration-300",
+        "flex min-w-0 rounded-xl border bg-card/55 dark:bg-card/35 backdrop-blur-xl shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.12)] dark:shadow-[0_1px_2px_rgba(0,0,0,0.3),0_8px_24px_-12px_rgba(0,0,0,0.5)] transition-all duration-300",
         isDropTarget
           ? "border-2 ring-2 ring-offset-1 scale-[1.01] shadow-xl"
-          : "border-border/40 dark:border-border/25",
+          : "border-border/50 dark:border-border/35",
       )}
-      style={{
-        ...(isDropTarget ? { borderColor: accent, boxShadow: `0 0 24px ${accent}30, 0 0 48px ${accent}15` } : {}),
-        ...(delay != null ? { animation: `dashRise 0.55s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms both` } : {}),
-      }}
+      style={
+        isDropTarget
+          ? { borderColor: accent, boxShadow: `0 0 24px ${accent}30, 0 0 48px ${accent}15` }
+          : undefined
+      }
     >
       {/* accent left bar */}
       <div className="w-[3px] shrink-0 rounded-l-xl transition-colors duration-300" style={{ background: accent }} />
       <div className="flex flex-col min-w-0 flex-1">
         {/* glass-morphism header */}
-        <div className="sticky top-0 z-[5] px-4 py-3 bg-background/70 backdrop-blur-xl border-b border-border/20 dark:border-border/15 rounded-tr-xl">
+        <div className="sticky top-0 z-[5] px-4 py-3 bg-background/60 dark:bg-background/40 backdrop-blur-xl border-b border-border/25 dark:border-border/15 rounded-tr-xl">
           <div className="flex items-center gap-2">
             {/* accent vertical bar indicator */}
             <div className="w-1 h-5 rounded-full shrink-0" style={{ background: accent }} />
@@ -647,7 +667,7 @@ function SortableColumn({
           </div>
         </SortableContext>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -964,14 +984,15 @@ export function BoardDashboard() {
 
   return (
     <>
-      <style>{BOARD_ANIM_CSS}</style>
       <div className="space-y-5 h-full flex flex-col">
         {/* Header */}
-        <div
+        <motion.div
           className="flex items-center gap-3 shrink-0"
-          style={{ animation: "dashRise 0.55s cubic-bezier(0.16, 1, 0.3, 1) both" }}
+          initial={riseInitial}
+          animate={riseAnimate}
+          transition={{ duration: 0.5, ease: EASE_OUT }}
         >
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 dark:bg-primary/15">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 dark:bg-primary/15 backdrop-blur-sm">
             <Columns3 className="h-5 w-5 text-primary" />
           </div>
           <div>
@@ -980,7 +1001,7 @@ export function BoardDashboard() {
               Kanban view across action items, projects &amp; ideas
             </p>
           </div>
-        </div>
+        </motion.div>
 
         {/* 4-column board — single DndContext for cross-column drag */}
         <DndContext
@@ -1001,8 +1022,8 @@ export function BoardDashboard() {
             isDropTarget={overColumn === "parkingLot"}
             delay={60}
           >
-            {sortedParkingLot.map((entry) => (
-              <SortableCard key={entry.sortId} id={entry.sortId}>
+            {sortedParkingLot.map((entry, idx) => (
+              <SortableCard key={entry.sortId} id={entry.sortId} index={idx}>
                 {(handle) => <ParkingLotCard entry={entry} dragHandle={handle} />}
               </SortableCard>
             ))}
@@ -1052,8 +1073,8 @@ export function BoardDashboard() {
               </div>
             }
           >
-            {work.map((item) => (
-              <SortableCard key={item.tdvsp_actionitemid} id={item.tdvsp_actionitemid}>
+            {work.map((item, idx) => (
+              <SortableCard key={item.tdvsp_actionitemid} id={item.tdvsp_actionitemid} index={idx}>
                 {(handle) => (
                   <ActionItemCard
                     item={item}
@@ -1078,8 +1099,8 @@ export function BoardDashboard() {
             isDropTarget={overColumn === "projects"}
             delay={210}
           >
-            {projectList.map((project) => (
-              <SortableCard key={project.tdvsp_projectid} id={project.tdvsp_projectid}>
+            {projectList.map((project, idx) => (
+              <SortableCard key={project.tdvsp_projectid} id={project.tdvsp_projectid} index={idx}>
                 {(handle) => (
                   <ProjectCard
                     project={project}
@@ -1103,8 +1124,8 @@ export function BoardDashboard() {
             isDropTarget={overColumn === "ideas"}
             delay={285}
           >
-            {ideaList.map((idea) => (
-              <SortableCard key={idea.tdvsp_ideaid} id={idea.tdvsp_ideaid}>
+            {ideaList.map((idea, idx) => (
+              <SortableCard key={idea.tdvsp_ideaid} id={idea.tdvsp_ideaid} index={idx}>
                 {(handle) => (
                   <IdeaCard
                     idea={idea}

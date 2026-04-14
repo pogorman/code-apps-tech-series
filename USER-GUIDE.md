@@ -20,11 +20,11 @@ The Dashboard is the home view, showing action item analytics.
 
 ### KPI Cards (top row)
 
-Four summary cards: Total Items, Completion Rate, In Progress, and High/Top Priority. Each card has a colored left accent border, a subtle glow, and an icon in a tinted badge. Cards animate in on page load with a staggered fade-up effect. Hover any card to see a frosted-glass tooltip with item count and first 4 item names. Click to open a drilldown table showing all matching action items.
+Four summary cards: Total Items, Completion Rate, In Progress, and High/Top Priority. Each card has a colored left accent border, a subtle glow, an icon in a tinted badge, and a frosted-glass background (glassmorphism). Cards animate in on page load with a staggered entrance powered by Framer Motion. Hover any card to see a frosted-glass tooltip with item count and first 4 item names. Click to open a drilldown table showing all matching action items.
 
 ### Charts (bottom row)
 
-Four chart panels: Status Breakdown (SVG donut with background track ring), Priority Distribution (pill-shaped gradient bars), Task Types (segmented overview bar + per-type icons and progress bars), and Items by Account (progress bars). Each panel has a colored accent line at the top and a vertical bar indicator next to the section title. Each sub-element is independently hoverable and clickable. Hover for a frosted-glass tooltip preview; click for a full drilldown table.
+Four glassmorphism chart panels: Status Breakdown (SVG donut with background track ring), **Priority Distribution** (animated Recharts bar chart — hover any bar for a tooltip showing the count, click a bar to drill down into the underlying items), Task Types (segmented overview bar + per-type icons and progress bars), and Items by Account (progress bars). Each panel has a colored accent line at the top, a soft radial accent glow behind the glass, and a vertical bar indicator next to the section title. Each sub-element is independently hoverable and clickable. Hover for a frosted-glass tooltip preview; click for a full drilldown table. Panels animate in cascading after the KPI row.
 
 ### Drilldown Dialog
 
@@ -39,7 +39,7 @@ Click **My Board** in the sidebar to open a Kanban-style view with four columns:
 - **Projects** (purple accent, FolderKanban icon) — All project records. Cards show project name and priority pill.
 - **Ideas** (amber accent, Lightbulb icon) — All ideas. Cards show idea name and category pill.
 
-Columns have glass-morphism sticky headers (frosted blur effect) with an overlapping accent-colored count badge. The work column is wider than the others (2x width) to accommodate more detail. Empty columns show a large faded icon. Cards have subtle priority-tinted gradient backgrounds, hover lift animation, and compact `text-xs` titles. **Click any card** to open its edit form dialog directly — no need to use the toolbar pencil.
+Columns themselves use a glassmorphism background (frosted blur + soft shadow) with sticky headers and an overlapping accent-colored count badge. The work column is wider than the others (2x width) to accommodate more detail. Empty columns show a large faded icon. Cards also use a semi-translucent glass background layered over priority-tinted gradients, with hover lift animation and compact `text-xs` titles. Columns and individual cards animate in on page load with a subtle staggered entrance (Framer Motion). **Click any card** to open its edit form dialog directly — no need to use the toolbar pencil.
 
 ### Floating Card Toolbar
 

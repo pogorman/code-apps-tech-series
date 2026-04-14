@@ -183,7 +183,23 @@ Click the small chevron button floating on the sidebar's right edge. The sidebar
 
 ## Why do dashboard tiles animate on load?
 
-The dashboard uses a `dashRise` CSS keyframe animation (fade up + subtle scale) with staggered delays — KPI cards animate first, then chart panels cascade in. The board columns use the same animation with their own stagger. This creates a polished "data loading" feel for enterprise demos without requiring a motion library.
+The dashboard uses **Framer Motion** `motion.div` wrappers with shared `riseInitial → riseAnimate` presets (opacity + y + scale, ease `[0.16, 1, 0.3, 1]`). KPI cards animate first, then chart panels cascade in, each staggered by index. The board columns use the same presets, with per-card entrance animation inside each `SortableCard`. Animations are intentionally subtle — they add polish without getting in the way of data scanning.
+
+## Why did the dashboard switch from CSS keyframes to Framer Motion?
+
+The old `dashRise` keyframe worked, but composing it with hover states and per-element stagger delays was getting awkward (inline `animation: dashRise ... ${delay}ms both` on every element). Framer Motion lets us define one preset and hand out `transition={{ delay }}` props from a `.map()` — much cleaner, and it composes correctly with dnd-kit transforms on the board cards (the motion wrapper lives *inside* `SortableCard` so it only runs the entrance; dnd-kit owns the transform during drag).
+
+## Why Recharts only for the Priority Distribution chart?
+
+The rest of the dashboard (donut, task-type bars, account bars) uses hand-rolled SVG + Tailwind — that's enough for a demo and keeps the bundle lean. But the Priority Distribution card specifically benefits from an interactive, animated chart library: real click-through on bars, a tooltip that follows the cursor, and 850ms ease-out animation on mount. Recharts was added for that one chart, with a custom frosted-glass tooltip that matches the rest of the app's tooltip styling. If a new chart elsewhere in the app ever needs the same treatment, the pattern is ready to copy.
+
+## How does the Priority Distribution chart click-through work?
+
+The Recharts `<Bar>` in `dashboard.tsx` has an `onClick` handler that receives the clicked bar's `payload` (which is the `PriorityDatum` — label, count, color). The handler calls `openDrilldown(` `Priority: ${label}` `, filterByPriority(label))`, which opens the same shared `DrilldownDialog` the rest of the dashboard uses. Each `<Cell>` in the bar has `cursor="pointer"` so the affordance is visible. The custom `PriorityTooltip` component also shows a "Click to drill down" hint at the bottom.
+
+## How is glassmorphism applied on the dashboard and board?
+
+Shared `GLASS_CARD` class at the top of `dashboard.tsx`: `bg-card/60 dark:bg-card/45 backdrop-blur-xl border-border/50 dark:border-border/35` with a layered soft shadow. It's applied to all KPI cards and to `ChartCard`. `ChartCard` also gets a soft radial accent glow (`blur-3xl`, opacity ~7%) behind the glass so the blur has something to interact with — pure translucent-over-white looks flat. On the board, columns use `bg-card/55 dark:bg-card/35 backdrop-blur-xl`, sticky headers use `bg-background/60 backdrop-blur-xl`, and individual kanban cards use `bg-card/75 backdrop-blur-md` (lighter blur because the priority gradient background behind them is doing most of the visual work).
 
 ## What ports does local dev use?
 

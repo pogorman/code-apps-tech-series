@@ -67,7 +67,12 @@
       "Bash(git restore:*)",
       "Bash(xargs -I {} basename {})",
       "Bash(sleep:*)",
-      "Bash(git:*)"
+      "Bash(git:*)",
+      "Bash(echo \"exit=$?\")",
+      "mcp__plugin_model-apps_playwright__browser_navigate",
+      "mcp__plugin_model-apps_playwright__browser_console_messages",
+      "mcp__plugin_model-apps_playwright__browser_take_screenshot",
+      "mcp__plugin_model-apps_playwright__browser_close"
     ]
   }
 }

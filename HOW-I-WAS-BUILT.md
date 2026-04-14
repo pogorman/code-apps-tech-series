@@ -493,6 +493,49 @@ All changes in `src/components/layout/app-layout.tsx`.
 
 **Prerequisite the demo assumes:** The target agent must be configured in Copilot Studio → Settings → Security with **Microsoft (Entra ID)** authentication, not "No authentication." The connector expects the `authenticated` endpoint path, and unauthenticated agents will fail.
 
+## Phase 23 — UI Modernization: Glass, Recharts, Framer Motion
+
+**Prompt:** "Modernize the dashboard and my board UI's with these three improvements: 1. Apply glassmorphism styling where it makes sense 2. Replace the priority distribution bars with animated Recharts bars with tooltips 3. Add Framer Motion entrance animations to the dashboard cards and kanban cards. Install any required packages. Keep animations subtle."
+
+**What happened:**
+
+1. **Installed** `recharts@3.8.1` and `framer-motion@12.38.0` with `--save-exact`. Both additive — nothing was removed.
+2. **Glassmorphism** — Introduced a shared `GLASS_CARD` class at the top of `dashboard.tsx` (`bg-card/60 dark:bg-card/45 backdrop-blur-xl border-border/50` + layered shadow) and applied it to every KPI card and `ChartCard`. Added a soft radial accent glow behind each chart card's glass so the blur has something to interact with. On the board, columns swapped `bg-muted/20 backdrop-blur-sm` for `bg-card/55 dark:bg-card/35 backdrop-blur-xl`; kanban cards swapped solid `bg-card` for `bg-card/75 backdrop-blur-md`. Sticky column headers stayed `backdrop-blur-xl` but retuned to `bg-background/60` for consistency
+3. **Recharts priority bars** — Replaced the hand-rolled `HBar` block in the Priority Distribution card with a Recharts `<BarChart layout="vertical">` using one `<Cell>` per priority color, 850ms ease-out animation, and a custom frosted-glass `PriorityTooltip` component matching the rest of the app's tooltip styling. Bars are click-through: `onClick` calls `openDrilldown(...)` with the filtered items, wiring back into the existing drilldown dialog. Removed the now-unused `HBar` helper and the `priorityMax` computation
+4. **Framer Motion entrances** — Removed the inline `<style>{ANIM_CSS}</style>` / `{BOARD_ANIM_CSS}` blocks from both files and introduced shared motion presets (`riseInitial → riseAnimate` for headers, KPIs, chart cards, columns; `cardInitial → cardAnimate` for individual kanban cards). Dashboard header, KPI cards, and chart cards all animate in via `motion.div` wrappers staggered per index. Board header and every `SortableColumn` use the same presets. Every `SortableCard` wraps its child content in a lightweight `motion.div` that runs only the entrance animation — the outer dnd-kit node keeps its transform untouched, so entrance and drag never fight
+5. **`SortableCard` API change** — Added a required `index` prop so each card can stagger its entrance (`delay = min(index, 10) * 40ms`, capped to stop long columns from feeling sluggish). Updated all four call sites to pass `idx` from the parent `.map()`
+
+**Key decision — motion wrapper goes inside `SortableCard`, not outside:**
+
+```tsx
+<div ref={setNodeRef} style={{ transform }}>   {/* dnd-kit owns this transform */}
+  <motion.div initial={cardInitial} animate={cardAnimate}>   {/* entrance only */}
+    {children(handle)}
+  </motion.div>
+</div>
+```
+
+If framer wrapped the outer node, its transform would fight dnd-kit's. Keeping motion inside means entrance runs once on mount and dnd-kit has full control of the transform during drag.
+
+**Key decision — Recharts only for the Priority Distribution chart:**
+
+The rest of the dashboard (donut, task-type bars, account rows) stays hand-rolled. Recharts was added for the one chart where interactive tooltips and animated mount genuinely improve the UX. This keeps the bundle lean — Recharts only imports into the dashboard file where it's used.
+
+**Verification:**
+
+- `npx tsc -b` — clean
+- `npm run build` — clean (same ~1.19MB bundle, gzipped ~353KB)
+- Local dev boot: zero React errors; skeletons show because `pac code run` isn't active (expected)
+- Deployed to **og-dv** with `pac code push`
+
+**Files changed:**
+
+- `src/components/dashboard/dashboard.tsx`
+- `src/components/dashboard/board-dashboard.tsx`
+- `package.json` / `package-lock.json`
+
+**Tracked notes:** `docs/tracked/phase-14-ui-modernization/1-glass-recharts-framer.md`
+
 ## Presentation Materials — Slide Outline & Live Demo Script
 
 **Prompt:** Create a slide outline and live demo script for the Code Apps tech series presentation targeting SLED customers.

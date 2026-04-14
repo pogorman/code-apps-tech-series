@@ -43,6 +43,8 @@ Open the URL from `pac code run` (not Vite directly) — it wraps the app in the
 | Toasts | Sonner |
 | Command Palette | cmdk |
 | Drag & Drop | @dnd-kit (core, sortable, utilities) |
+| Charts | Recharts (animated priority distribution bars) |
+| Animations | Framer Motion (subtle entrance animations on dashboard + kanban) |
 | AI | Azure OpenAI (optional — see `.env.example`) |
 | Agents | Copilot Studio — public webchat (popup) + in-app panel via `shared_microsoftcopilotstudio` connector |
 
@@ -59,7 +61,7 @@ src/
     meeting-summaries/# Meeting Summary CRUD components
     ideas/            # Idea CRUD components
     projects/         # Project CRUD components
-    dashboard/        # Analytics dashboard (staggered animations, accent-bordered KPI cards, SVG donut, gradient chart panels) + Kanban board view (4-column drag-and-drop, staggered column entry, clickable cards, custom collision detection, accent-glow drop highlights)
+    dashboard/        # Analytics dashboard (glassmorphism KPI + chart cards, framer-motion entrance animations, accent-bordered KPI cards, SVG donut, Recharts animated priority distribution with tooltips) + Kanban board view (4-column drag-and-drop, glass columns, framer-motion entrance on columns + cards, clickable cards, custom collision detection, accent-glow drop highlights)
     layout/           # App shell (collapsible left sidebar with colored nav icons + quick create bar with task-type presets + dark mode toggle)
     command-palette.tsx     # Global Ctrl+K search
     copilot-chat.tsx        # Copilot Studio agent #1 (blue button → popup window)
