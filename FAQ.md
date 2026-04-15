@@ -220,3 +220,15 @@ The file `inbox/08587a10-83ed-43d0-8be4-8b145f5a7ee3.devtools` is an HTML export
 ## What does the "Under the Hood" deck cover?
 
 Six slides: (1) Title, (2) Runtime analysis from the DevTools export, (3) Two gotcha stories — Dataverse polymorphic lookups and Copilot Studio auth in Code Apps, (4) 18-phase agentic build with Claude Code, (5) Reusable patterns (TanStack Query cache, Zustand, dnd-kit + Dataverse, Tailwind v4 dark mode), (6) Live demo transition with 7 beats.
+
+## How do I load demo data into og-dv?
+
+Run `scripts/seed-data.ps1`. It uses an Azure CLI access token against the Dataverse Web API to POST 86 records: 8 SLG-themed accounts (City of Philadelphia, Commonwealth of PA, LA County, TX HHS, Chicago, Maryland DoIT, Maricopa County, NY ITS), 20 contacts spread across them, 6 projects, 30 action items (mixed Work/Personal/Learning, mixed statuses), 10 meeting summaries, and 12 ideas. Prereq: `az login --scope https://og-dv.crm.dynamics.com/.default` so the script can grab a bearer.
+
+## Why is the seed script identical to the one in `code-apps-tech-series-gcc`?
+
+It's intentional — both demos are supposed to look the same on stage, just running against different sovereign clouds. The only difference between the two scripts is `$env_url` (`og-dv.crm.dynamics.com` vs `og-code.crm9.dynamics.com`) and the `az login` hint in the header. Same accounts, same contacts, same numeric choice keys for priorities and statuses.
+
+## Is the seed script idempotent?
+
+Only for accounts. The accounts loop checks for an existing record by `name` before creating. Contacts, projects, action items, meeting summaries, and ideas have no de-dupe — re-running the script will create duplicates of all of them. If you need a clean reseed, delete the existing rows in Dataverse first.

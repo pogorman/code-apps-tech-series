@@ -544,3 +544,25 @@ The rest of the dashboard (donut, task-type bars, account rows) stays hand-rolle
 
 1. Created `docs/slide-outline.md` — 14-slide outline covering: app spectrum comparison (Canvas vs Model-Driven vs Code Apps), what/why/when for SLED, the stack, environment setup, AI-assisted development, deploy & govern, live demo transition, recap, resources
 2. Created `docs/live-demo-script.md` — 8-act live demo script (~30 min) with exact click/type/narrate instructions, pre-demo checklist, and recovery plays for common issues (Dataverse latency, create failures, Canvas vs Code Apps questions, licensing)
+
+## Phase 24 — Seed Data Parity Between Commercial and GCC
+
+**Prompt:** "Use the same test data we used for the repo code-apps-tech-series-gcc and load that in this environment (active pac auth where this app is deployed). I want my data in commercial to match my test data in gcc. Should be in the repo."
+
+**What happened:**
+
+1. Copied `scripts/seed-data.ps1` from the sibling `code-apps-tech-series-gcc` repo into this repo's `scripts/` folder
+2. Swapped the `$env_url` from `https://og-code.crm9.dynamics.com` to `https://og-dv.crm.dynamics.com` and updated the header comment + `az login` hint accordingly. Everything else — the 8 accounts, 20 contacts, 6 projects, 30 action items, 10 meeting summaries, 12 ideas, all OData bind syntax, all numeric choice keys — stayed identical so the two environments are byte-for-byte the same demo
+3. Ran `powershell -ExecutionPolicy Bypass -File scripts/seed-data.ps1` against the active az CLI session (already logged into the M365x06150305 tenant). Created 86 records on the first pass with no errors
+
+**Key decision — same Web API + az token pattern as gcc:**
+
+The gcc script uses `az account get-access-token` to grab a bearer for the Dataverse Web API and posts JSON via `Invoke-RestMethod`. I considered the Dataverse MCP / Python SDK route but kept the powershell pattern unchanged so the two repos stay symmetric — anyone who knows the gcc script knows this one.
+
+**Gotcha — re-run safety:**
+
+Only `accounts` has an "exists" check (filter by `name`). Contacts, projects, action items, meetings, and ideas will duplicate on a second run. Documented this in the README under the **Seed Data** section so the next person doesn't accidentally double-load.
+
+**Verification:** Script output shows all 86 records created with GUIDs returned. Records visible in the deployed app at og-dv.
+
+**Files added:** `scripts/seed-data.ps1`

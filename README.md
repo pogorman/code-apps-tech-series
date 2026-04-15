@@ -91,6 +91,17 @@ power.config.json     # Code App configuration
 - **Target:** og-dv (`https://og-dv.crm.dynamics.com/`)
 - **Auth:** `admin@M365x06150305.onmicrosoft.com`
 
+## Seed Data
+
+`scripts/seed-data.ps1` bulk-creates a fixed set of demo records (8 accounts, 20 contacts, 6 projects, 30 action items, 10 meeting summaries, 12 ideas) in og-dv via the Dataverse Web API. It mirrors the sibling `code-apps-tech-series-gcc` seed script so commercial and gcc demos line up record-for-record.
+
+```bash
+az login --scope https://og-dv.crm.dynamics.com/.default
+powershell -ExecutionPolicy Bypass -File scripts/seed-data.ps1
+```
+
+Accounts have an "exists" check; the other entities do not — re-running will create duplicates of contacts, projects, action items, meetings, and ideas.
+
 ## Collapsible Sidebar
 
 The left sidebar collapses to an icon-only rail (56px) via the floating chevron button on its right edge. When collapsed, nav items show centered icons with hover tooltips; section labels become thin dividers. State persists to `localStorage`.
